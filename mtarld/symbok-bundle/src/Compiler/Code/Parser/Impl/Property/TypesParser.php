@@ -32,35 +32,35 @@ class TypesParser
     {
         // https://www.doctrine-project.org/projects/doctrine-dbal/en/2.9/reference/types.html
         $this->doctrineTypesMap = [
-        Type::SMALLINT => new Integer(),
-        Type::INTEGER => new Integer(),
-        Type::BIGINT => new String_(),
-        Type::DECIMAL => new String_(),
-        Type::FLOAT => new Float_(),
-        Type::STRING => new String_(),
-        Type::TEXT => new String_(),
-        Type::GUID => new String_(),
+            Type::SMALLINT => new Integer(),
+            Type::INTEGER => new Integer(),
+            Type::BIGINT => new String_(),
+            Type::DECIMAL => new String_(),
+            Type::FLOAT => new Float_(),
+            Type::STRING => new String_(),
+            Type::TEXT => new String_(),
+            Type::GUID => new String_(),
 
-        // Resource type (not supported yet)
+            // Resource type (not supported yet)
 //        Type::BINARY => null,
 //        Type::BLOB => null,
 
-        Type::BOOLEAN => new Boolean(),
-        Type::DATE => new Object_(new Fqsen('\\' . DateTime::class)),
-        Type::DATE_IMMUTABLE => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
-        Type::DATETIME => new Object_(new Fqsen('\\' . DateTime::class)),
-        Type::DATETIME_IMMUTABLE => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
-        Type::DATETIMETZ => new Object_(new Fqsen('\\' . DateTime::class)),
-        Type::DATETIMETZ_IMMUTABLE => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
-        Type::TIME => new Object_(new Fqsen('\\' . DateTime::class)),
-        Type::TIME_IMMUTABLE => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
-        Type::DATEINTERVAL => new Object_(new Fqsen('\\' . DateInterval::class)),
-        Type::TARRAY => new Array_(),
-        Type::SIMPLE_ARRAY => new Array_(),
-        Type::JSON_ARRAY => new Array_(),
-        Type::JSON => new Array_(),
-        Type::OBJECT => new Object_()
-    ];
+            Type::BOOLEAN => new Boolean(),
+            Type::DATE => new Object_(new Fqsen('\\' . DateTime::class)),
+            Type::DATE_IMMUTABLE => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
+            Type::DATETIME => new Object_(new Fqsen('\\' . DateTime::class)),
+            Type::DATETIME_IMMUTABLE => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
+            Type::DATETIMETZ => new Object_(new Fqsen('\\' . DateTime::class)),
+            Type::DATETIMETZ_IMMUTABLE => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
+            Type::TIME => new Object_(new Fqsen('\\' . DateTime::class)),
+            Type::TIME_IMMUTABLE => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
+            Type::DATEINTERVAL => new Object_(new Fqsen('\\' . DateInterval::class)),
+            Type::TARRAY => new Array_(),
+            Type::SIMPLE_ARRAY => new Array_(),
+            Type::JSON_ARRAY => new Array_(),
+            Type::JSON => new Array_(),
+            Type::OBJECT => new Object_()
+        ];
     }
 
     public function parse(ClassProperty $property, array $annotations, Context $context): PropertyTypes

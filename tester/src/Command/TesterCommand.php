@@ -14,6 +14,7 @@ class TesterCommand extends Command
     {
         $p = new Product();
         $p->setId(1);
-        var_dump('ok');
+        $p->setName('salut');
+        print($p);
     }
 }

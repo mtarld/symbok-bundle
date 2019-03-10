@@ -60,4 +60,9 @@ class ParsedClass
     {
         return $this->methods->hasConstructor();
     }
+
+    public function hasToString(): bool
+    {
+        return $this->methods->hasToString();
+    }
 }

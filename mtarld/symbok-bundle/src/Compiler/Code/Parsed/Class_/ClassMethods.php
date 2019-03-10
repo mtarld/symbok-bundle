@@ -7,7 +7,10 @@ class ClassMethods
     /** @var bool */
     private $constructor;
 
-    public function __construct(bool $constructor)
+    /** @var bool */
+    private $toString;
+
+    public function __construct(bool $constructor, bool $toString)
     {
         $this->constructor = $constructor;
     }
@@ -15,6 +18,11 @@ class ClassMethods
     public function hasConstructor(): bool
     {
         return $this->constructor;
+    }
+
+    public function hasToString(): bool
+    {
+        return $this->toString;
     }
 }
 

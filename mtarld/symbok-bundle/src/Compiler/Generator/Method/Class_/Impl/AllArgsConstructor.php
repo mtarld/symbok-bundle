@@ -46,6 +46,18 @@ class AllArgsConstructor extends AbstractClassMethodGenerator
         }, $properties);
     }
 
+    private function isPropertyNullable(ParsedProperty $property): bool
+    {
+        $propertyRules = new PropertyRules($property);
+
+        $propertySpecificNullable = $propertyRules->requiresNullable();
+        if ($propertySpecificNullable !== null) {
+            return $propertySpecificNullable;
+        }
+
+        return $this->classRules->requiresConstructorNullable();
+    }
+
     protected function getStmts(): array
     {
         $properties = $this->class->getProperties();
@@ -84,17 +96,5 @@ class AllArgsConstructor extends AbstractClassMethodGenerator
         );
 
         return [$docBlock];
-    }
-
-    private function isPropertyNullable(ParsedProperty $property): bool
-    {
-        $propertyRules = new PropertyRules($property);
-
-        $propertySpecificNullable = $propertyRules->requiresNullable();
-        if ($propertySpecificNullable !== null) {
-            return $propertySpecificNullable;
-        }
-
-        return $this->classRules->requiresConstructorNullable();
     }
 }

@@ -8,19 +8,32 @@ use Mtarld\SymbokBundle\Annotation\Getter;
 use Mtarld\SymbokBundle\Annotation\Nullable;
 use Mtarld\SymbokBundle\Annotation\Setter;
 use Mtarld\SymbokBundle\Annotation\Data;
+use Mtarld\SymbokBundle\Annotation\ToString;
 use Symfony\Component\PropertyInfo;
 
 /**
- * @method \Symfony\Component\PropertyInfo\PropertyInfoCacheExtractor|null getId()
+ * @ToString(properties={"id", "name"})
+ * @method string __toString()
+ * @method int|null getId()
+ * @method void setId(int|null $id)
+ * @method string getName()
+ * @method void setName(string $name)
  */
 class Product
 {
     /**
-     * @var PropertyInfo\PropertyInfoCacheExtractor
-     * @ORM\Column(type="simple_array", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      * @Getter()
+     * @Setter()
      */
-    private $id = 0;
+    private $id;
+
+    /**
+     * @var string
+     * @Getter()
+     * @Setter()
+     */
+    private $name;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Price", inversedBy="products")

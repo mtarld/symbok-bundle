@@ -59,6 +59,11 @@ class ClassCompiler
                 $generator->generateAllArgsConstructor($class, $classRules)
             );
         }
+        if ($classRules->requiresToString()) {
+            $statements->merge(
+                $generator->generateToString($class, $classRules)
+            );
+        }
         // if ($classContext->requiresEqualTo()) {
         //     $statements->merge(
         //         $this->generator->generateEqualTo($className, ...$properties)

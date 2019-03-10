@@ -4,8 +4,10 @@ namespace Mtarld\SymbokBundle\Compiler\Rules\Impl;
 
 use Mtarld\SymbokBundle\Annotation\AllArgsConstructor;
 use Mtarld\SymbokBundle\Annotation\Data;
+use Mtarld\SymbokBundle\Annotation\ToString;
 use Mtarld\SymbokBundle\Compiler\Code\Parsed\Class_\ClassAnnotation;
 use Mtarld\SymbokBundle\Compiler\Code\Parsed\ParsedClass;
+use Mtarld\SymbokBundle\Compiler\Code\Parsed\ParsedProperty;
 use Mtarld\SymbokBundle\Compiler\Rules\RulesInterface;
 
 class ClassRules implements RulesInterface
@@ -34,6 +36,9 @@ class ClassRules implements RulesInterface
     /** @var bool */
     private $toString;
 
+    /** @var array */
+    private $toStringProperties = [];
+
     public function __construct(ParsedClass $class)
     {
         $annotations = $class->getAnnotations();
@@ -45,6 +50,9 @@ class ClassRules implements RulesInterface
                     break;
                 case Data::class:
                     $this->applyData($annotation, $class);
+                    break;
+                case ToString::class:
+                    $this->applyToString($annotation, $class);
                     break;
             }
         }
@@ -72,6 +80,25 @@ class ClassRules implements RulesInterface
         $this->allPropertySetters = true;
 
         $this->applyAllArgsConstructor($class);
+    }
+
+    private function applyToString(ClassAnnotation $annotation, ParsedClass $class): void
+    {
+        /** @var ToString $realAnnotation */
+        $realAnnotation = $annotation->getRealAnnotation();
+        $classProperties = array_map(function (ParsedProperty $classProperty) {
+            return $classProperty->getName();
+        }, $class->getProperties());
+
+        $toStringProperties = [];
+        foreach ($realAnnotation->properties as $property) {
+            if (in_array($property, $classProperties)) {
+                $toStringProperties[] = $property;
+            }
+        }
+
+        $this->toString = true && sizeof($toStringProperties);
+        $this->toStringProperties = $toStringProperties;
     }
 
     public function requiresAllArgsConstructor(): bool
@@ -109,8 +136,13 @@ class ClassRules implements RulesInterface
         return $this->equalTo;
     }
 
-    public function requiresToString(Property $property): bool
+    public function requiresToString(): bool
     {
-        return !empty($this->toString) && $this->toString === $property->getName();
+        return $this->toString;
+    }
+
+    public function getToStringProperties(): array
+    {
+        return $this->toStringProperties;
     }
 }

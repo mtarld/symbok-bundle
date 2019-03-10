@@ -19,14 +19,18 @@ class MethodsParser
     public function parse(): ClassMethods
     {
         $constructor = false;
+        $toString = false;
 
         foreach ($this->classMethods as $method) {
             $methodName = $method->name->name;
             if ($methodName == '__construct') {
                 $constructor = true;
             }
+            if ($methodName == '__toString') {
+                $toString = true;
+            }
         }
 
-        return new ClassMethods($constructor);
+        return new ClassMethods($constructor, $toString);
     }
 }

@@ -13,7 +13,6 @@ use Doctrine\ORM\Mapping\OneToOne;
 use Mtarld\SymbokBundle\Compiler\Helper\ContextBuilder;
 use Mtarld\SymbokBundle\Compiler\Helper\NodeFinder;
 use Mtarld\SymbokBundle\Exception\SymbokException;
-use phpDocumentor\Reflection\Types\Context;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Symfony\Component\Finder\Finder;

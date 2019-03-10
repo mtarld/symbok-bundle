@@ -6,10 +6,7 @@ use Mtarld\SymbokBundle\Compiler\Code\Parsed\ParsedProperty;
 use Mtarld\SymbokBundle\Compiler\Generator\Method\AbstractMethodGenerator;
 use Mtarld\SymbokBundle\Compiler\Rules\Impl\ClassRules;
 use Mtarld\SymbokBundle\Compiler\Rules\Impl\PropertyRules;
-use Mtarld\SymbokBundle\Compiler\Statements;
-use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\Types\Context;
-use PhpParser\Node\Stmt\ClassMethod;
 
 abstract class AbstractPropertyMethodGenerator extends AbstractMethodGenerator
 {
