@@ -22,7 +22,7 @@ class SymbokExtension extends Extension
         );
         $loader->load('services.yml');
 
-        $configuration = new Configuration();
+        $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter(
