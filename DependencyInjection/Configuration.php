@@ -16,6 +16,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('namespaces')
                         ->prototype('variable')->isRequired()->end()
                     ->end()
+                    ->booleanNode('cache')->defaultValue(true)->treatNullLike(true)->end()
                     ->arrayNode('defaults')
                         ->addDefaultsIfNotSet()
                         ->children()

@@ -39,7 +39,6 @@ class PhpFileCache implements CacheInterface
         $cacheFilename = $this->getCacheFilename($className);
         $cachedFile = $this->cacheAdapter->getItem($cacheFilename);
         $cachedFile->set($content);
-        print_r($content);
-//        $this->cacheAdapter->save($cachedFile);
+        $this->cacheAdapter->save($cachedFile);
     }
 }
