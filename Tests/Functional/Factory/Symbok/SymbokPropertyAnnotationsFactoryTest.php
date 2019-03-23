@@ -35,8 +35,8 @@ class SymbokPropertyAnnotationsFactoryTest extends AbstractFunctionalTest
         $this->assertArrayHasKey('column', $annotations);
         $this->assertArrayHasKey('relation', $annotations);
         $this->assertEquals(2, sizeof($annotations['all']));
-        $this->assertEquals(1, sizeof($annotations['column']));
-        $this->assertEquals(0, sizeof($annotations['relation']));
+        $this->assertInstanceOf(SymbokPropertyAnnotation::class, $annotations['column']);
+        $this->assertNull($annotations['relation']);
 
         /** @var SymbokPropertyAnnotation $doctrineAnnotation */
         $doctrineAnnotation = $annotations['all'][0];
@@ -79,14 +79,14 @@ class SymbokPropertyAnnotationsFactoryTest extends AbstractFunctionalTest
         $idProperty = $classProperties[0];
         $annotations = $factory->create($idProperty);
         $this->assertEquals(0, sizeof($annotations['all']));
-        $this->assertEquals(0, sizeof($annotations['column']));
-        $this->assertEquals(0, sizeof($annotations['relation']));
+        $this->assertNull($annotations['column']);
+        $this->assertNull($annotations['relation']);
 
         $priceProperty = $classProperties[1];
         $annotations = $factory->create($priceProperty);
         $this->assertEquals(4, sizeof($annotations['all']));
-        $this->assertEquals(0, sizeof($annotations['column']));
-        $this->assertEquals(1, sizeof($annotations['relation']));
+        $this->assertNull($annotations['column']);
+        $this->assertInstanceOf(SymbokPropertyAnnotation::class, $annotations['relation']);
 
         /** @var SymbokPropertyAnnotation $doctrineAnnotation */
         $doctrineAnnotation = $annotations['all'][0];
@@ -107,8 +107,8 @@ class SymbokPropertyAnnotationsFactoryTest extends AbstractFunctionalTest
         $categoryProperty = $classProperties[2];
         $annotations = $factory->create($categoryProperty);
         $this->assertEquals(2, sizeof($annotations['all']));
-        $this->assertEquals(0, sizeof($annotations['column']));
-        $this->assertEquals(1, sizeof($annotations['relation']));
+        $this->assertNull($annotations['column']);
+        $this->assertInstanceOf(SymbokPropertyAnnotation::class, $annotations['relation']);
 
         /** @var SymbokPropertyAnnotation $doctrineAnnotation */
         $doctrineAnnotation = $annotations['all'][0];
