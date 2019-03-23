@@ -7,6 +7,9 @@ Also reads basic Doctrine annotations to handle entity relations as well.
 
 Initially inspired by [Plumbok](https://github.com/plumbok/plumbok).
 
+![GitHub](https://img.shields.io/github/license/mtarld/symbok-bundle.svg?style=flat-square)
+![Travis (.org)](https://img.shields.io/travis/mtarld/symbok-bundle.svg?style=flat-square)
+
 ## Features
 Symbok provides basic annotations, such as
 - AllArgsConstructor
