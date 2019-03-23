@@ -7,6 +7,8 @@ Also reads basic Doctrine annotations to handle entity relations as well.
 
 Initially inspired by [Plumbok](https://github.com/plumbok/plumbok).
 
+Compatible with Symfony3 and Symfony4
+
 ![Packagist](https://img.shields.io/packagist/v/mtarld/symbok-bundle.svg?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/mtarld/symbok-bundle.svg?style=flat-square)
 ![Travis (.org)](https://img.shields.io/travis/mtarld/symbok-bundle.svg?style=flat-square)
@@ -26,6 +28,25 @@ You can easily install Symbok by composer
 ```
 $ composer require mtarld/symbok-bundle
 ```
+If you are using Symfony 3, you'll have to load bundle by modifying `app/AppKernel.php` to add the following :
+```php
+public function registerBundles()
+{
+    $bundles = [
+        // ...
+        new Mtarld\SymbokBundle\SymbokBundle(),
+    ];
+
+    // ...
+
+    return $bundles;
+}
+```
+If you are using Symfony 4, bundle should be already registered. Just verify that `config\bundles.php` is containing :
+```php
+Mtarld\SymbokBundle\SymbokBundle::class => ['all' => true]
+```
+#### Symfony 3
 
 ### Configuration
 Once Symbok is installed, you must configure it to fit your needs. 
