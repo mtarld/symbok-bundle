@@ -22,7 +22,7 @@
     "php": ">=7.1",
     "nikic/php-parser": "4.*",
     "phpdocumentor/reflection-docblock": "^4.3",
-    "doctrine/orm": "~2.6"
+    "doctrine/orm": "~2.5 || ~2.6"
   },
   "autoload": {
     "psr-4": {

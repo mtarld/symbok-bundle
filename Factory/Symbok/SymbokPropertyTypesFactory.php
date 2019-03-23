@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Version;
 use Mtarld\SymbokBundle\Model\Symbok\SymbokPropertyAnnotation;
 use Mtarld\SymbokBundle\Model\Symbok\SymbokPropertyTypes;
 use phpDocumentor\Reflection\Fqsen;
@@ -49,20 +50,27 @@ class SymbokPropertyTypesFactory
 
             Type::BOOLEAN              => new Boolean(),
             Type::DATE                 => new Object_(new Fqsen('\\' . DateTime::class)),
-            Type::DATE_IMMUTABLE       => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
             Type::DATETIME             => new Object_(new Fqsen('\\' . DateTime::class)),
-            Type::DATETIME_IMMUTABLE   => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
             Type::DATETIMETZ           => new Object_(new Fqsen('\\' . DateTime::class)),
-            Type::DATETIMETZ_IMMUTABLE => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
             Type::TIME                 => new Object_(new Fqsen('\\' . DateTime::class)),
-            Type::TIME_IMMUTABLE       => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
-            Type::DATEINTERVAL         => new Object_(new Fqsen('\\' . DateInterval::class)),
             Type::TARRAY               => new Array_(),
             Type::SIMPLE_ARRAY         => new Array_(),
             Type::JSON_ARRAY           => new Array_(),
-            Type::JSON                 => new Array_(),
             Type::OBJECT               => new Object_()
         ];
+
+        // Types that are only available since 2.6
+        if (Version::compare('2.6') < 0)  {
+            $typesMap26 = [
+                Type::DATE_IMMUTABLE       => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
+                Type::DATETIME_IMMUTABLE   => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
+                Type::DATETIMETZ_IMMUTABLE => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
+                Type::TIME_IMMUTABLE       => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
+                Type::DATEINTERVAL         => new Object_(new Fqsen('\\' . DateInterval::class)),
+                Type::JSON                 => new Array_()
+            ];
+            $this->doctrineTypesMap = array_merge($this->doctrineTypesMap, $typesMap26);
+        }
     }
 
     public function create(ClassProperty $property, array $annotations): SymbokPropertyTypes
