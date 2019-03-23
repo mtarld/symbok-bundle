@@ -14,7 +14,7 @@
         "php": ">=7.1",
         "nikic/php-parser": "4.*",
         "phpdocumentor/reflection-docblock": "^4.3",
-        "doctrine/orm": "~2.4",
+        "doctrine/orm": "~2.6",
         "doctrine/annotations": "~1.5"
     },
     "autoload": {
