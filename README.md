@@ -7,6 +7,7 @@ Also reads basic Doctrine annotations to handle entity relations as well.
 
 Initially inspired by [Plumbok](https://github.com/plumbok/plumbok).
 
+![Packagist](https://img.shields.io/packagist/v/mtarld/symbok-bundle.svg?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/mtarld/symbok-bundle.svg?style=flat-square)
 ![Travis (.org)](https://img.shields.io/travis/mtarld/symbok-bundle.svg?style=flat-square)
 
@@ -21,7 +22,7 @@ Symbok provides basic annotations, such as
 
 ## Getting started
 ### Installation
-You can easily install Symbok by composer (available soon)
+You can easily install Symbok by composer
 ```
 $ composer require mtarld/symbok-bundle
 ```
