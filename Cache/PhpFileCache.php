@@ -11,7 +11,7 @@ class PhpFileCache implements CacheInterface
 
     public function __construct(string $directory)
     {
-        $this->cacheAdapter = new PhpFilesAdapter('cache.app', 0, $directory);
+        $this->cacheAdapter = new PhpFilesAdapter('', 0, $directory);
     }
 
     public function exists(string $className): bool
