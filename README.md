@@ -153,9 +153,13 @@ $ composer install
 
 # Running tests locally
 $ ./vendor/bin/phpunit
+# or
+$ composer test
 
 # Cleaning your code (in case of)
-$ ./vendor/bin/php-cs-fixer
+$ ./vendor/bin/php-cs-fixer .
+# or
+$ composer clean-code
 ```
 
 ## Authors
