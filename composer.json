@@ -34,5 +34,9 @@
     "symfony/framework-bundle": "~4.2",
     "symfony/yaml": "~4.2",
     "friendsofphp/php-cs-fixer": "~2.14"
+  },
+  "scripts": {
+    "test": "./vendor/bin/phpunit",
+    "clean-code": "./vendor/bin/php-cs-fixer fix ."
   }
 }
