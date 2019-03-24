@@ -134,7 +134,7 @@ class Remover extends AbstractPropertyMethodGenerator
         $returnType = $this->isFluent($property, $class) ? new Self_() : new Void_();
 
         $docBlock = new DocBlock(
-            'Removes ' . Singularize::getSingular($property->getName()) . ' to ' . $property->getName(),
+            'Removes ' . Singularize::getSingular($property->getName()) . ' from ' . $property->getName(),
             null,
             [
                 new DocBlock\Tags\Param(
