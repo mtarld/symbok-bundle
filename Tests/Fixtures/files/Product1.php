@@ -21,7 +21,7 @@ class Product1
     private $id;
 
     /**
-     * @var ?string
+     * @var string
      * @Symbok\Nullable()
      * @Setter(fluent=true, nullable=false)
      */

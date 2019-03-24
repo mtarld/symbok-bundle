@@ -23,6 +23,7 @@ class Product2
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="products")
      * @Symbok\Getter()
+     * @Symbok\Setter(fluent=true)
      */
     private $category;
 

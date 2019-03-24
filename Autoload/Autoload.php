@@ -56,10 +56,10 @@ class Autoload
                 if ($this->cache->exists($class)) {
                     $this->cache->load($class);
                 } else {
-                    $nodes = $this->compilerService->compile($filename);
-                    if (sizeof($nodes)) {
-                        $this->tagsUpdaterService->updateTags($filename, ...$nodes);
-                        $this->cache->write($class, $this->serializer->prettyPrint($nodes));
+                    $stmts = $this->compilerService->compile($filename);
+                    if ($stmts !== null) {
+                        $this->tagsUpdaterService->updateTags($filename, $stmts);
+                        $this->cache->write($class, $this->serializer->prettyPrint([$stmts]));
                         $this->cache->load($class);
                     }
                 }

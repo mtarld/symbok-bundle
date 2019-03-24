@@ -45,7 +45,7 @@ class SymbokPropertyTypesFactoryTest extends AbstractFunctionalTest
         $property = $classProperties[1];
         /** @var SymbokPropertyTypes $types */
         $types = $typesFactory->create($property, $annotationsFactory->create($property));
-        $this->assertInstanceOf(Nullable::class, $types->getBaseType());
+        $this->assertInstanceOf(String_::class, $types->getBaseType());
         $this->assertNull($types->getRelationType());
 
         $property = $classProperties[2];

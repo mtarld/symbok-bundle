@@ -81,12 +81,7 @@ abstract class AbstractPropertyMethodGenerator
             return $propertySpecificNullable;
         }
 
-        $classSpecificNullable = $class->getRules()->requiresAllPropertiesNullable();
-        if ($classSpecificNullable !== null) {
-            return $classSpecificNullable;
-        }
-
-        return false;
+        return $class->getRules()->requiresAllPropertiesNullable();
     }
 
     abstract protected function methodRequiresNullable(SymbokProperty $property): ?bool;

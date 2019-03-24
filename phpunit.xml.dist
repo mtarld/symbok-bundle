@@ -25,6 +25,11 @@
             <directory>./</directory>
             <exclude>
                 <directory>./Resources</directory>
+                <directory>./Annotation</directory>
+                <directory>./Autoload</directory>
+                <directory>./DependencyInjection</directory>
+                <directory>./Cache</directory>
+                <directory>./Exception</directory>
                 <directory>./Tests</directory>
                 <directory>./vendor</directory>
             </exclude>

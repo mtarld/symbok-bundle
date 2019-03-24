@@ -53,17 +53,17 @@ class ClassRules
         return $this->allArgsConstructor;
     }
 
-    public function requiresAllPropertyGetters(): ?bool
+    public function requiresAllPropertyGetters(): bool
     {
         return $this->allPropertyGetters;
     }
 
-    public function requiresAllPropertySetters(): ?bool
+    public function requiresAllPropertySetters(): bool
     {
         return $this->allPropertySetters;
     }
 
-    public function requiresAllPropertiesNullable(): ?bool
+    public function requiresAllPropertiesNullable(): bool
     {
         return $this->defaultNullable;
     }
