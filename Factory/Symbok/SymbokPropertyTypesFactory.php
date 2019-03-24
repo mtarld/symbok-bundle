@@ -60,7 +60,7 @@ class SymbokPropertyTypesFactory
         ];
 
         // Types that are only available since 2.6
-        if (Version::compare('2.6') < 0)  {
+        if (Version::compare('2.6') < 0) {
             $typesMap26 = [
                 Type::DATE_IMMUTABLE       => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
                 Type::DATETIME_IMMUTABLE   => new Object_(new Fqsen('\\' . DateTimeImmutable::class)),
