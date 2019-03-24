@@ -93,10 +93,12 @@ class Setter extends AbstractPropertyMethodGenerator
                     ]
                 );
             } else {
-                $otherSideUpdate = new Node\Expr\MethodCall(
-                    new Node\Expr\Variable($propertyName),
-                    PropertyMethodNameBuilder::buildSetterMethodName($className),
-                    [new Node\Expr\Variable('this')]
+                $otherSideUpdate = new Expression(
+                    new Node\Expr\MethodCall(
+                        new Node\Expr\Variable($propertyName),
+                        PropertyMethodNameBuilder::buildSetterMethodName($className),
+                        [new Node\Expr\Variable('this')]
+                    )
                 );
             }
             $stmts[] = $otherSideUpdate;
