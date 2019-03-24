@@ -5,7 +5,7 @@ AllArgsConstructor annotation will tell the compiler to create a constructor whi
 Class annotation
 
 ## Options
-- `nullable`: Boolean. Represents if constructor parameters will be nullable by default. See [Constructor parameters nullable priorities](../priorities.md)
+- `nullable`: Boolean. Represents if constructor parameters will be nullable by default. See [Constructor parameters nullable priorities](../priorities.md#constructor-parameter-nullable)
 
 ## Example
 ### Original file

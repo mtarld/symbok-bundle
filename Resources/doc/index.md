@@ -33,7 +33,7 @@ More information in the [doctrine documentation](doctrine.md)
 ### Property type guessing
 Using docblock, Symbok can guess the php7 property type. 
 
-You'll able to find out how the type is guessed by reading [compiler priorities documentation](priorities.md)
+You'll able to find out how the type is guessed by reading [compiler priorities documentation](priorities.md#property-type)
 
 ## Basic example
 Register desired namespace in config file

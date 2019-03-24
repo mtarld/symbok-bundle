@@ -5,9 +5,9 @@ Data constructor annotation will tell the compiler to create a constructor which
 Class annotation
 
 ## Options
-- `constructorNullable`: Boolean. Represents if constructor parameters will be nullable by default. See [Constructor parameters nullable priorities](../priorities.md)
-- `nullable`: Boolean. Represents if getters/setters will return/use nullable values/parameters by default. See [Getters/Setters nullable priorities](../priorities.md)
-- `fluentSetters`: Boolean. Represents if setters have to return self class instance. See [Fluent setters priorities](../priorities.md)
+- `constructorNullable`: Boolean. Represents if constructor parameters will be nullable by default. See [Constructor parameters nullable priorities](../priorities.md#constructor-parameter-nullable)
+- `nullable`: Boolean. Represents if getters/setters will return/use nullable values/parameters by default. See [Getters/Setters nullable priorities](../priorities.md#getterssetters-nullable)
+- `fluentSetters`: Boolean. Represents if setters have to return self class instance. See [Fluent setters priorities](../priorities.md#fluent-setters)
 
 ## Example
 ### Original file

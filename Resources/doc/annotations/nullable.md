@@ -5,7 +5,7 @@ Nullable annotation will tell the compiler that current property could be consid
 Property annotation
 
 ## Options
-- `nullable`: Boolean. Default `true`. Represents if property should be nullable. See [Getters/Setters nullable priorities](../priorities.md)
+- `nullable`: Boolean. Default `true`. Represents if property should be nullable. See [Getters/Setters nullable priorities](../priorities.md#getterssetters-nullable)
 
 ## Example
 ### Original file

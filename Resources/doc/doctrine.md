@@ -1,7 +1,7 @@
 # Doctrine properties handling
 ## Doctrine's column annotation
 Symbok is parsing `Doctrine\ORM\Mapping\Column` annotations.
-After parsed it, Symbok can automatically discover property type and nullable status based on `Column` annotation (if not overriden - see [priorities](priorities.md)).
+After parsed it, Symbok can automatically discover property type and nullable status based on `Column` annotation (if not overriden - see [priorities](priorities.md#getterssetters-nullable)).
 
 ### Example
 #### Original file
@@ -106,7 +106,7 @@ class Product
 ```
 ### \*ToMany relation
 For \*ToMany relations, Symbok reads `Doctrine\ORM\Mapping\JoinColumn` annotation to discover property nullable status.
-Moreover, for \*ToMany relations, Symbok automatically add the useful methods: `add` and `remove` if setter is needed.
+Moreover, for \*ToMany relations, Symbok automatically add the useful methods: `add` and `remove` if setter is needed. You can prevent to generate these methods using `noAdd` and `noRemove` paremeters of [Setter annotation](annotations/setter.md)
 #### Example
 ##### Original file
 ```php

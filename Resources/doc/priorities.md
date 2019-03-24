@@ -6,7 +6,7 @@ Each method configuration will be computed using following priorities.
 Constructor parameter nullable configuration will be used to know if constructor parameter will be nullable.
 
 1. [Nullable annotation](annotations/nullable.md)
-2. [Doctrine column annotation](doctrine.md)
+2. [Doctrine column annotation](doctrine.md#doctrines-column-annotation)
 3. [AllArgsConstructor annotation nullable parameter](annotations/allArgsConstructor.md)
 4. `symbok.defaults.nullable.constructor` config value
 
@@ -15,7 +15,7 @@ Getters/Setters nullable configuration will be used to know if getters/setters w
 
 1. [Getter/Setter annotation nullable parameter](annotations/getter.md)
 2. [Nullable annotation](annotations/nullable.md)
-3. [Doctrine column annotation](doctrine.md)
+3. [Doctrine column annotation](doctrine.md#doctrines-column-annotation)
 4. [Data annotation nullable parameter](annotations/data.md)
 5. `symbok.defaults.nullable.getter_setter` config value
 
@@ -30,6 +30,6 @@ Fluent setters configuration will be used to know if setters will have to return
 Last but not least, property type configuration will be used to know which type the property is.
 
 1. Property `@var` tag in docblock
-2. [Doctrine relation annotation](doctrine.md)
-3. [Doctrine column annotation](doctrine.md)
+2. [Doctrine relation annotation](doctrine.md#doctrine-entity-relations)
+3. [Doctrine column annotation](doctrine.md#doctrines-column-annotation)
 4. `mixed` type will be used

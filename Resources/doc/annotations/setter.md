@@ -5,10 +5,10 @@ Setter annotation will tell the compiler to create a setter method for current p
 Property annotation
 
 ## Options
-- `nullable`: Boolean. Represents if setter parameter could be nullable. See [Getters/Setters nullable priorities](../priorities.md).
-- `fluent`: Boolean. Represents if setter method returns self class instance. See [Fluent setter priorities](../priorities.md).
-- `noAdd`: Boolean. Represents if add method is not wanted (in case of [Doctrine entity relations](../doctrine.md)).
-- `noRemove`: Boolean. Represents if remove method is not wanted (in case of [Doctrine entity relations](../doctrine.md)).
+- `nullable`: Boolean. Represents if setter parameter could be nullable. See [Getters/Setters nullable priorities](../priorities.md#getterssetters-nullable).
+- `fluent`: Boolean. Represents if setter method returns self class instance. See [Fluent setter priorities](../priorities.md#fluent-setters).
+- `noAdd`: Boolean. Represents if add method is not wanted (in case of [Doctrine entity relations](../doctrine.md#doctrine-entity-relations)).
+- `noRemove`: Boolean. Represents if remove method is not wanted (in case of [Doctrine entity relations](../doctrine.md#doctrine-entity-relations)).
 
 ## Example
 ### Original file
