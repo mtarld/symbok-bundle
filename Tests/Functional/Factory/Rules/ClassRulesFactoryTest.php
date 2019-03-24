@@ -65,7 +65,7 @@ class ClassRulesFactoryTest extends AbstractFunctionalTest
         $this->assertFalse($rules->requiresAllPropertyGetters());
         $this->assertFalse($rules->requiresAllPropertySetters());
         $this->assertFalse($rules->requiresFluentSetters());
-        $this->assertFalse($rules->requiresToString());
+        $this->assertTrue($rules->requiresToString());
         $this->assertFalse($rules->requiresConstructorNullable());
         $this->assertFalse($rules->requiresAllPropertiesNullable());
     }

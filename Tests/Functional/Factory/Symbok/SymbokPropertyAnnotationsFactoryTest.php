@@ -106,7 +106,7 @@ class SymbokPropertyAnnotationsFactoryTest extends AbstractFunctionalTest
 
         $categoryProperty = $classProperties[2];
         $annotations = $factory->create($categoryProperty);
-        $this->assertEquals(2, sizeof($annotations['all']));
+        $this->assertEquals(3, sizeof($annotations['all']));
         $this->assertNull($annotations['column']);
         $this->assertInstanceOf(SymbokPropertyAnnotation::class, $annotations['relation']);
 

@@ -4,7 +4,7 @@ namespace Mtarld\SymbokBundle\Model;
 
 use PhpParser\Node\Stmt;
 
-class Statements implements \IteratorAggregate, \Countable
+class Statements implements \IteratorAggregate
 {
     private $statements = [];
 
@@ -25,10 +25,5 @@ class Statements implements \IteratorAggregate, \Countable
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->statements);
-    }
-
-    public function count()
-    {
-        return count($this->statements);
     }
 }

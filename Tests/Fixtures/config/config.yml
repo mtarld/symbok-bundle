@@ -1,6 +1,7 @@
 symbok:
     namespaces:
         - 'App\Entity'
+    cache: false
     defaults:
         fluent_setters: ~
         nullable:
