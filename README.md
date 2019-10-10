@@ -8,11 +8,12 @@ Also reads basic Doctrine annotations to handle property's type, nullable status
 
 Initially inspired by [Plumbok](https://github.com/plumbok/plumbok).
 
-Compatible with Symfony3 and Symfony4
+Compatible with Symfony 3, 4 and 5
 
 ![Packagist](https://img.shields.io/packagist/v/mtarld/symbok-bundle.svg?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/mtarld/symbok-bundle.svg?style=flat-square)
 ![Travis (.org)](https://img.shields.io/travis/mtarld/symbok-bundle.svg?style=flat-square)
+![CodeCov](https://img.shields.io/codecov/c/github/mtarld/symbok-bundle?style=flat-square)
 
 ## Symbok ?
 > :wave: Bye bye endless PHP classes !
@@ -70,15 +71,20 @@ symbok:
     cache: ~
 
     defaults:
-        # If setters are fluent by default (default false)
-        fluent_setters: ~
+        getter: ~
+            # If getters are nullable by default (default false)
+            nullable: ~
 
-        nullable:
-            # If getters and setters use/return nullable parametes/values (default false)
-            getter_setter: ~
+        setter: ~
+            # If setters are fluent by default (default true)
+            fluent: ~
 
+            # If setters are nullable by default (default false)
+            nullable: ~
+
+        constructor:
             # If constructor uses nullable parameters (default true)
-            constructor: ~
+            nullable: ~
 ```
 
 ### Basic example
@@ -121,17 +127,12 @@ class Product
      */
     private $id;
     
-    /**
-     * Retrieves id
-     *
-     * @return int
-     */
     public function getId() : int
     {
         return $this->id;
     }
 ```
-Moreover, the original class docblock will be updated with `@method` tags to permit IDEs to know that getter method exists
+Moreover, using the `symbok:update-originals` command, the original class docblock could be updated with `@method` tags to permit IDEs to know that getter method exists
 ```php
 <?php
 
@@ -165,14 +166,7 @@ After writing your fix/feature, you can run following commands to make sure that
 $ composer install
 
 # Running tests locally
-$ ./vendor/bin/phpunit
-# or
-$ composer test
-
-# Cleaning your code (in case of)
-$ ./vendor/bin/php-cs-fixer .
-# or
-$ composer clean-code
+$ make test
 ```
 
 ## Authors
