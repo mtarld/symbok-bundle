@@ -22,7 +22,6 @@ class SymbokExtension extends Extension
         );
         $loader->load('services.xml');
         $loader->load('pass_config.xml');
-        $loader->load('cache.xml');
 
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
