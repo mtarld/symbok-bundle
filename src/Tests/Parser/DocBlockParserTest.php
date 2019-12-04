@@ -34,7 +34,7 @@ class DocBlockParserTest extends TestCase
 
         $formatter = $this->createMock(Formatter::class);
         $formatter
-            ->method('resolveAnnotations')
+            ->method('formatAnnotations')
             ->willReturn($docBlock)
         ;
 
@@ -77,7 +77,7 @@ class DocBlockParserTest extends TestCase
 
         $formatter = $this->createMock(Formatter::class);
         $formatter
-            ->method('resolveAnnotations')
+            ->method('formatAnnotations')
             ->willReturn($docBlock)
         ;
 
@@ -107,12 +107,12 @@ class DocBlockParserTest extends TestCase
             [new Since('2.0')]
         );
         $doc = new Doc(
-            '/** @since 2.0 */'
+            '/** @author 2.0 */'
         );
 
         $formatter = $this->createMock(Formatter::class);
         $formatter
-            ->method('resolveAnnotations')
+            ->method('formatAnnotations')
             ->willReturn($docBlock)
         ;
 

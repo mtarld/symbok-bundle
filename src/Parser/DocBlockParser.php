@@ -32,27 +32,18 @@ class DocBlockParser
     {
         $this->prepareContext();
 
-        $docBlock = $this->formatter->resolveAnnotations($docBlock);
+        $docBlock = $this->formatter->formatAnnotations($docBlock);
         $text = $this->docFactory->createFromDocBlock($docBlock)->getReformattedText();
 
-        return $this->getParser()->parse($text);
-    }
-
-    private function getParser(): DocParser
-    {
         $parser = new DocParser();
         $parser->setIgnoreNotImportedAnnotations(true);
 
-        foreach ($this->annotationRepository->findNamespaces() as $namespace) {
-            $parser->addNamespace($namespace);
-        }
-
-        return $parser;
+        return $parser->parse($text);
     }
 
-    public function prepareContext(): void
+    private function prepareContext(): void
     {
-        if (!$this->isContextReady) {
+        if (false === $this->isContextReady) {
             $annotationFilePaths = array_map(function (string $annotation) {
                 return Autoload::getClassLoader()->findFile($annotation);
             }, $this->annotationRepository->findAll());

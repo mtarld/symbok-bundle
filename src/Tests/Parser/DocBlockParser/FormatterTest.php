@@ -3,6 +3,7 @@
 namespace Mtarld\SymbokBundle\Tests\Parser\DocBlockParser;
 
 use Mtarld\SymbokBundle\Parser\DocBlockParser\Formatter;
+use Mtarld\SymbokBundle\Repository\AnnotationRepository;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Description;
 use phpDocumentor\Reflection\DocBlock\Tag;
@@ -17,10 +18,10 @@ use PHPUnit\Framework\TestCase;
 class FormatterTest extends TestCase
 {
     /**
-     * @dataProvider resolveAnnotationsDataProvider
+     * @dataProvider formatAnnotationsDataProvider
      * @testdox Annotation is kept when $testdox
      */
-    public function testResolveAnnotations(Tag $tag, ?Context $context, array $namespaces, string $testdox): void
+    public function testFormatAnnotations(Tag $tag, ?Context $context, array $namespaces, string $testdox): void
     {
         $docBlock = new DocBlock(
             '',
@@ -29,11 +30,11 @@ class FormatterTest extends TestCase
             $context
         );
 
-        $formatted = (new Formatter())->resolveAnnotations($docBlock, $namespaces);
+        $formatted = (new Formatter(new AnnotationRepository()))->formatAnnotations($docBlock, $namespaces);
         $this->assertCount(1, $formatted->getTags());
     }
 
-    public function resolveAnnotationsDataProvider()
+    public function formatAnnotationsDataProvider()
     {
         yield [
             new Generic("\A\Annotation"),
@@ -83,9 +84,9 @@ class FormatterTest extends TestCase
             new Context("\Somewhere")
         );
 
-        $formatter = new Formatter();
+        $formatter = new Formatter(new AnnotationRepository());
 
-        $formatted = $formatter->resolveAnnotations($docBlock, ["\A"]);
+        $formatted = $formatter->formatAnnotations($docBlock, ["\A"]);
         $this->assertSame($docBlock->getSummary(), $formatted->getSummary());
         $this->assertSame($docBlock->getDescription(), $formatted->getDescription());
         $this->assertSame($docBlock->getContext(), $formatted->getContext());
