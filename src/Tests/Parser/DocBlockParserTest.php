@@ -10,6 +10,7 @@ use Mtarld\SymbokBundle\Parser\DocBlockParser\Formatter;
 use Mtarld\SymbokBundle\Repository\AnnotationRepository;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tags\Generic;
+use phpDocumentor\Reflection\DocBlock\Tags\Since;
 use PhpParser\Comment\Doc;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -33,7 +34,7 @@ class DocBlockParserTest extends TestCase
 
         $formatter = $this->createMock(Formatter::class);
         $formatter
-            ->method('cleanAnnotations')
+            ->method('resolveAnnotations')
             ->willReturn($docBlock)
         ;
 
@@ -63,7 +64,7 @@ class DocBlockParserTest extends TestCase
         $this->assertInstanceOf(ToString::class, $statements[0]);
     }
 
-    public function testParseAnnotationsOutOfNamespace(): void
+    public function testParseUnknownAnnotation(): void
     {
         $docBlock = new DocBlock(
             '',
@@ -76,7 +77,7 @@ class DocBlockParserTest extends TestCase
 
         $formatter = $this->createMock(Formatter::class);
         $formatter
-            ->method('cleanAnnotations')
+            ->method('resolveAnnotations')
             ->willReturn($docBlock)
         ;
 
@@ -96,5 +97,41 @@ class DocBlockParserTest extends TestCase
 
         $this->expectException(AnnotationException::class);
         $statements = $parser->parseAnnotations($docBlock);
+    }
+
+    public function testParseOutOfNamespaceAnnotation(): void
+    {
+        $docBlock = new DocBlock(
+            '',
+            null,
+            [new Since('2.0')]
+        );
+        $doc = new Doc(
+            '/** @since 2.0 */'
+        );
+
+        $formatter = $this->createMock(Formatter::class);
+        $formatter
+            ->method('resolveAnnotations')
+            ->willReturn($docBlock)
+        ;
+
+        $factory = $this->createMock(DocFactory::class);
+        $factory
+            ->method('createFromDocBlock')
+            ->willReturn($doc)
+        ;
+
+        $repository = $this->createMock(AnnotationRepository::class);
+
+        $parser = new DocBlockParser(
+            $formatter,
+            $factory,
+            $repository
+        );
+
+        $statements = $parser->parseAnnotations($docBlock);
+
+        $this->assertCount(0, $statements);
     }
 }
