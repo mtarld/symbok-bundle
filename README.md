@@ -8,7 +8,7 @@ Also reads basic Doctrine annotations to handle property's type, nullable status
 
 Initially inspired by [Plumbok](https://github.com/plumbok/plumbok).
 
-Compatible with Symfony3 and Symfony4
+Compatible with Symfony from 3.0 to 4.3
 
 ![Packagist](https://img.shields.io/packagist/v/mtarld/symbok-bundle.svg?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/mtarld/symbok-bundle.svg?style=flat-square)
