@@ -17,10 +17,10 @@ use PHPUnit\Framework\TestCase;
 class FormatterTest extends TestCase
 {
     /**
-     * @dataProvider cleanAnnotationsDataProvider
-     * @testdox Annotation kept is $shouldStay when $testdox
+     * @dataProvider resolveAnnotationsDataProvider
+     * @testdox Annotation is kept when $testdox
      */
-    public function testCleanAnnotations(Tag $tag, ?Context $context, array $namespaces, bool $shouldStay, string $testdox): void
+    public function testResolveAnnotations(Tag $tag, ?Context $context, array $namespaces, string $testdox): void
     {
         $docBlock = new DocBlock(
             '',
@@ -29,17 +29,16 @@ class FormatterTest extends TestCase
             $context
         );
 
-        $formatted = (new Formatter())->cleanAnnotations($docBlock, $namespaces);
-        $this->assertCount((int) $shouldStay, $formatted->getTags());
+        $formatted = (new Formatter())->resolveAnnotations($docBlock, $namespaces);
+        $this->assertCount(1, $formatted->getTags());
     }
 
-    public function cleanAnnotationsDataProvider()
+    public function resolveAnnotationsDataProvider()
     {
         yield [
             new Generic("\A\Annotation"),
             null,
             ["\A"],
-            true,
             'in namespace prefixed by \\',
         ];
 
@@ -47,7 +46,6 @@ class FormatterTest extends TestCase
             new Generic("\A\Annotation"),
             null,
             [],
-            false,
             'out of namespace',
         ];
 
@@ -55,7 +53,6 @@ class FormatterTest extends TestCase
             new Generic("B\Annotation"),
             null,
             ["\B"],
-            true,
             'in namespace not prefixed',
         ];
 
@@ -63,7 +60,6 @@ class FormatterTest extends TestCase
             new Generic("B\Annotation"),
             new Context("\Somewhere"),
             ["\B"],
-            false,
             'out of namespace using context',
         ];
 
@@ -71,12 +67,11 @@ class FormatterTest extends TestCase
             new Generic("B\Annotation"),
             new Context("\Somewhere"),
             ["\Somewhere\B"],
-            true,
             'in namespace using context',
         ];
     }
 
-    public function testCleanAnnotationsDocBlockConstitency()
+    public function testDocBlockIsConstitent()
     {
         $docBlock = new DocBlock(
             'Summary',
@@ -90,7 +85,7 @@ class FormatterTest extends TestCase
 
         $formatter = new Formatter();
 
-        $formatted = $formatter->cleanAnnotations($docBlock, ["\A"]);
+        $formatted = $formatter->resolveAnnotations($docBlock, ["\A"]);
         $this->assertSame($docBlock->getSummary(), $formatted->getSummary());
         $this->assertSame($docBlock->getDescription(), $formatted->getDescription());
         $this->assertSame($docBlock->getContext(), $formatted->getContext());

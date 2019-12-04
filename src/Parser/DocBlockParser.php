@@ -32,7 +32,7 @@ class DocBlockParser
     {
         $this->prepareContext();
 
-        $docBlock = $this->formatter->cleanAnnotations($docBlock, $this->annotationRepository->findNamespaces());
+        $docBlock = $this->formatter->resolveAnnotations($docBlock);
         $text = $this->docFactory->createFromDocBlock($docBlock)->getReformattedText();
 
         return $this->getParser()->parse($text);

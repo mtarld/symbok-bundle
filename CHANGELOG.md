@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced noAdd by add (with default true) for Setter and Data annotations
 - Replaced noRemove by remove (with default true) for Setter and Data annotations
 - Improved ConfigTree structure
+- Fix annotations from another namespaces deletion
 
 ### Removed
 
