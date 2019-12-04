@@ -1,35 +1,59 @@
 # Compiler priorities
-Symbok compiler will try to find how method will be generated, ie with which configurations.
-Each method configuration will be computed using following priorities.
+Symbok compiler has to figure out how method will be generated.
+To do so, it will use *configurations*.
 
-## Constructor parameter nullable
-Constructor parameter nullable configuration will be used to know if constructor parameter will be nullable.
+Each configuration is computed following these priorities.
 
-1. [Nullable annotation](annotations/nullable.md)
-2. [Doctrine column annotation](doctrine.md#doctrines-column-annotation)
-3. [AllArgsConstructor annotation nullable parameter](annotations/allArgsConstructor.md)
-4. `symbok.defaults.constructor.nullable` config value
+## Constructor's parameter nullable
+Used to know if a constructor parameter will be nullable and set to `null` by default.
 
-## Getters/Setters nullable
-Getters/Setters nullable configuration will be used to know if getters/setters will return/use nullable values/parameters.
+1. [AllArgsConstructor annotation nullable parameter](annotations/allArgsConstructor.md)
+2. [Data annotation nullable parameter](annotations/data.md)
+3. [Property's Nullable annotation](annotations/nullable.md)
+4. [Property's Doctrine `Column` annotation nullable paramater](doctrine.md#doctrine-column-annotation)
+5. [Property's Doctrine relation annotation](doctrine.md#doctrine-entity-relations)
+6. `symbok.defaults.constructor.nullable` config value
+7. `true`
 
-1. [Getter/Setter annotation nullable parameter](annotations/getter.md)
-2. [Nullable annotation](annotations/nullable.md)
-3. [Doctrine column annotation](doctrine.md#doctrines-column-annotation)
-4. [Data annotation nullable parameter](annotations/data.md)
-5. `symbok.defaults.getter.nullable` / `symbok.defaults.setter.nullable` config value
+## Getters' return nullable
+Used to know if getters will return nullable values.
+
+1. [Getter annotation nullable parameter](annotations/getter.md)
+2. Property's Doctrine `Column` annotation presence. In fact, in case of doctrine property, Getter
+   methods should always return nullables values because even though these are
+   required in the database, they may be not set yet.
+3. [Nullable annotation](annotations/nullable.md)
+4. [Doctrine `Column` annotation nullable parameter](doctrine.md#doctrine-column-annotation)
+5. [Doctrine relation annotation](doctrine.md#doctrine-entity-relations)
+6. [Data annotation nullable parameter](annotations/data.md)
+7. `symbok.defaults.getter.nullable` config value
+8. `true`
+
+## Setters' parameter nullable
+Used to know if setters will use nullable parameters.
+
+1. [Setter annotation nullable parameter](annotations/setter.md)
+2. Property's Doctrine `ManyToOne` relation presence. In fact, setter should
+   always be nullable for a `ManyToOne` relation.
+3. [Nullable annotation](annotations/nullable.md)
+4. [Doctrine `Column` annotation nullable parameter](doctrine.md#doctrine-column-annotation)
+5. [Doctrine relation annotation](doctrine.md#doctrine-entity-relations)
+6. [Data annotation nullable parameter](annotations/data.md)
+7. `symbok.defaults.setter.nullable` config value
+8. `true`
 
 ## Fluent setters
-Fluent setters configuration will be used to know if setters will have to return self class instance.
+Used to know if setters will have to return self class instance.
 
 1. [Setter annotation fluent parameter](annotations/setter.md)
-2. [Data annotation fluentSetters parameter](annotations/data.md)
+2. [Data annotation fluent parameter](annotations/data.md)
 3. `symbok.defaults.setter.fluent` config value
+8. `true`
 
 ## Property type
-Last but not least, property type configuration will be used to know which type the property is.
+Used to know which type the property is.
 
 1. Property `@var` tag in docblock
 2. [Doctrine relation annotation](doctrine.md#doctrine-entity-relations)
-3. [Doctrine column annotation](doctrine.md#doctrines-column-annotation)
-4. `mixed` type will be used
+3. [Doctrine column annotation](doctrine.md#doctrine-column-annotation)
+4. `mixed`

@@ -1,11 +1,13 @@
 # Nullable annotation
-Nullable annotation will tell the compiler that current property could be considered as nullable.
+Tells the compiler that current property should be considered as nullable.
 
 ## Type
 Property annotation
 
 ## Options
-- `nullable`: Boolean. Default `true`. Represents if property should be nullable. See [Getters/Setters nullable priorities](../priorities.md#getterssetters-nullable)
+- `nullable`: Boolean. Default `true`. Represents if property should be
+ nullable.
+ See [Nullable priorities](../priorities.md)
 
 ## Example
 ### Original file
@@ -22,7 +24,7 @@ class Product
     /**
      * @var int
      * @Getter
-     * @Nullable(nullable=true)
+     * @Nullable(nullable=false)
      */
     private $id;
 }
@@ -44,7 +46,7 @@ class Product
      */
     private $id;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }

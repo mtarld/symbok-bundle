@@ -5,10 +5,16 @@ Setter annotation will tell the compiler to create a setter method for current p
 Property annotation
 
 ## Options
-- `nullable`: Boolean. Represents if setter parameter could be nullable. See [Getters/Setters nullable priorities](../priorities.md#getterssetters-nullable).
-- `fluent`: Boolean. Represents if setter method returns self class instance. See [Fluent setter priorities](../priorities.md#fluent-setters).
-- `add`: Boolean. Represents if add method is not wanted (in case of [Doctrine entity relations](../doctrine.md#doctrine-entity-relations) or array).
-- `remove`: Boolean. Represents if remove method is not wanted (in case of [Doctrine entity relations](../doctrine.md#doctrine-entity-relations) or array).
+- `nullable`: Boolean. Represents if setter parameter could be nullable.
+See [Setters's parameter nullable priorities](../priorities.md).
+- `fluent`: Boolean. Represents if setter method returns self class instance.
+See [Fluent setter priorities](../priorities.md).
+- `updateOtherSide`: Boolean. Represents if setters/adders/removers have to
+  update other side of relation in case of doctrine relation.
+- `add`: Boolean. Default `true`. Represents if adders have to be added (in case
+  of collection property)
+- `remove`: Boolean. Default `true`. Represents if removers have to be added (in
+  case of collection property)
 
 ## Example
 ### Original file
@@ -45,7 +51,7 @@ class Product
      */
     private $id;
 
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -96,6 +102,67 @@ class Product
 }
 ```
 
-## Doctrine entity relation
-In case of the property is representing a doctrine entity relation, you may have a look at [Doctrine entity relations](../doctrine.md).
-Indeed, `add` and `remove` methods may be written in case of \*ToMany relation.
+## Collection property
+When the property is representing a collection (either an array or a
+doctrine collection relation), `add` and `remove` method will be added.
+
+### Array example
+#### Original file
+```php
+<?php
+
+namespace App\Entity;
+
+use Mtarld\SymbokBundle\Annotation\Setter;
+
+class Product
+{
+    /**
+     * @var int[]
+     * @Setter
+     */
+    private $prices;
+}
+```
+
+#### Compiled file
+```php
+<?php
+
+namespace App\Entity;
+
+use Mtarld\SymbokBundle\Annotation\Setter;
+
+class Product
+{
+    /**
+     * @var int[]
+     * @Setter
+     */
+    private $prices;
+
+    public function setPrices(?array $prices) : self
+    {
+        $this->prices = $prices;
+        return $this;
+    }
+
+    public function addPrice(int $price) : self
+    {
+        $this->prices[] = $price;
+        return $this;
+    }
+
+    public function removePrice(int $price) : self
+    {
+        $key = array_search($price, $this->prices, true);
+        if (false !== $key) {
+            unset($this->prices[$key]);
+        }
+        return $this;
+    }
+}
+```
+
+### Doctrine relation example
+See [Doctrine *ToMany relations](../doctrine.md) for more details

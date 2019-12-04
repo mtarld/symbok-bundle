@@ -1,11 +1,15 @@
 # Getter annotation
-Getter annotation will tell the compiler to create a getter method for current property.
+Tells the compiler to create a getter method for current property.
 
 ## Type
 Property annotation
 
 ## Options
 - `nullable`: Boolean. Represents if getter returned value could be nullable.
+See [Getters' return nullable priorities](../priorities.md).
+- `hasPrefix`: Boolean. Default `false`. When getting a boolean, `getXXX` will
+  be transformed to `isXXX`. `hasPrefix` represents if `isXXX` should be
+  `hasXXX` instead.
 
 ## Example
 ### Original file
@@ -42,7 +46,7 @@ class Product
      */
     private $id;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
