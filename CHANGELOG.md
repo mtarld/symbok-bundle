@@ -7,21 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0] - 2019-12-04
+## [2.0.0] - 2019-12-06
 
 ### Added
 
 - Command to update original files
 - Command to preview changes made by compilation (for runtime and for files)
 - Handle native array property types
+- `hasPrefix` property in Getter annotation
 - `updateOtherSide` property in Setter and Data annotations
 - Logs of key steps
 - Symfony5 support
+- Add `__construct` method when *ToMany relations which init each collection properties
+  with `ArrayCollection`
 
 ### Changed
 
 - Replaced legacy cache by resource cache
 - Improved Doctrine other side updates
+- Improved Doctrine other side property name finding method
+- Set getter nullable when ManyToOne relation (after Getter nullable and before
+  property nullable)
 - Replaced noAdd by add (with default true) for Setter and Data annotations
 - Replaced noRemove by remove (with default true) for Setter and Data annotations
 - Improved ConfigTree structure
