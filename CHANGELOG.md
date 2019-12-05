@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced noRemove by remove (with default true) for Setter and Data annotations
 - Improved ConfigTree structure
 - Fix annotations from another namespaces deletion
+- Made nullable (AllArgsConstructor annotation) and constructorNullable (Data
+  annotation) with the highest priority for AllArgsConstructor nullable behavior
 
 ### Removed
 

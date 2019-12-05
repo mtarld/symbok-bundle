@@ -21,9 +21,9 @@ class AllArgsConstructorBehavior
 
     public function isNullable(SymbokProperty $property): bool
     {
-        $nullable = $this->propertyBehavior->isNullable($property);
-        $nullable = is_bool($nullable) ? $nullable : $this->isNullableByAllArgsConstructor($property);
+        $nullable = $this->isNullableByAllArgsConstructor($property);
         $nullable = is_bool($nullable) ? $nullable : $this->isNullableByData($property);
+        $nullable = is_bool($nullable) ? $nullable : $this->propertyBehavior->isNullable($property);
 
         return is_bool($nullable) ? $nullable : $this->defaults['nullable'];
     }
@@ -40,7 +40,7 @@ class AllArgsConstructorBehavior
 
     private function isNullableByData(SymbokProperty $property): ?bool
     {
-        $annotation = $property->getAnnotation(Data::class);
+        $annotation = $property->getClass()->getAnnotation(Data::class);
 
         return $annotation instanceof Data ?
             $annotation->constructorNullable
