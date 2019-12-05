@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.0] - 2019-12-02
+## [2.0.0] - 2019-12-04
 
 ### Added
 
@@ -32,3 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Original on-the-fly file rewriting
+
+## [1.0.1] - 2019-12-04
+
+### Changed
+
+- Restrict compatibility from Symfony 3.0 to Symfony 4.3  [#24](https://github.com/mtarld/symbok-bundle/pull/24)

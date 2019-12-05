@@ -1,5 +1,5 @@
 # ToString
-ToString annotation will tell the compiler to create a method that converts current class to a simple string.
+Tells the compiler to create a method that converts current class to a simple string.
 It'll simply concatenate class and specified attributes (see example below).
 
 ## Type
