@@ -93,3 +93,16 @@ Symbok comes with two commands:
 - `symbok:preview` which allows you to preview compilation results
 
 More informations in the [commands documentation](commands.md)
+
+## Performances
+If you're wandering about Symbok's impact on overall preformances, here is a
+little benchmark representing a **Symfony command execution** in **production
+environment** that is **printing the id of a class**.
+
+|                   | Without Symbok | With Symbok  | Δ      |
+|-------------------|----------------|--------------|--------|
+| 0 class involved  | ~29ms          | ~32.5ms      | ~3.5ms |
+| 1 class involved  | ~29.4ms        | ~34.2ms      | ~4.8ms |
+| 2 class involved  | ~30.2ms        | ~34.9ms      | ~4.7ms |
+| 5 class involved  | ~31.1ms        | ~35.1ms      | ~4.0ms |
+| 10 class involved | ~32.4ms        | ~36.5ms      | ~4.1ms |
