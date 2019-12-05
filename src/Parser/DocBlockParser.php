@@ -4,7 +4,6 @@ namespace Mtarld\SymbokBundle\Parser;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\DocParser;
-use Mtarld\SymbokBundle\Autoload\Autoload;
 use Mtarld\SymbokBundle\Factory\DocFactory;
 use Mtarld\SymbokBundle\Parser\DocBlockParser\Formatter;
 use Mtarld\SymbokBundle\Repository\AnnotationRepository;
@@ -44,12 +43,7 @@ class DocBlockParser
     private function prepareContext(): void
     {
         if (false === $this->isContextReady) {
-            $annotationFilePaths = array_map(function (string $annotation) {
-                return Autoload::getClassLoader()->findFile($annotation);
-            }, $this->annotationRepository->findAll());
-
-            array_walk($annotationFilePaths, [AnnotationRegistry::class, 'registerFile']);
-
+            AnnotationRegistry::registerLoader('class_exists');
             $this->isContextReady = true;
         }
     }
