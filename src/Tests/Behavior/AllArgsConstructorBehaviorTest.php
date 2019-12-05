@@ -132,18 +132,27 @@ class AllArgsConstructorBehaviorTest extends TestCase
 
         yield [
             function ($class) {
-                if (AllArgsConstructor::class === $class) {
-                    $annotation = new AllArgsConstructor();
-                    $annotation->nullable = false;
+                return null;
+            },
+            true,
+            true,
+            'Nullable property is ok',
+        ];
+
+        yield [
+            function ($class) {
+                if (Data::class === $class) {
+                    $annotation = new Data();
+                    $annotation->constructorNullable = true;
 
                     return $annotation;
                 }
 
                 return null;
             },
+            false,
             true,
-            true,
-            'Property is prior to allArgsConstructor',
+            'Data is prior to property',
         ];
     }
 }
