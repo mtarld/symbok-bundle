@@ -3,7 +3,6 @@
 namespace Mtarld\SymbokBundle\Tests\Parser\DocBlockParser;
 
 use Mtarld\SymbokBundle\Parser\DocBlockParser\Formatter;
-use Mtarld\SymbokBundle\Repository\AnnotationRepository;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Description;
 use phpDocumentor\Reflection\DocBlock\Tag;
@@ -30,7 +29,7 @@ class FormatterTest extends TestCase
             $context
         );
 
-        $formatted = (new Formatter(new AnnotationRepository()))->formatAnnotations($docBlock, $namespaces);
+        $formatted = (new Formatter())->formatAnnotations($docBlock, $namespaces);
         $this->assertCount(1, $formatted->getTags());
     }
 
@@ -84,7 +83,7 @@ class FormatterTest extends TestCase
             new Context("\Somewhere")
         );
 
-        $formatter = new Formatter(new AnnotationRepository());
+        $formatter = new Formatter();
 
         $formatted = $formatter->formatAnnotations($docBlock, ["\A"]);
         $this->assertSame($docBlock->getSummary(), $formatted->getSummary());

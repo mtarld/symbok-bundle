@@ -2,21 +2,15 @@
 
 namespace Mtarld\SymbokBundle\Parser\DocBlockParser;
 
-use Mtarld\SymbokBundle\Repository\AnnotationRepository;
+use Mtarld\SymbokBundle\Annotation\ToString;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tags\BaseTag;
 use phpDocumentor\Reflection\DocBlock\Tags\Generic;
 use phpDocumentor\Reflection\FqsenResolver;
+use ReflectionClass;
 
 class Formatter
 {
-    private $annotationRepository;
-
-    public function __construct(AnnotationRepository $annotationRepository)
-    {
-        $this->annotationRepository = $annotationRepository;
-    }
-
     public function formatAnnotations(DocBlock $docBlock): DocBlock
     {
         return new DocBlock(
@@ -29,7 +23,9 @@ class Formatter
 
     private function getResolvedTags(DocBlock $docBlock): array
     {
-        return array_map(function (BaseTag $tag) use ($docBlock) {
+        $symbokAnnotationNamespace = '\\'.(new ReflectionClass(ToString::class))->getNamespaceName();
+
+        return array_map(function (BaseTag $tag) use ($docBlock, $symbokAnnotationNamespace) {
             if (!$tag instanceof Generic) {
                 return $tag;
             }
@@ -37,7 +33,7 @@ class Formatter
             $resolvedTag = (new FqsenResolver())->resolve($tag->getName(), $docBlock->getContext());
             $namespace = str_replace('\\'.$resolvedTag->getName(), '', (string) $resolvedTag);
 
-            if (!in_array($namespace, $this->annotationRepository->findNamespaces())) {
+            if (0 === strcmp($symbokAnnotationNamespace, $namespace)) {
                 // ltrim \ in order to be sure that Doctrine DocParser will check ignoredAnnotations
                 // @see lib/Doctrine/Common/Annotations/DocParser.php:698
                 $resolvedTag = ltrim((string) $resolvedTag, '\\');
