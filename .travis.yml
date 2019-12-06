@@ -20,7 +20,7 @@ matrix:
           # Test the latest stable release
         - php: 7.2
         - php: 7.3
-          env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover=coverage.xml"
+          env: COVERAGE=true
 
     allow_failures:
           # Dev-master is allowed to fail.
@@ -39,4 +39,4 @@ script:
     - make test
 
 after_success:
-    - if [[ $COVERAGE == true ]]; then bash <(curl -s https://codecov.io/bash); fi
+    - if [[ $COVERAGE == true ]]; then make test-code-coverage-clover && bash <(curl -s https://codecov.io/bash); fi
