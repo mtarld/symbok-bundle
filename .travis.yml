@@ -39,4 +39,4 @@ script:
     - make test
 
 after_success:
-    - bash <(curl -s https://codecov.io/bash)
+    - if [[ $COVERAGE == true ]]; then bash <(curl -s https://codecov.io/bash); fi
