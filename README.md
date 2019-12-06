@@ -1,24 +1,28 @@
 # Symbok Annotation Bundle
 
-Runtime code generator bundle for Symfony.
-
-Uses an additional autoloader to detect classes that are using Symbok annotations. Then Symbok generates related methods and load generated class instead of the original one.
-Generated class is stored in Symfony cache so that Symbok compiles it just once.
-Also reads basic Doctrine annotations to handle property's type, nullable status and relation.
-
-Initially inspired by [Plumbok](https://github.com/plumbok/plumbok).
-
-Compatible with Symfony3 and Symfony4
-
 ![Packagist](https://img.shields.io/packagist/v/mtarld/symbok-bundle.svg?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/mtarld/symbok-bundle.svg?style=flat-square)
 ![Travis (.org)](https://img.shields.io/travis/mtarld/symbok-bundle.svg?style=flat-square)
+![CodeCov](https://img.shields.io/codecov/c/github/mtarld/symbok-bundle?style=flat-square)
+
+Runtime code generator bundle for Symfony.
+
+- Detects classes that are using Symbok annotations, generates related methods 
+and loads generated class instead of the original one.
+- Stores generated classes in Symfony cache so that Symbok compiles them just once.
+- Reads basic Doctrine annotations to handle property's type, nullable status
+  and entity relation.
+
+Initially inspired by [Plumbok](https://github.com/plumbok/plumbok).
+
+Compatible with Symfony 4 and 5
 
 ## Symbok ?
 > :wave: Bye bye endless PHP classes !
 
-Symbok provides basic annotations in order to generate on the fly predictable repetitive methods and clean as much as possible base class.
-For now, available annotations are:
+Symbok provides annotations in order to generate on the fly predictable and repetitive methods.
+
+Available annotations are:
   - AllArgsConstructor
   - Data
   - ToString
@@ -26,9 +30,11 @@ For now, available annotations are:
   - Setter
   - Nullable
 
-Symbok also parses doctrine properties annotations such as `Column`, `JoinColumn`, `OneToOne`, `OneToMany`, `ManyToOne`, `ManyToMany` in order to automatically discover property type and nullable status and adapt generated methods.
+Symbok also parses doctrine properties annotations such as `Column`,
+`JoinColumn`, `OneToOne`, `OneToMany`, `ManyToOne`, `ManyToMany` in order to 
+automatically discover property type, nullable status and adapt generated methods.
 
-You'll be able to find more precise information on Symbok Bundle in the [documentation](Resources/doc/index.md)
+You'll be able to find more precise information on Symbok Bundle in the [documentation](src/Resources/doc/index.md)
 
 ## Getting started
 ### Installation
@@ -36,61 +42,59 @@ You can easily install Symbok by composer
 ```
 $ composer require mtarld/symbok-bundle
 ```
-If you are using Symfony 3, you'll have to load bundle by modifying `app/AppKernel.php` to add the following :
-```php
-public function registerBundles()
-{
-    $bundles = [
-        // ...
-        new Mtarld\SymbokBundle\SymbokBundle(),
-    ];
-
-    // ...
-
-    return $bundles;
-}
-```
-If you are using Symfony 4, bundle should be already registered. Just verify that `config\bundles.php` is containing :
+Then, bundle should be registered. Just verify that `config\bundles.php` is containing :
 ```php
 Mtarld\SymbokBundle\SymbokBundle::class => ['all' => true]
 ```
-#### Symfony 3
 
 ### Configuration
-Once Symbok is installed, you must configure it to fit your needs. 
-To do that, just edit `config/packages/symbok.yaml` for Symfony flex, or `app/config/config.yml` for Symfony 3 and configure the following
+Once Symbok is installed, you should configure it to fit your needs. 
+
+To do so, edit `config/packages/symbok.yaml`
 ```yaml
+# config/packages/symbok.yaml
+
 symbok:
     # Namespaces that you wanna be processed
     namespaces:
         - 'App\Entity'
         - 'App\Model'
         
-    # Cache activation (useful to disable it when developing)
-    cache: ~
-
     defaults:
-        # If setters are fluent by default (default false)
-        fluent_setters: ~
+        getter: ~
+            # If getters are nullable by default (default true)
+            nullable: ~
 
-        nullable:
-            # If getters and setters use/return nullable parametes/values (default false)
-            getter_setter: ~
+        setter: ~
+            # If setters are fluent by default (default true)
+            fluent: ~
 
+            # If setters are nullable by default (default true)
+            nullable: ~
+
+            # If setters should update other side when relation is detected (default true)
+            updateOtherSide: ~
+
+        constructor:
             # If constructor uses nullable parameters (default true)
-            constructor: ~
+            nullable: ~
 ```
+And you're ready to go ! :rocket:
 
-### Basic example
-Register desired namespace in config file
+## Basic example
+Register your namespace in config file
 ```yaml
+# config/packages/symbok.yaml
+
 symbok:
     namespaces:
       - 'App\Entity'
 ```
-Then edit your file by adding annotations
+Then edit your class by adding annotations
 ```php
 <?php
+
+// src/Entity/Product.php
 
 namespace App\Entity;
 
@@ -105,7 +109,8 @@ class Product
     private $id;
 }
 ```
-The class will compiled and interpreted as the following
+
+Then, the class will be executed as the following:
 ```php
 <?php
 
@@ -121,19 +126,47 @@ class Product
      */
     private $id;
     
-    /**
-     * Retrieves id
-     *
-     * @return int
-     */
-    public function getId() : int
+    public function getId(): ?int
     {
         return $this->id;
     }
+}
 ```
-Moreover, the original class docblock will be updated with `@method` tags to permit IDEs to know that getter method exists
+
+## Provided commands
+### Updating original files with `symbok:update:classes`
+``` bash
+$ php bin/console symbok:update:classes
+```
+
+When running this command, original classes' docblock will be updated with
+good `@method` tags so that IDEs will be able to know that new methods exist.
+
+For instance, the class:
 ```php
 <?php
+
+// src/Entity/Product.php
+
+namespace App\Entity;
+
+use Mtarld\SymbokBundle\Annotation\Getter;
+
+class Product
+{
+    /**
+     * @var int
+     * @Getter
+     */
+    private $id;
+}
+```
+
+Will be rewritten as:
+```php
+<?php
+
+// src/Entity/Product.php
 
 namespace App\Entity;
 
@@ -152,8 +185,23 @@ class Product
 }
 ```
 
+### Previewing results with `symbok:preview`
+
+``` bash
+$ php bin/console symbok:preview [-s|--compilationStrategy COMPILATIONSTRATEGY] <class path>
+```
+
+By using that command, you will be able preview Symbok compilation results
+directly in your CLI.
+
+Compilation strategy represents which compilation will be applied on target
+class. It could be either:
+- `runtime` to preview PHP code that will be executed at runtime
+- `saved` to preview PHP code that will be written when using
+  `symbok:update:classes` command
+
 ## Documentation
-A detailed documentation is available [here](Resources/doc/index.md)
+A detailed documentation is available [here](src/Resources/doc/index.md)
 
 ## Contributing
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
@@ -165,15 +213,9 @@ After writing your fix/feature, you can run following commands to make sure that
 $ composer install
 
 # Running tests locally
-$ ./vendor/bin/phpunit
-# or
-$ composer test
+$ make test
 
-# Cleaning your code (in case of)
-$ ./vendor/bin/php-cs-fixer .
-# or
-$ composer clean-code
 ```
 
 ## Authors
-- Mathias Arlaud - @mtarld - <mathias(dot)arlaud@gmail(dot)com>
+ - Mathias Arlaud - [mtarld](https://github.com/mtarld) - <mathias(dot)arlaud@gmail(dot)com>

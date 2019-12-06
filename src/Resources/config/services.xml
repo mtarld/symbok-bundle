@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults public="false" autowire="true" autoconfigure="true" />
+
+        <prototype namespace="Mtarld\SymbokBundle\" resource="../../*" exclude="../../{Annotation,DependencyInjection,Exception,Helper,Model,Tests,Kernel.php}" />
+
+        <service id="Mtarld\SymbokBundle\Autoload\Autoload" public="true">
+            <argument type="service" key="$replacer" id="symbok.replacer.runtime_class" />
+            <argument key="$config">%symbok%</argument>
+            <argument key="$cacheDir">%kernel.cache_dir%</argument>
+            <argument key="$isDebug">%kernel.debug%</argument>
+        </service>
+
+        <service id="Mtarld\SymbokBundle\Command\SavedUpdaterCommand">
+            <argument type="service" key="$replacer" id="symbok.replacer.saved_class" />
+            <argument key="$config">%symbok%</argument>
+            <argument key="$projectDir">%kernel.project_dir%</argument>
+        </service>
+
+        <service id="Mtarld\SymbokBundle\Command\PreviewCommand">
+            <argument key="$config">%symbok%</argument>
+        </service>
+
+        <service id="symbok.replacer.runtime_class" class="Mtarld\SymbokBundle\Replacer\RuntimeClassReplacer" public="true">
+            <argument type="service" key="$compiler" id="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler" />
+        </service>
+
+        <service id="symbok.replacer.saved_class" class="Mtarld\SymbokBundle\Replacer\SavedClassReplacer" public="true">
+            <argument type="service" key="$compiler" id="Mtarld\SymbokBundle\Compiler\SavedClassCompiler" />
+        </service>
+
+        <service id="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler">
+            <argument type="service" key="$config" id="symbok.pass_config.runtime_class" />
+        </service>
+
+        <service id="symbok.pass_config.runtime_class" class="Mtarld\SymbokBundle\Compiler\PassConfig">
+            <argument key="$passes">%symbok.pass_config.runtime_class%</argument>
+        </service>
+
+        <service id="Mtarld\SymbokBundle\Behavior\AllArgsConstructorBehavior">
+            <argument key="$config">%symbok%</argument>
+        </service>
+
+        <service id="Mtarld\SymbokBundle\Behavior\SetterBehavior">
+            <argument key="$config">%symbok%</argument>
+        </service>
+
+        <service id="Mtarld\SymbokBundle\Behavior\GetterBehavior">
+            <argument key="$config">%symbok%</argument>
+        </service>
+
+        <prototype namespace="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\" resource="../../Compiler/RuntimeClassCompiler/*"  public="true" />
+    </services>
+</container>

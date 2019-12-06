@@ -5,6 +5,11 @@
          backupGlobals="false"
          colors="true"
          bootstrap="vendor/autoload.php"
+         testdox="true"
+         noInteraction="true"
+         beStrictAboutChangesToGlobalState="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
          failOnRisky="true"
          failOnWarning="true"
 >
@@ -16,22 +21,19 @@
 
     <testsuites>
         <testsuite name="Symbok Test Suite">
-            <directory>./Tests/</directory>
+            <directory>./src/Tests/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory>./</directory>
+            <directory>./src</directory>
             <exclude>
-                <directory>./Resources</directory>
-                <directory>./Annotation</directory>
-                <directory>./Autoload</directory>
-                <directory>./DependencyInjection</directory>
-                <directory>./Cache</directory>
-                <directory>./Exception</directory>
-                <directory>./Tests</directory>
-                <directory>./vendor</directory>
+                <directory>./src/Annotation</directory>
+                <directory>./src/DependencyInjection</directory>
+                <directory>./src/Exception</directory>
+                <directory>./src/Tests</directory>
+                <directory>./src/Resources</directory>
             </exclude>
         </whitelist>
     </filter>

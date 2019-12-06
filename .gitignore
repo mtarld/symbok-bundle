@@ -1,5 +1,10 @@
 .php_cs.cache
-composer.lock
+
+.phpunit.result.cache
 phpunit.xml
+
+coverage.xml
+coverage/
+
 var/
 vendor/

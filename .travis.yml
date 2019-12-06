@@ -12,15 +12,15 @@ matrix:
     fast_finish: true
     include:
           # Minimum supported dependencies with the latest and oldest PHP version
-        - php: 7.2
+        - php: 7.3
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
-        - php: 7.1
+        - php: 7.2
           env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
 
           # Test the latest stable release
-        - php: 7.1
         - php: 7.2
-          env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-text"
+        - php: 7.3
+          env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-clover=coverage.xml"
 
     allow_failures:
           # Dev-master is allowed to fail.
@@ -36,4 +36,7 @@ install:
 
 script:
     - composer validate --strict --no-check-lock
-    - ./vendor/bin/phpunit
+    - make test
+
+after_success:
+    - if [[ $COVERAGE == true ]]; then bash <(curl -s https://codecov.io/bash); fi
