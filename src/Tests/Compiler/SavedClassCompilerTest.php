@@ -4,14 +4,17 @@ namespace Mtarld\SymbokBundle\Tests\Compiler;
 
 use Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler;
 use Mtarld\SymbokBundle\Compiler\SavedClassCompiler;
+use Mtarld\SymbokBundle\Exception\CodeFindingException;
 use Mtarld\SymbokBundle\Factory\ClassFactory;
 use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
 use Mtarld\SymbokBundle\Model\SymbokClass;
+use Mtarld\SymbokBundle\Util\TypeFormatter;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tags\Author;
 use phpDocumentor\Reflection\DocBlock\Tags\Method;
 use phpDocumentor\Reflection\Types\Boolean;
+use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\Integer;
 use phpDocumentor\Reflection\Types\Nullable;
 use phpDocumentor\Reflection\Types\String_;
@@ -20,7 +23,6 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 use ReflectionClass;
 
 /**
@@ -32,13 +34,13 @@ class SavedClassCompilerTest extends TestCase
     /**
      * @testdox Creating method tag keep all needed data
      */
-    public function testCreateMethodTag()
+    public function testCreateMethodTag(): void
     {
         $compiler = new SavedClassCompiler(
             $this->createMock(ClassFactory::class),
             $this->createMock(RuntimeClassCompiler::class),
             $this->createMock(PhpCodeFinder::class),
-            $this->createMock(LoggerInterface::class)
+            new TypeFormatter()
         );
 
         $reflection = new ReflectionClass(get_class($compiler));
@@ -47,20 +49,23 @@ class SavedClassCompilerTest extends TestCase
 
         $classMethod = new ClassMethod('a', [
             'params' => [
-                new Param(new Variable('p1'), null, new Nullable(new Integer())),
-                new Param(new Variable('p2'), null, new String_()),
+                new Param(new Variable('p1'), null, (string) new Nullable(new Integer())),
+                new Param(new Variable('p2'), null, (string) new String_()),
                 new Param(new Variable('p3'), null, null),
                 new Param(new Variable('p4'), null, new NullableType('array')),
             ],
-            'returnType' => new Boolean(),
+            'returnType' => new Nullable(new Boolean()),
         ]);
 
         $methodTag = $method->invokeArgs($compiler, [$classMethod]);
 
         $this->assertSame($classMethod->name->name, $methodTag->getMethodName());
-        $this->assertSame(get_class($classMethod->getReturnType()), get_class($methodTag->getReturnType()));
 
-        $methodTagArgumentNames = array_map(function ($argument) {
+        /** @var mixed $returnType */
+        $returnType = $classMethod->getReturnType();
+        $this->assertSame(get_class($returnType), get_class($methodTag->getReturnType()));
+
+        $methodTagArgumentNames = array_map(static function (array $argument): string {
             return $argument['name'];
         }, $methodTag->getArguments());
 
@@ -69,8 +74,8 @@ class SavedClassCompilerTest extends TestCase
         $this->assertContains('p3', $methodTagArgumentNames);
         $this->assertContains('p4', $methodTagArgumentNames);
 
-        $methodTagArgumentTypes = array_map(function ($argument) {
-            return $argument['type'];
+        $methodTagArgumentTypes = array_map(static function (array $argument): string {
+            return (string) $argument['type'];
         }, $methodTag->getArguments());
 
         $this->assertContains('?int', $methodTagArgumentTypes);
@@ -82,7 +87,7 @@ class SavedClassCompilerTest extends TestCase
     /**
      * @testdox Updated method tags contains overriden, old and new method tags
      */
-    public function testGetUpdatedMethodTags()
+    public function testGetUpdatedMethodTags(): void
     {
         $finder = $this->createMock(PhpCodeFinder::class);
         $finder
@@ -107,7 +112,7 @@ class SavedClassCompilerTest extends TestCase
             $this->createMock(ClassFactory::class),
             $this->createMock(RuntimeClassCompiler::class),
             $finder,
-            $this->createMock(LoggerInterface::class)
+            new TypeFormatter()
         );
 
         $reflection = new ReflectionClass(get_class($compiler));
@@ -150,7 +155,7 @@ class SavedClassCompilerTest extends TestCase
     /**
      * @testdox Updated doc block keep all needed data plus updated method tags
      */
-    public function testGetUpdatedDocBlock()
+    public function testGetUpdatedDocBlock(): void
     {
         $finder = $this->createMock(PhpCodeFinder::class);
         $finder
@@ -171,7 +176,7 @@ class SavedClassCompilerTest extends TestCase
             $this->createMock(ClassFactory::class),
             $this->createMock(RuntimeClassCompiler::class),
             $finder,
-            $this->createMock(LoggerInterface::class)
+            new TypeFormatter()
         );
 
         $reflection = new ReflectionClass(get_class($compiler));
@@ -212,13 +217,10 @@ class SavedClassCompilerTest extends TestCase
     /**
      * @testdox Compilation replaces old doc block by the new one
      */
-    public function testCompileIsReplacingDocblock()
+    public function testCompileIsReplacingDocblock(): void
     {
         $initialDocBlock = new DocBlock('', null, [new Method('a', ['oldArg'])]);
-        $class = (new SymbokClass())
-               ->setDocBlock($initialDocBlock)
-               ->setStatements([])
-        ;
+        $class = new SymbokClass('foo', [], $initialDocBlock, [], [], new Context('baz'));
 
         $classFactory = $this->createMock(ClassFactory::class);
         $classFactory
@@ -242,7 +244,7 @@ class SavedClassCompilerTest extends TestCase
             $classFactory,
             $this->createMock(RuntimeClassCompiler::class),
             $finder,
-            $this->createMock(LoggerInterface::class)
+            new TypeFormatter()
         );
 
         $result = $compiler->compile([]);
@@ -252,7 +254,32 @@ class SavedClassCompilerTest extends TestCase
         });
 
         foreach ($methodTags as $methodTag) {
-            $this->assertSame(0, sizeof($methodTag->getArguments()));
+            $this->assertCount(0, $methodTag->getArguments());
         }
+    }
+
+    public function testCreateMethodTagExceptionWhenWrongParamVariable(): void
+    {
+        $compiler = new SavedClassCompiler(
+            $this->createMock(ClassFactory::class),
+            $this->createMock(RuntimeClassCompiler::class),
+            $this->createMock(PhpCodeFinder::class),
+            $this->createMock(TypeFormatter::class)
+        );
+
+        $reflection = new ReflectionClass(get_class($compiler));
+        $method = $reflection->getMethod('createMethodTag');
+        $method->setAccessible(true);
+
+        /** @psalm-suppress NullArgument */
+        $classMethod = new ClassMethod('a', [
+            'params' => [
+                new Param(null),
+            ],
+        ]);
+
+        $this->expectException(CodeFindingException::class);
+        $this->expectExceptionMessage('Cannot retrieve parameter variable');
+        $method->invokeArgs($compiler, [$classMethod]);
     }
 }

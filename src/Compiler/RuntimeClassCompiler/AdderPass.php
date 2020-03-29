@@ -13,8 +13,13 @@ use phpDocumentor\Reflection\Types\Array_;
 
 class AdderPass implements PropertyPassInterface
 {
+    /** @var PropertyBehavior */
     private $behavior;
+
+    /** @var PhpCodeFinder */
     private $finder;
+
+    /** @var AdderBuilder */
     private $builder;
 
     public function __construct(

@@ -9,15 +9,21 @@ use Mtarld\SymbokBundle\Model\SymbokProperty;
 
 class SetterBehavior
 {
+    /** @var PropertyBehavior */
     private $propertyBehavior;
+
+    /** @var array<array-key, mixed> */
     private $defaults;
 
+    /**
+     * @param array<mixed> $defaults
+     */
     public function __construct(
         PropertyBehavior $propertyBehavior,
-        array $config
+        array $defaults
     ) {
         $this->propertyBehavior = $propertyBehavior;
-        $this->defaults = $config['defaults']['setter'];
+        $this->defaults = $defaults;
     }
 
     public function isFluent(SymbokProperty $property): bool

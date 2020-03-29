@@ -13,8 +13,13 @@ use phpDocumentor\Reflection\Types\Array_;
 
 class RemoverPass implements PropertyPassInterface
 {
+    /** @var PropertyBehavior */
     private $behavior;
+
+    /** @var PhpCodeFinder */
     private $finder;
+
+    /** @var RemoverBuilder */
     private $builder;
 
     public function __construct(

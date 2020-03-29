@@ -65,8 +65,6 @@
             <property name="maximum" value="30" />
         </properties>
     </rule>
-    <rule ref="rulesets/unusedcode.xml">
-        <exclude name="UnusedFormalParameter" />
-    </rule>
+    <rule ref="rulesets/unusedcode.xml" />
     <exclude-pattern>src/Tests/*</exclude-pattern>
 </ruleset>

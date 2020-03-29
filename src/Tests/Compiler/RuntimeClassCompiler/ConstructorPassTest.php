@@ -9,6 +9,8 @@ use Mtarld\SymbokBundle\MethodBuilder\ConstructorBuilder;
 use Mtarld\SymbokBundle\Model\Relation\ManyToManyRelation;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\Types\Context;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPUnit\Framework\TestCase;
 
@@ -80,7 +82,7 @@ class ConstructorPassTest extends TestCase
             ->willReturn(new ClassMethod('dummy'))
         ;
 
-        $class = (new SymbokClass())->setStatements([]);
+        $class = new SymbokClass('foo', [], new DocBlock('bar'), [], [], new Context('baz'));
 
         $pass = new ConstructorPass(
             $this->createMock(ClassBehavior::class),
@@ -91,6 +93,9 @@ class ConstructorPassTest extends TestCase
         $statements = $pass->process($class)->getStatements();
 
         $this->assertCount(1, $statements);
-        $this->assertSame('dummy', $statements[0]->name->name);
+
+        /** @var ClassMethod $method */
+        $method = $statements[0];
+        $this->assertSame('dummy', (string) $method->name);
     }
 }

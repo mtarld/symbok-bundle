@@ -23,12 +23,12 @@ class GetterBehaviorTest extends TestCase
      * @dataProvider isNullableDataProvider
      * @testdox $testDox
      */
-    public function testIsNullable(callable $callable, ?bool $propertyNullable, bool $result, $testDox): void
+    public function testIsNullable(callable $callable, ?bool $propertyNullable, bool $result, string $testDox): void
     {
         $property = $this->createMock(SymbokProperty::class);
         $property
             ->method('getAnnotation')
-            ->will($this->returnCallback($callable))
+            ->willReturnCallback($callable)
         ;
 
         $propertyBehavior = $this->createMock(PropertyBehavior::class);
@@ -38,11 +38,7 @@ class GetterBehaviorTest extends TestCase
         ;
         $getterBehavior = new GetterBehavior(
             $propertyBehavior,
-            [
-                'defaults' => [
-                    'getter' => ['nullable' => true],
-                ],
-            ]
+            ['nullable' => true]
         );
 
         $this->assertSame($result, $getterBehavior->isNullable($property));
@@ -51,16 +47,14 @@ class GetterBehaviorTest extends TestCase
     public function isNullableDataProvider(): iterable
     {
         yield [
-            function ($class) {
-                return null;
-            },
+            static function (string $class): void {},
             null,
             true,
             'Default is ok',
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?Getter {
                 if (Getter::class === $class) {
                     return new Getter();
                 }
@@ -73,7 +67,10 @@ class GetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @return Getter|Column|null
+             */
+            static function (string $class) {
                 if (Getter::class === $class) {
                     $getter = new Getter();
                     $getter->nullable = true;
@@ -93,7 +90,10 @@ class GetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @return Getter|Column|null
+             */
+            static function (string $class) {
                 if (Getter::class === $class) {
                     return new Getter();
                 }
@@ -110,7 +110,10 @@ class GetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @return Column|Data|null
+             */
+            static function (string $class) {
                 if (Column::class === $class) {
                     return new Column();
                 }
@@ -130,7 +133,7 @@ class GetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?Data {
                 if (Data::class === $class) {
                     $data = new Data();
                     $data->nullable = true;
@@ -146,7 +149,7 @@ class GetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?Data {
                 if (Data::class === $class) {
                     $data = new Data();
                     $data->nullable = false;
@@ -162,7 +165,10 @@ class GetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @return Data|Getter|null
+             */
+            static function (string $class) {
                 if (Data::class === $class) {
                     $data = new Data();
                     $data->nullable = false;
@@ -189,7 +195,7 @@ class GetterBehaviorTest extends TestCase
      * @dataProvider hasHasPrefixDataProvider
      * @testdox has prefix is $result for $type and $hasPrefix hasPrefix annotation property
      */
-    public function testHasHasPrefix(?Type $type, ?bool $hasPrefix, bool $result): void
+    public function testHasHasPrefix(?Type $type, bool $hasPrefix, bool $result): void
     {
         $annotation = new Getter();
         $annotation->hasPrefix = $hasPrefix;
@@ -209,9 +215,7 @@ class GetterBehaviorTest extends TestCase
         $getterBehavior = new GetterBehavior(
             $propertyBehavior,
             [
-                'defaults' => [
-                    'getter' => [],
-                ],
+                'getter' => [],
             ]
         );
 
@@ -220,7 +224,7 @@ class GetterBehaviorTest extends TestCase
 
     public function hasHasPrefixDataProvider(): iterable
     {
-        yield [new Boolean(), null, false];
+        yield [new Boolean(), false, false];
         yield [new Integer(), true, false];
         yield [new Boolean(), true, true];
     }

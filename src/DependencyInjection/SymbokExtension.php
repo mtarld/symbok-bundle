@@ -2,6 +2,13 @@
 
 namespace Mtarld\SymbokBundle\DependencyInjection;
 
+use Mtarld\SymbokBundle\Autoload\Autoload;
+use Mtarld\SymbokBundle\Autoload\AutoloadFinder;
+use Mtarld\SymbokBundle\Behavior\AllArgsConstructorBehavior;
+use Mtarld\SymbokBundle\Behavior\GetterBehavior;
+use Mtarld\SymbokBundle\Behavior\SetterBehavior;
+use Mtarld\SymbokBundle\Command\PreviewCommand;
+use Mtarld\SymbokBundle\Command\SavedUpdaterCommand;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -14,7 +21,10 @@ class SymbokExtension extends Extension
         return 'symbok';
     }
 
-    public function load(array $configs, ContainerBuilder $container)
+    /**
+     * @param array<array-key, mixed> $configs
+     */
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new XmlFileLoader(
             $container,
@@ -23,12 +33,26 @@ class SymbokExtension extends Extension
         $loader->load('services.xml');
         $loader->load('pass_config.xml');
 
-        $configuration = $this->getConfiguration($configs, $container);
+        if (null === $configuration = $this->getConfiguration($configs, $container)) {
+            return;
+        }
+
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter(
             'symbok',
             $config
         );
+
+        $namespaces = $config['namespaces'];
+        $defaults = $config['defaults'];
+
+        $container->getDefinition(Autoload::class)->replaceArgument('$namespaces', $namespaces);
+        $container->getDefinition(AutoloadFinder::class)->replaceArgument('$namespace', $namespaces[0] ?? null);
+        $container->getDefinition(SavedUpdaterCommand::class)->replaceArgument('$namespaces', $namespaces);
+        $container->getDefinition(PreviewCommand::class)->replaceArgument('$namespaces', $namespaces);
+        $container->getDefinition(AllArgsConstructorBehavior::class)->replaceArgument('$defaults', $defaults['constructor'] ?? []);
+        $container->getDefinition(GetterBehavior::class)->replaceArgument('$defaults', $defaults['getter'] ?? []);
+        $container->getDefinition(SetterBehavior::class)->replaceArgument('$defaults', $defaults['setter'] ?? []);
     }
 }

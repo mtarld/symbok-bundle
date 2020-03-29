@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\OneToOne;
 use Mtarld\SymbokBundle\Factory\DocBlockFactory;
 use Mtarld\SymbokBundle\Factory\DoctrineRelationFactory;
 use Mtarld\SymbokBundle\Finder\DocBlockFinder;
+use Mtarld\SymbokBundle\Model\Relation\DoctrineRelation;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\Types\Context;
@@ -23,6 +24,8 @@ use Psr\Log\LoggerInterface;
 class DoctrineRelationFactoryTest extends TestCase
 {
     /**
+     * @param class-string|null $annotationClass
+     *
      * @dataProvider buildDoctrineRelationCreation
      * @testdox Result is valid for $annotationClass
      */
@@ -76,13 +79,14 @@ class DoctrineRelationFactoryTest extends TestCase
             $this->createMock(LoggerInterface::class)
         );
 
-        $relation = $factory->create($class, $property);
-
         if (empty($annotationClass)) {
-            $this->assertNull($relation);
+            $this->assertNull($factory->create($class, $property));
 
             return;
         }
+
+        /** @var DoctrineRelation $relation */
+        $relation = $factory->create($class, $property);
 
         $this->assertSame($targetClassName, $relation->getTargetClassName());
         $this->assertSame($targetPropertyName, $relation->getTargetPropertyName());

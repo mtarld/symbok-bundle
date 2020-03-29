@@ -15,6 +15,8 @@ use PHPUnit\Framework\TestCase;
 class ClassBehaviorTest extends TestCase
 {
     /**
+     * @param class-string|null $annotation
+     *
      * @dataProvider requireAllArgsConstructorDataProvider
      * @testdox requireAllArgsConstructor is $result when annotation is $annotation
      */
@@ -41,6 +43,8 @@ class ClassBehaviorTest extends TestCase
     }
 
     /**
+     * @param class-string|null $annotation
+     *
      * @dataProvider requireToStringDataProvider
      * @testdox requireToString is $result when annotation is $annotation
      */

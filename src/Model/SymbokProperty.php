@@ -2,15 +2,38 @@
 
 namespace Mtarld\SymbokBundle\Model;
 
+use Mtarld\SymbokBundle\Annotation\AnnotationInterface;
 use Mtarld\SymbokBundle\Model\Relation\DoctrineRelation;
 use phpDocumentor\Reflection\Type;
 
 class SymbokProperty extends SymbokElement
 {
+    /** @var string */
     private $name;
+
+    /** @var SymbokClass */
     private $class;
+
+    /** @var Type|null */
     private $type;
+
+    /** @var DoctrineRelation|null */
     private $relation;
+
+    public function __construct(
+        string $name,
+        SymbokClass $class,
+        ?Type $type,
+        ?DoctrineRelation $relation,
+        array $annotations
+    ) {
+        $this->name = $name;
+        $this->class = $class;
+        $this->type = $type;
+        $this->relation = $relation;
+
+        parent::__construct($annotations);
+    }
 
     public function getName(): string
     {
@@ -48,6 +71,9 @@ class SymbokProperty extends SymbokElement
         return $this;
     }
 
+    /**
+     * @param array<AnnotationInterface> $annotations
+     */
     public function setAnnotations(array $annotations): self
     {
         $this->annotations = $annotations;

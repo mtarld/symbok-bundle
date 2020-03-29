@@ -25,13 +25,13 @@ class AllArgsConstructorBehaviorTest extends TestCase
         $class = $this->createMock(SymbokClass::class);
         $class
             ->method('getAnnotation')
-            ->will($this->returnCallback($callable))
+            ->willReturnCallback($callable)
         ;
 
         $property = $this->createMock(SymbokProperty::class);
         $property
             ->method('getAnnotation')
-            ->will($this->returnCallback($callable))
+            ->willReturnCallback($callable)
         ;
         $property
             ->method('getClass')
@@ -45,11 +45,7 @@ class AllArgsConstructorBehaviorTest extends TestCase
         ;
         $allArgsConstructorBehavior = new AllArgsConstructorBehavior(
             $propertyBehavior,
-            [
-                'defaults' => [
-                    'constructor' => ['nullable' => false],
-                ],
-            ]
+            ['nullable' => false]
         );
 
         $this->assertSame($result, $allArgsConstructorBehavior->isNullable($property));
@@ -58,16 +54,19 @@ class AllArgsConstructorBehaviorTest extends TestCase
     public function isNullableDataProvider(): iterable
     {
         yield [
-            function ($class) {
-                return null;
-            },
+            static function (string $class): void {},
             null,
             false,
             'Default is ok',
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @param class-string $class
+             *
+             * @return mixed
+             */
+            static function (string $class) {
                 return new $class();
             },
             null,
@@ -76,7 +75,7 @@ class AllArgsConstructorBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?AllArgsConstructor {
                 if (AllArgsConstructor::class === $class) {
                     $annotation = new AllArgsConstructor();
                     $annotation->nullable = true;
@@ -92,7 +91,10 @@ class AllArgsConstructorBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @return AllArgsConstructor|Data|null
+             */
+            static function (string $class) {
                 if (AllArgsConstructor::class === $class) {
                     $annotation = new AllArgsConstructor();
                     $annotation->nullable = false;
@@ -115,7 +117,7 @@ class AllArgsConstructorBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?Data {
                 if (Data::class === $class) {
                     $annotation = new Data();
                     $annotation->constructorNullable = true;
@@ -131,16 +133,14 @@ class AllArgsConstructorBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
-                return null;
-            },
+            static function (string $class): void {},
             true,
             true,
             'Nullable property is ok',
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?Data {
                 if (Data::class === $class) {
                     $annotation = new Data();
                     $annotation->constructorNullable = true;

@@ -2,23 +2,33 @@
 
 namespace Mtarld\SymbokBundle\Command;
 
-use Mtarld\SymbokBundle\Exception\RuntimeException;
 use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
 use Mtarld\SymbokBundle\Parser\PhpCodeParser;
 use Mtarld\SymbokBundle\Replacer\ReplacerInterface;
-use SplFileInfo;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class SavedUpdaterCommand extends Command
 {
+    /** @var PhpCodeParser */
     private $codeParser;
+
+    /** @var PhpCodeFinder */
     private $codeFinder;
+
+    /** @var ReplacerInterface */
     private $replacer;
+
+    /** @var array<array-key, string> */
     private $namespaces;
+
+    /** @var string */
     private $projectDir;
 
     protected static $defaultName = 'symbok:update:classes';
@@ -27,41 +37,53 @@ class SavedUpdaterCommand extends Command
         PhpCodeParser $codeParser,
         PhpCodeFinder $codeFinder,
         ReplacerInterface $replacer,
-        array $config,
+        array $namespaces,
         string $projectDir
     ) {
         $this->codeFinder = $codeFinder;
         $this->codeParser = $codeParser;
         $this->replacer = $replacer;
-        $this->namespaces = $config['namespaces'];
+        $this->namespaces = $namespaces;
         $this->projectDir = $projectDir;
 
         parent::__construct();
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument('directory', InputArgument::OPTIONAL, 'Directory where classes are located', 'src');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $directory = $this->projectDir.DIRECTORY_SEPARATOR.$input->getArgument('directory');
-        $classFiles = (new Finder())
-                    ->name('*.php')
-                    ->in($directory)
-        ;
+        /** @var string $directory */
+        $directory = $input->getArgument('directory');
+        $directory = $this->projectDir.'/'.$directory;
+
+        /** @var array<SplFileInfo> $classFiles */
+        $classFiles = (new Finder())->name('*.php')->in($directory);
+
+        $io = new SymfonyStyle($input, $output);
+        $io->title('Update original classes');
+        if (!$io->isVerbose()) {
+            $io->progressStart(count($classFiles));
+        }
 
         foreach ($classFiles as $classFile) {
             try {
                 $this->updateFile($classFile);
-                $output->writeln(sprintf('\'%s\' processed.', $classFile->getRelativePathname()), OutputInterface::VERBOSITY_VERBOSE);
+                $io->writeln(sprintf('\'%s\' processed.', $classFile->getRelativePathname()), OutputInterface::VERBOSITY_VERBOSE);
             } catch (RuntimeException $e) {
-                $output->writeln(sprintf('Skipping \'%s\': %s', $classFile->getRelativePathname(), $e->getMessage()), OutputInterface::VERBOSITY_VERBOSE);
+                $io->writeln(sprintf('Skipping \'%s\': %s', $classFile->getRelativePathname(), $e->getMessage()), OutputInterface::VERBOSITY_VERBOSE);
+            } finally {
+                if (!$io->isVerbose()) {
+                    $io->progressAdvance();
+                }
             }
+        }
+
+        if (!$io->isVerbose()) {
+            $io->progressFinish();
         }
 
         return 0;
@@ -72,12 +94,12 @@ class SavedUpdaterCommand extends Command
         $path = $file->getPathName();
         $statements = $this->codeParser->parseStatementsFromPath($path);
 
-        $namespace = (string) $this->codeFinder->findNamespace($statements)->name;
-        if (!in_array($namespace, $this->namespaces)) {
+        $namespace = (string) $this->codeFinder->findNamespaceName($statements);
+        if (!in_array($namespace, $this->namespaces, true)) {
             throw new RuntimeException(sprintf('Not in specified namespaces: %s', implode(', ', $this->namespaces)));
         }
 
-        $class = $namespace.'\\'.$this->codeFinder->findClass($statements)->name;
+        $class = $namespace.'\\'.$this->codeFinder->findClassName($statements);
 
         file_put_contents($path, $this->replacer->replace($class));
     }

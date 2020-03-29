@@ -23,43 +23,49 @@ use Psr\Log\LoggerInterface;
 
 class DocBlockFinder
 {
+    /** @var DocBlockParser */
     private $parser;
+
+    /** @var DoctrineTypes */
     private $doctrineTypes;
+
+    /** @var LoggerInterface */
     private $logger;
 
     public function __construct(
         DocBlockParser $parser,
         DoctrineTypes $doctrineTypes,
-        LoggerInterface $symbokLogger
+        LoggerInterface $logger
     ) {
         $this->parser = $parser;
         $this->doctrineTypes = $doctrineTypes;
-        $this->logger = $symbokLogger;
+        $this->logger = $logger;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function findAnnotations(DocBlock $docBlock): array
     {
-        $annotations = $this->parser->parseAnnotations($docBlock);
-
-        return $annotations;
+        return $this->parser->parseAnnotations($docBlock);
     }
 
     public function findType(DocBlock $docBlock): ?Type
     {
-        if ($type = $this->getFromVarTag($docBlock)) {
+        if (($type = $this->getFromVarTag($docBlock)) instanceof Type) {
             $this->logger->debug('Found {type} type from @var tag', ['type' => (string) $type]);
 
             return $type;
         }
 
         $annotations = $this->findAnnotations($docBlock);
-        if ($type = $this->getFromDoctrineRelation($annotations)) {
-            $this->logger->debug('Found {type} type from doctrine relation', ['type' => $type->getFqsen()->getName()]);
+        if (($type = $this->getFromDoctrineRelation($annotations)) instanceof Type) {
+            $this->logger->debug('Found {type} type from doctrine relation', ['type' => (string) $type->getFqsen()]);
 
             return $type;
         }
 
-        if ($type = $this->getFromDoctrineColumn($annotations)) {
+        if (($type = $this->getFromDoctrineColumn($annotations)) instanceof Type) {
             $this->logger->debug('Found {type} type from doctrine column', ['type' => (string) $type]);
 
             return $type;
@@ -94,15 +100,16 @@ class DocBlockFinder
         return $type instanceof Nullable ? $type->getActualType() : $type;
     }
 
+    /**
+     * @param array<mixed> $annotations
+     */
     private function getFromDoctrineRelation(array $annotations): ?Object_
     {
         foreach ($annotations as $annotation) {
-            if ($type = $this->getCollectionType($annotation)) {
-                $this->logger->debug('Found type {type} from @var tag', ['type' => $type]);
-
+            if (($type = $this->getCollectionType($annotation)) instanceof Type) {
                 return $type;
             }
-            if ($type = $this->getTargetEntityType($annotation)) {
+            if (($type = $this->getTargetEntityType($annotation)) instanceof Type) {
                 return $type;
             }
         }
@@ -110,6 +117,9 @@ class DocBlockFinder
         return null;
     }
 
+    /**
+     * @param array<mixed> $annotations
+     */
     private function getFromDoctrineColumn(array $annotations): ?Type
     {
         $doctrineTypesMap = $this->doctrineTypes->getTypeMap();
@@ -122,6 +132,9 @@ class DocBlockFinder
         return null;
     }
 
+    /**
+     * @param mixed $annotation
+     */
     private function getCollectionType($annotation): ?Object_
     {
         return ($annotation instanceof OneToMany || $annotation instanceof ManyToMany) ?
@@ -130,11 +143,13 @@ class DocBlockFinder
         ;
     }
 
+    /**
+     * @param mixed $annotation
+     */
     public function getTargetEntityType($annotation): ?Object_
     {
-        return (($annotation instanceof OneToOne || $annotation instanceof ManyToOne)
-                && $targetEntity = $annotation->targetEntity) ?
-            new Object_(new Fqsen('\\'.$targetEntity))
+        return (($annotation instanceof OneToOne || $annotation instanceof ManyToOne) && $targetEntity = $annotation->targetEntity)
+            ? new Object_(new Fqsen('\\'.$targetEntity))
             : null
         ;
     }

@@ -8,6 +8,7 @@ use Mtarld\SymbokBundle\Model\SymbokProperty;
 use Mtarld\SymbokBundle\Util\TypeFormatter;
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types\Boolean;
+use phpDocumentor\Reflection\Types\String_;
 use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +22,7 @@ class GetterBuilderTest extends TestCase
      * @dataProvider buildExpectedContentDataProvider
      * @testdox Build expected content with $returnType return type and 'has' prefix $hasPrefix
      */
-    public function testBuildExpectedContent(?string $returnType, ?Type $propertyType, bool $hasPrefix, string $result): void
+    public function testBuildExpectedContent(?string $returnType, ?Type $propertyType, bool $nullable, bool $hasPrefix, string $result): void
     {
         $property = $this->createMock(SymbokProperty::class);
         $property
@@ -38,10 +39,14 @@ class GetterBuilderTest extends TestCase
             ->method('hasHasPrefix')
             ->willReturn($hasPrefix)
         ;
+        $behavior
+            ->method('isNullable')
+            ->willReturn($nullable)
+        ;
 
         $typeFormatter = $this->createMock(TypeFormatter::class);
         $typeFormatter
-            ->method('asString')
+            ->method('asPhpString')
             ->willReturn($returnType)
         ;
 
@@ -57,6 +62,7 @@ class GetterBuilderTest extends TestCase
             null,
             null,
             false,
+            false,
             'public function getName()
 {
     return $this->name;
@@ -65,7 +71,8 @@ class GetterBuilderTest extends TestCase
 
         yield [
             '?string',
-            null,
+            new String_(),
+            true,
             false,
             'public function getName() : ?string
 {
@@ -77,6 +84,7 @@ class GetterBuilderTest extends TestCase
             'bool',
             new Boolean(),
             false,
+            false,
             'public function isName() : bool
 {
     return $this->name;
@@ -86,6 +94,7 @@ class GetterBuilderTest extends TestCase
         yield [
             'bool',
             new Boolean(),
+            false,
             true,
             'public function hasName() : bool
 {

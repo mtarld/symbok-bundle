@@ -18,10 +18,19 @@ use PhpParser\Node\Stmt\ClassMethod;
 
 class AdderBuilder
 {
+    /** @var SetterBehavior */
     private $behavior;
+
+    /** @var MethodManipulator */
     private $manipulator;
+
+    /** @var TypeFormatter */
     private $typeFormatter;
+
+    /** @var RegularStatements */
     private $regularStatements;
+
+    /** @var DoctrineStatements */
     private $doctrineStatements;
 
     public function __construct(
@@ -81,10 +90,10 @@ class AdderBuilder
 
     private function getParamType(SymbokProperty $property): ?string
     {
-        if ($property->getRelation() instanceof DoctrineRelation) {
-            return $property->getRelation()->getTargetClassName();
+        if (($relation = $property->getRelation()) instanceof DoctrineRelation) {
+            return $relation->getTargetClassName();
         }
 
-        return $this->typeFormatter->nestedAsString($property->getType());
+        return $this->typeFormatter->nestedAsPhpString($property->getType());
     }
 }

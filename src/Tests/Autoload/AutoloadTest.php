@@ -1,104 +1,59 @@
 <?php
 
-namespace {
-    $mockSplAutoloadFunctions = false;
-}
+namespace Mtarld\SymbokBundle\Tests\Autoload;
 
-namespace Mtarld\SymbokBundle\Autoload {
-    function spl_autoload_functions()
-    {
-        global $mockSplAutoloadFunctions;
-        if (true === $mockSplAutoloadFunctions) {
-            return [];
-        }
+use Mtarld\SymbokBundle\Autoload\Autoload;
+use Mtarld\SymbokBundle\Autoload\AutoloadFinder;
+use Mtarld\SymbokBundle\Replacer\ReplacerInterface;
+use Mtarld\SymbokBundle\Tests\Fixtures\AnotherNamespace\ProductFromAnotherNamespace;
+use Mtarld\SymbokBundle\Tests\Fixtures\files\Product1;
+use Mtarld\SymbokBundle\Tests\Fixtures\files\Product2;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
-        return call_user_func_array('\spl_autoload_functions', func_get_args());
-    }
-}
-
-namespace Mtarld\SymbokBundle\Tests\Autoload {
-    use Composer\Autoload\ClassLoader;
-    use Mtarld\SymbokBundle\Autoload\Autoload;
-    use Mtarld\SymbokBundle\Exception\RuntimeException;
-    use Mtarld\SymbokBundle\Replacer\ReplacerInterface;
-    use Mtarld\SymbokBundle\Tests\Fixtures\AnotherNamespace\ProductFromAnotherNamespace;
-    use Mtarld\SymbokBundle\Tests\Fixtures\files\Product1;
-    use Mtarld\SymbokBundle\Tests\Fixtures\files\Product2;
-    use PHPUnit\Framework\TestCase;
-    use Psr\Log\LoggerInterface;
-    use Symfony\Component\Filesystem\Filesystem;
-
+/**
+ * @group unit
+ * @group autoload
+ */
+class AutoloadTest extends TestCase
+{
     /**
-     * @group unit
-     * @group autoload
+     * @dataProvider substituteClassDataProvider
+     * @testdox Substitute $class and expect substituted to be $substitute
      */
-    class AutoloadTest extends TestCase
+    public function testSubstituteClass(string $class, bool $substitute): void
     {
-        public function testGetClassLoaderNotFound(): void
-        {
-            global $mockSplAutoloadFunctions;
-            $mockSplAutoloadFunctions = true;
+        $logger = $this->createMock(LoggerInterface::class);
+        $replacer = $this->createMock(ReplacerInterface::class);
+        $replacer
+            ->expects($this->exactly((int) $substitute))
+            ->method('replace')
+        ;
 
-            $this->expectException(RuntimeException::class);
+        $fileSystem = new Filesystem();
+        $oldCacheFilePath = sprintf('var/cache/%s.php', $class);
+        $fileSystem->remove($oldCacheFilePath);
 
-            Autoload::$classLoader = null;
-            Autoload::getClassLoader();
-        }
+        $autoloadFinder = new AutoloadFinder('Mtarld\\SymbokBundle\\Tests\\Fixtures\\Files');
 
-        public function testGetClassLoaderFetchedOnce(): void
-        {
-            global $mockSplAutoloadFunctions;
-            $mockSplAutoloadFunctions = false;
+        $autoload = new Autoload(
+            $replacer,
+            $logger,
+            $autoloadFinder,
+            ['Mtarld\\SymbokBundle\\Tests\\Fixtures\\files'],
+            'var/cache/',
+            true
+        );
+        $autoload->loadClass($class);
+    }
 
-            $this->assertInstanceOf(ClassLoader::class, Autoload::getClassLoader());
-        }
-
-        public function testGetClassLoaderFetchedTwiceUsesLocalCache(): void
-        {
-            global $mockSplAutoloadFunctions;
-            $mockSplAutoloadFunctions = false;
-
-            Autoload::getClassLoader();
-            $this->assertInstanceOf(ClassLoader::class, Autoload::getClassLoader());
-        }
-
-        /**
-         * @dataProvider substituteClassDataProvider
-         * @testdox Substitute $class and expect substituted to be $substitute
-         */
-        public function testSubstituteClass(string $class, bool $substitute): void
-        {
-            global $mockSplAutoloadFunctions;
-            $mockSplAutoloadFunctions = false;
-
-            $replacer = $this->createMock(ReplacerInterface::class);
-            $logger = $this->createMock(LoggerInterface::class);
-            $replacer
-                ->expects($this->exactly((int) $substitute))
-                ->method('replace')
-                ;
-
-            $fileSystem = new Filesystem();
-            $oldCacheFilePath = 'var'.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.$class.'.php';
-            $fileSystem->remove($oldCacheFilePath);
-
-            $autoload = new Autoload(
-                $replacer,
-                $logger,
-                ['namespaces' => ['Mtarld\\SymbokBundle\\Tests\\Fixtures\\files']],
-                'var'.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR,
-                true
-            );
-            $autoload->loadClass($class);
-        }
-
-        public function substituteClassDataProvider()
-        {
-            yield [Product1::class, true];
-            yield [Product2::class, true];
-            yield [ProductFromAnotherNamespace::class, false];
-            yield ['AnotherClass', false];
-            yield ['Mtarld\SymbokBundle\Tests\Fixtures\files\VirtualClass', false];
-        }
+    public function substituteClassDataProvider(): iterable
+    {
+        yield [Product1::class, true];
+        yield [Product2::class, true];
+        yield [ProductFromAnotherNamespace::class, false];
+        yield ['AnotherClass', false];
+        yield ['Mtarld\SymbokBundle\Tests\Fixtures\files\VirtualClass', false];
     }
 }

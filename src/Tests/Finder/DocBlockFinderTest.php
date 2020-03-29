@@ -4,6 +4,9 @@ namespace Mtarld\SymbokBundle\Tests\Finder;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\DBAL\Version;
+use Doctrine\ORM\Mapping\Annotation;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
@@ -48,7 +51,7 @@ class DocBlockFinderTest extends TestCase
         $this->assertContains(
             ToString::class,
             array_map(
-                function (AnnotationInterface $annotation) {
+                static function (AnnotationInterface $annotation): string {
                     return get_class($annotation);
                 },
                 $finder->findAnnotations(new DocBlock())
@@ -73,6 +76,7 @@ class DocBlockFinderTest extends TestCase
             $this->createMock(LoggerInterface::class)
         );
 
+        /** @var Annotation $relation */
         $relation = $finder->findDoctrineRelation(new DocBlock());
 
         $this->assertSame(OneToOne::class, get_class($relation));
@@ -168,18 +172,18 @@ class DocBlockFinderTest extends TestCase
     }
 
     /**
+     * @param class-string|null $fqsen
+     *
      * @dataProvider findTypeFromDoctrineRelationDataProvider
      * @testdox Doctrine relation found type is $fqsen with $testdox
      */
-    public function testFindTypeFromDoctrineRelation($annotation, bool $isNull, ?string $fqsen, string $testdox): void
+    public function testFindTypeFromDoctrineRelation(Annotation $annotation, bool $isNull, ?string $fqsen, string $testdox): void
     {
         $parser = $this->createMock(DocBlockParser::class);
         $parser
             ->method('parseAnnotations')
             ->willReturn([$annotation])
         ;
-
-        $types = $this->createMock(DoctrineTypes::class);
 
         $finder = new DocBlockFinder(
             $parser,
@@ -227,6 +231,8 @@ class DocBlockFinderTest extends TestCase
     }
 
     /**
+     * @param class-string|null $fqsen
+     *
      * @dataProvider findTypeFromDoctrineColumnDataProvider
      * @testdox Doctrine column found type is $fqsen when $testdox and type is $type
      */
@@ -261,14 +267,18 @@ class DocBlockFinderTest extends TestCase
             return;
         }
 
-        $this->assertInstanceOf($fqsen, $type);
+        if (is_string($fqsen)) {
+            $this->assertInstanceOf($fqsen, $type);
+        }
     }
 
     public function findTypeFromDoctrineColumnDataProvider(): iterable
     {
+        $doctrineTypes = 0 <= Version::compare('2.6') ? Types::class : Type::class;
+
         yield [
             'string',
-            [Type::STRING => new String_()],
+            [$doctrineTypes::STRING => new String_()],
             false,
             String_::class,
             'type is in type map',
@@ -284,7 +294,7 @@ class DocBlockFinderTest extends TestCase
 
         yield [
             'unknown',
-            [Type::STRING => new String_()],
+            [$doctrineTypes::STRING => new String_()],
             true,
             null,
             'type is not in type map',

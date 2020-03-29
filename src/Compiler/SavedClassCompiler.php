@@ -2,38 +2,48 @@
 
 namespace Mtarld\SymbokBundle\Compiler;
 
+use Mtarld\SymbokBundle\Exception\CodeFindingException;
 use Mtarld\SymbokBundle\Factory\ClassFactory;
 use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
 use Mtarld\SymbokBundle\Model\SymbokClass;
+use Mtarld\SymbokBundle\Util\TypeFormatter;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tags\Method;
-use phpDocumentor\Reflection\TypeResolver;
-use phpDocumentor\Reflection\Types\Mixed_;
-use PhpParser\Node\NullableType;
+use PhpParser\Node;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
-use Psr\Log\LoggerInterface;
 
 class SavedClassCompiler implements CompilerInterface
 {
+    /** @var ClassFactory */
     private $classFactory;
+
+    /** @var RuntimeClassCompiler */
     private $runtimeClassCompiler;
+
+    /** @var PhpCodeFinder */
     private $codeFinder;
-    private $logger;
+
+    /** @var TypeFormatter */
+    private $typeFormatter;
 
     public function __construct(
         ClassFactory $classFactory,
         RuntimeClassCompiler $runtimeClassCompiler,
         PhpCodeFinder $codeFinder,
-        LoggerInterface $symbokLogger
+        TypeFormatter $typeFormatter
     ) {
         $this->classFactory = $classFactory;
         $this->runtimeClassCompiler = $runtimeClassCompiler;
         $this->codeFinder = $codeFinder;
-        $this->logger = $symbokLogger;
+        $this->typeFormatter = $typeFormatter;
     }
 
+    /**
+     * @param array<Node> $statements
+     */
     public function compile(array $statements): SymbokClass
     {
         $initialClass = $this->classFactory->create($statements);
@@ -51,30 +61,32 @@ class SavedClassCompiler implements CompilerInterface
 
         $docBlock = $initial->getDocBlock();
 
-        $tags = array_filter($docBlock->getTags(), function (Tag $tag) {
+        $tags = array_filter($docBlock->getTags(), static function (Tag $tag): bool {
             return !$tag instanceof Method;
         });
 
         $tags = array_merge($tags, $updatedMethodTags);
 
         return new DocBlock(
-            $docBlock->getSummary() ?? '',
+            $docBlock->getSummary() ?: '',
             $docBlock->getDescription(),
             $tags,
             $docBlock->getContext()
         );
     }
 
+    /**
+     * @return array<Tag>
+     */
     private function getUpdatedMethodTags(SymbokClass $initial, SymbokClass $runtime): array
     {
         $initialMethods = $this->codeFinder->findMethods($initial->getStatements());
         $runtimeMethods = $this->codeFinder->findMethods($runtime->getStatements());
-
-        $addedMethods = array_udiff($runtimeMethods, $initialMethods, function (ClassMethod $inital, ClassMethod $added) {
-            return strcmp($inital->name->name, $added->name->name);
+        $addedMethods = array_udiff($runtimeMethods, $initialMethods, static function (ClassMethod $initial, ClassMethod $added): int {
+            return strcmp($initial->name->name, $added->name->name);
         });
 
-        $initalMethodTags = array_filter($initial->getDocBlock()->getTags(), function (Tag $tag) {
+        $initialMethodTags = array_filter($initial->getDocBlock()->getTags(), static function (Tag $tag): bool {
             return 'method' === $tag->getName();
         });
         $addedMethodTags = array_map(function (ClassMethod $method) {
@@ -82,38 +94,30 @@ class SavedClassCompiler implements CompilerInterface
         }, $addedMethods);
 
         // Remove method tags that we'll replace
-        $initalMethodTags = array_udiff($initalMethodTags, $addedMethodTags, function (Method $initial, Method $added) {
+        $initialMethodTags = array_udiff($initialMethodTags, $addedMethodTags, static function (Method $initial, Method $added): int {
             return strcmp($initial->getMethodName(), $added->getMethodName());
         });
 
-        return array_merge($initalMethodTags, $addedMethodTags);
+        return array_merge($initialMethodTags, $addedMethodTags);
     }
 
     private function createMethodTag(ClassMethod $method): Method
     {
-        $arguments = array_map(function (Param $param) {
-            $type = $param->type instanceof NullableType
-                  ? '?'.$param->type->type
-                  : (string) $param->type
-            ;
+        $arguments = array_map(function (Param $param): array {
+            if (!$param->var instanceof Variable) {
+                throw new CodeFindingException('Cannot retrieve parameter variable');
+            }
 
             return [
                 'name' => $param->var->name,
-                'type' => $type,
+                'type' => $this->typeFormatter->asDocumentationString($param->type),
             ];
         }, $method->getParams());
-
-        $returnType = $method->getReturnType();
-
-        $returnType = $returnType instanceof NullableType
-                    ? '?'.$returnType->type
-                    : (string) $returnType
-        ;
 
         return new Method(
             $method->name->name,
             $arguments,
-            !empty($returnType) ? (new TypeResolver())->resolve($returnType) : new Mixed_(),
+            $this->typeFormatter->asDocumentationType($method->getReturnType()),
             $method->isStatic()
         );
     }

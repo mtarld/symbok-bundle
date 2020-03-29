@@ -19,18 +19,23 @@ use Psr\Log\LoggerInterface;
 
 class DoctrineRelationFactory
 {
+    /** @var DocBlockFactory */
     private $docBlockFactory;
+
+    /** @var DocBlockFinder */
     private $docBlockFinder;
+
+    /** @var LoggerInterface */
     private $logger;
 
     public function __construct(
         DocBlockFactory $docBlockFactory,
         DocBlockFinder $docBlockFinder,
-        LoggerInterface $symbokLogger
+        LoggerInterface $logger
     ) {
         $this->docBlockFactory = $docBlockFactory;
         $this->docBlockFinder = $docBlockFinder;
-        $this->logger = $symbokLogger;
+        $this->logger = $logger;
     }
 
     public function create(SymbokClass $class, Property $property): ?DoctrineRelation
@@ -75,43 +80,54 @@ class DoctrineRelationFactory
 
     private function createOneToManyRelation(SymbokClass $class, OneToMany $annotation): OneToManyRelation
     {
-        return (new OneToManyRelation())
+        $relation = new OneToManyRelation();
+        $relation
             ->setClassName($class->getName())
             ->setTargetClassName($annotation->targetEntity)
             ->setTargetPropertyName($annotation->mappedBy)
         ;
+
+        return $relation;
     }
 
     private function createOneToOneRelation(SymbokClass $class, OneToOne $annotation): OneToOneRelation
     {
         $isOwning = !empty($annotation->inversedBy);
 
-        return (new OneToOneRelation())
+        $relation = new OneToOneRelation();
+        $relation
             ->setClassName($class->getName())
             ->setTargetClassName($annotation->targetEntity)
             ->setTargetPropertyName(true === $isOwning ? $annotation->inversedBy : $annotation->mappedBy)
             ->setIsOwning($isOwning)
         ;
+
+        return $relation;
     }
 
     private function createManyToOneRelation(SymbokClass $class, ManyToOne $annotation): ManyToOneRelation
     {
-        return (new ManyToOneRelation())
+        $relation = new ManyToOneRelation();
+        $relation
             ->setClassName($class->getName())
             ->setTargetClassName($annotation->targetEntity)
             ->setTargetPropertyName($annotation->inversedBy)
         ;
+
+        return $relation;
     }
 
     private function createManyToManyRelation(SymbokClass $class, ManyToMany $annotation): ManyToManyRelation
     {
         $isOwning = !empty($annotation->inversedBy);
-
-        return (new ManyToManyRelation())
+        $relation = new ManyToManyRelation();
+        $relation
             ->setClassName($class->getName())
             ->setTargetClassName($annotation->targetEntity)
             ->setTargetPropertyName(true === $isOwning ? $annotation->inversedBy : $annotation->mappedBy)
             ->setIsOwning($isOwning)
         ;
+
+        return $relation;
     }
 }

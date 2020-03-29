@@ -1,38 +1,34 @@
 help: ## Show this message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-clean-code:
+clean-code: ## Run PHP CS Fixer
 	./vendor/bin/php-cs-fixer --diff -v fix src
 
-test: test-code test-qa
+test: test-code test-qa ## Run code and QA tests
 
-test-code: test-phpunit-unit test-phpunit-functional
+test-code: test-unit test-functional ## Run code tests
 
-test-qa: test-phpcs test-phpa test-phpstan test-phpcpd test-phpmd
+test-qa: test-phpcs test-psalm test-phpmd test-phpa test-phpcpd ## Run QA tests
 
-test-phpunit-unit:
+test-unit: ## Run unit tests
 	./vendor/bin/phpunit --group unit
 
-test-phpunit-functional:
+test-functional: ## Run functional tests
 	./vendor/bin/phpunit --group functional
 
-test-phpcs:
-	./vendor/bin/php-cs-fixer --diff --dry-run -v fix src
+test-phpcs: ## Run codestyle tests
+	./vendor/bin/php-cs-fixer --diff --dry-run --using-cache=no -v fix src
 
-test-phpa:
-	./vendor/bin/phpa src
+test-psalm: ## Run static analysis tests
+	./vendor/bin/psalm --show-info=true --long-progress
 
-test-phpstan:
-	./vendor/bin/phpstan analyze src/ -l 5 -c phpstan.neon
-
-test-phpcpd:
-	./vendor/bin/phpcpd --exclude Tests --exclude MethodBuilder src/
-
-test-phpmd:
+test-phpmd: ## Run mess detector tests
 	./vendor/bin/phpmd --exclude Tests/Fixtures src/ text phpmd.xml
 
-test-code-coverage-html:
-	./vendor/bin/phpunit --coverage-html=coverage
+test-phpa: ## Run assumption tests
+	./vendor/bin/phpa src
 
-test-code-coverage-clover:
-	./vendor/bin/phpunit --coverage-clover=coverage.xml
+test-phpcpd: ## Run copy/paste tests
+	./vendor/bin/phpcpd --exclude Tests --exclude MethodBuilder src/
+
+.PHONY: clean-code test test-code test-qa test-phpunit-unit test-phpunit-functional test-phpcs test-psalm test-phpmd test-phpa test-phpcpd

@@ -11,19 +11,23 @@
 
         <service id="Mtarld\SymbokBundle\Autoload\Autoload" public="true">
             <argument type="service" key="$replacer" id="symbok.replacer.runtime_class" />
-            <argument key="$config">%symbok%</argument>
+            <argument key="$namespaces">[]</argument>
             <argument key="$cacheDir">%kernel.cache_dir%</argument>
             <argument key="$isDebug">%kernel.debug%</argument>
         </service>
 
+        <service id="Mtarld\SymbokBundle\Autoload\AutoloadFinder">
+            <argument key="$namespace" />
+        </service>
+
         <service id="Mtarld\SymbokBundle\Command\SavedUpdaterCommand">
             <argument type="service" key="$replacer" id="symbok.replacer.saved_class" />
-            <argument key="$config">%symbok%</argument>
+            <argument key="$namespaces">[]</argument>
             <argument key="$projectDir">%kernel.project_dir%</argument>
         </service>
 
         <service id="Mtarld\SymbokBundle\Command\PreviewCommand">
-            <argument key="$config">%symbok%</argument>
+            <argument key="$namespaces">[]</argument>
         </service>
 
         <service id="symbok.replacer.runtime_class" class="Mtarld\SymbokBundle\Replacer\RuntimeClassReplacer" public="true">
@@ -43,15 +47,15 @@
         </service>
 
         <service id="Mtarld\SymbokBundle\Behavior\AllArgsConstructorBehavior">
-            <argument key="$config">%symbok%</argument>
+            <argument key="$defaults">[]</argument>
         </service>
 
         <service id="Mtarld\SymbokBundle\Behavior\SetterBehavior">
-            <argument key="$config">%symbok%</argument>
+            <argument key="$defaults">[]</argument>
         </service>
 
         <service id="Mtarld\SymbokBundle\Behavior\GetterBehavior">
-            <argument key="$config">%symbok%</argument>
+            <argument key="$defaults">[]</argument>
         </service>
 
         <prototype namespace="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\" resource="../../Compiler/RuntimeClassCompiler/*"  public="true" />

@@ -8,9 +8,9 @@ use Mtarld\SymbokBundle\Parser\PhpCodeParser;
 use Mtarld\SymbokBundle\Replacer\SavedClassReplacer;
 use org\bovigo\vfs\vfsStream;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * @group functional
@@ -18,12 +18,21 @@ use Symfony\Component\Finder\Finder;
  */
 class SavedUpdaterCommandTest extends KernelTestCase
 {
+    /** @var CommandTester */
+    private $commandTester;
+
+    /** @var array<string> */
     private $savedFiles = [];
 
+    /**
+     * @psalm-suppress ArgumentTypeCoercion
+     * @psalm-suppress PossiblyNullArgument
+     */
     public function setUp(): void
     {
-        $fixturesDir = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'files';
+        $fixturesDir = __DIR__.'/../Fixtures/files';
 
+        /** @var array<SplFileInfo> $files */
         $files = (new Finder())->name('*.php')->in($fixturesDir);
         foreach ($files as $file) {
             $filename = $file->getFilename();
@@ -37,36 +46,21 @@ class SavedUpdaterCommandTest extends KernelTestCase
         vfsStream::setup('dir', 666, $virtualDirectory);
 
         static::bootKernel();
+        $this->commandTester = new CommandTester(new SavedUpdaterCommand(
+            static::$container->get(PhpCodeParser::class),
+            static::$container->get(PhpCodeFinder::class),
+            static::$container->get(SavedClassReplacer::class),
+            ['Mtarld\SymbokBundle\Tests\Fixtures\files'],
+            vfsStream::url('dir')
+        ));
     }
 
     public function testSavedFilesAreUpdated(): void
     {
-        $command = new SavedUpdaterCommand(
-            self::$container->get(PhpCodeParser::class),
-            self::$container->get(PhpCodeFinder::class),
-            self::$container->get(SavedClassReplacer::class),
-            ['namespaces' => ['Mtarld\SymbokBundle\Tests\Fixtures\files']],
-            vfsStream::url('dir')
-        );
-
-        $output = $this->createMock(OutputInterface::class);
-        $output
-            ->expects($this->exactly(sizeof($this->savedFiles)))
-            ->method('writeln')
-        ;
-
-        $input = $this->createMock(InputInterface::class);
-        $input
-            ->method('getArgument')
-            ->willReturn('src')
-        ;
-
-        $command->run(
-            $input,
-            $output
-        );
-
-        $virtualDirectoryPath = vfsStream::url('dir').DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR;
+        $this->commandTester->execute([
+            'directory' => 'src',
+        ]);
+        $virtualDirectoryPath = vfsStream::url('dir').'/src/';
 
         $this->assertSame(
             $this->savedFiles['ProductFromAnotherNamespace.php'],

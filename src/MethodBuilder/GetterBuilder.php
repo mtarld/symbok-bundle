@@ -6,16 +6,21 @@ use Mtarld\SymbokBundle\Behavior\GetterBehavior;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
 use Mtarld\SymbokBundle\Util\MethodNameGenerator;
 use Mtarld\SymbokBundle\Util\TypeFormatter;
+use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types\Boolean;
 use PhpParser\Builder\Method;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 
 class GetterBuilder
 {
+    /** @var GetterBehavior */
     private $behavior;
+
+    /** @var TypeFormatter */
     private $typeFormatter;
 
     public function __construct(
@@ -33,9 +38,13 @@ class GetterBuilder
 
         $methodBuilder = (new Method($methodName))->makePublic();
 
-        $returnType = $this->typeFormatter->asString($property->getType(), $this->behavior->isNullable($property));
-        if (is_string($returnType)) {
-            $methodBuilder->setReturnType($returnType);
+        if (($returnType = $property->getType()) instanceof Type) {
+            $returnType = $this->behavior->isNullable($property) ? new NullableType((string) $returnType) : $returnType;
+            $returnType = $this->typeFormatter->asPhpString($returnType);
+
+            if (is_string($returnType)) {
+                $methodBuilder->setReturnType($returnType);
+            }
         }
 
         // return $this->prop;

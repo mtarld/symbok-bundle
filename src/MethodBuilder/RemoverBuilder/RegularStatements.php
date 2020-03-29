@@ -4,6 +4,7 @@ namespace Mtarld\SymbokBundle\MethodBuilder\RemoverBuilder;
 
 use Doctrine\Common\Inflector\Inflector;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
+use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -19,6 +20,9 @@ use PhpParser\Node\Stmt\If_;
 
 class RegularStatements
 {
+    /**
+     * @return array<Node>
+     */
     public function getStatements(SymbokProperty $property): array
     {
         $propertyName = $property->getName();

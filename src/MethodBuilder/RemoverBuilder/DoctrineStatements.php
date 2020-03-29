@@ -7,6 +7,7 @@ use Mtarld\SymbokBundle\Behavior\SetterBehavior;
 use Mtarld\SymbokBundle\Model\Relation\DoctrineRelation;
 use Mtarld\SymbokBundle\Model\Relation\ManyToManyRelation;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
+use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\ConstFetch;
@@ -20,6 +21,7 @@ use PhpParser\Node\Stmt\If_;
 
 class DoctrineStatements
 {
+    /** @var SetterBehavior */
     private $behavior;
 
     public function __construct(SetterBehavior $behavior)
@@ -27,6 +29,9 @@ class DoctrineStatements
         $this->behavior = $behavior;
     }
 
+    /**
+     * @return array<Node>
+     */
     public function getStatements(SymbokProperty $property): array
     {
         $propertyName = $property->getName();
@@ -38,7 +43,7 @@ class DoctrineStatements
             /** @var DoctrineRelation */
             $relation = $property->getRelation();
             if ($relation->isOwning()) {
-                $ifStatements[] = $this->getOtherSideUpdateStmt($relation, $propertyName, $paramName);
+                $ifStatements[] = $this->getOtherSideUpdateStmt($relation, $paramName);
             }
         }
 
@@ -79,7 +84,7 @@ class DoctrineStatements
         );
     }
 
-    private function getOtherSideUpdateStmt(DoctrineRelation $relation, string $propertyName, string $paramName): Stmt
+    private function getOtherSideUpdateStmt(DoctrineRelation $relation, string $paramName): Stmt
     {
         if ($relation instanceof ManyToManyRelation) {
             //  $car->removeUser($this);

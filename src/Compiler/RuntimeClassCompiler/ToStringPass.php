@@ -9,8 +9,13 @@ use Mtarld\SymbokBundle\Model\SymbokClass;
 
 class ToStringPass implements ClassPassInterface
 {
+    /** @var ClassBehavior */
     private $behavior;
+
+    /** @var PhpCodeFinder */
     private $finder;
+
+    /** @var ToStringBuilder */
     private $builder;
 
     public function __construct(
@@ -25,10 +30,7 @@ class ToStringPass implements ClassPassInterface
 
     public function support(SymbokClass $class): bool
     {
-        return !$this->finder->hasMethod(
-            '__toString',
-            $class->getStatements()
-        )
+        return !$this->finder->hasMethod('__toString', $class->getStatements())
             && $this->behavior->requireToString($class)
         ;
     }

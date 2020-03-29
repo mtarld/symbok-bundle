@@ -10,34 +10,41 @@ use Psr\Log\LoggerInterface;
 
 class PropertyFactory
 {
+    /** @var DocBlockFactory */
     private $docBlockFactory;
+
+    /** @var DocBlockFinder */
     private $docBlockFinder;
+
+    /** @var DoctrineRelationFactory */
     private $relationFactory;
+
+    /** @var LoggerInterface */
     private $logger;
 
     public function __construct(
         DocBlockFactory $docBlockFactory,
         DocBlockFinder $docBlockFinder,
         DoctrineRelationFactory $relationFactory,
-        LoggerInterface $symbokLogger
+        LoggerInterface $logger
     ) {
         $this->docBlockFactory = $docBlockFactory;
         $this->docBlockFinder = $docBlockFinder;
         $this->relationFactory = $relationFactory;
-        $this->logger = $symbokLogger;
+        $this->logger = $logger;
     }
 
-    public function create(SymbokClass $class, Property $property): SymbokProperty
+    public function create(SymbokClass $class, Property $rawProperty): SymbokProperty
     {
-        $docBlock = $this->docBlockFactory->createFor($property, $class->getContext());
+        $docBlock = $this->docBlockFactory->createFor($rawProperty, $class->getContext());
 
-        $property = (new SymbokProperty())
-            ->setName($property->props[0]->name->name)
-            ->setClass($class)
-            ->setAnnotations($this->docBlockFinder->findAnnotations($docBlock))
-            ->setType($this->docBlockFinder->findType($docBlock))
-            ->setRelation($this->relationFactory->create($class, $property))
-        ;
+        $property = new SymbokProperty(
+            $rawProperty->props[0]->name->name,
+            $class,
+            $this->docBlockFinder->findType($docBlock),
+            $this->relationFactory->create($class, $rawProperty),
+            $this->docBlockFinder->findAnnotations($docBlock)
+        );
 
         $this->logger->info('Property {name} created', [
             'name' => $property->getName(),

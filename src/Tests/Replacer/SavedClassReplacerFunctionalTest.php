@@ -23,7 +23,8 @@ class SavedClassReplacerFunctionalTest extends KernelTestCase
      */
     public function testSavedClassReplacementContent(): void
     {
-        $replacer = self::$container->get(SavedClassReplacer::class);
+        /** @var SavedClassReplacer $replacer */
+        $replacer = static::$container->get(SavedClassReplacer::class);
 
         $this->assertSame(
             '<?php

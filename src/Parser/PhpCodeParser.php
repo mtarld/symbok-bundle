@@ -3,19 +3,32 @@
 namespace Mtarld\SymbokBundle\Parser;
 
 use Exception;
-use Mtarld\SymbokBundle\Autoload\Autoload;
-use Mtarld\SymbokBundle\Exception\RuntimeException;
+use Mtarld\SymbokBundle\Autoload\AutoloadFinder;
+use Mtarld\SymbokBundle\Exception\IOException;
+use PhpParser\Node;
 use PhpParser\ParserFactory;
 
 class PhpCodeParser
 {
-    public function parseStatements(string $className): array
-    {
-        $path = Autoload::getClassLoader()->findFile($className);
+    /** @var AutoloadFinder */
+    private $autoloadFinder;
 
-        return $this->parseStatementsFromPath($path);
+    public function __construct(AutoloadFinder $autoloadFinder)
+    {
+        $this->autoloadFinder = $autoloadFinder;
     }
 
+    /**
+     * @return array<Node>
+     */
+    public function parseStatements(string $className): array
+    {
+        return $this->parseStatementsFromPath($this->autoloadFinder->findFile($className));
+    }
+
+    /**
+     * @return array<Node>
+     */
     public function parseStatementsFromPath(string $path): array
     {
         $parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
@@ -23,9 +36,13 @@ class PhpCodeParser
         try {
             $content = file_get_contents($path);
         } catch (Exception $e) {
-            throw new RuntimeException(sprintf('Cannot read file %s. Exception: %s', $path, $e->getMessage()));
+            throw new IOException(sprintf("Cannot read file '%s'. Exception: %s", $path, $e->getMessage()));
         }
 
-        return $parser->parse($content);
+        if (false === $content) {
+            throw new IOException(sprintf("Cannot read file '%s'", $path));
+        }
+
+        return $parser->parse($content) ?? [];
     }
 }

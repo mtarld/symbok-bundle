@@ -11,8 +11,13 @@ use Mtarld\SymbokBundle\Util\MethodNameGenerator;
 
 class GetterPass implements PropertyPassInterface
 {
+    /** @var PropertyBehavior */
     private $behavior;
+
+    /** @var PhpCodeFinder */
     private $finder;
+
+    /** @var GetterBuilder */
     private $builder;
 
     public function __construct(
