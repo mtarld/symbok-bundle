@@ -6,5 +6,7 @@ phpunit.xml
 coverage.xml
 coverage/
 
+composer.lock
+
 var/
 vendor/
