@@ -22,9 +22,12 @@ class SavedClassCompilerFunctionalTest extends KernelTestCase
 
     public function testSavedClassIsCompiling(): void
     {
-        $compiler = self::$container->get(SavedClassCompiler::class);
+        /** @var SavedClassCompiler $compiler */
+        $compiler = static::$container->get(SavedClassCompiler::class);
 
-        $codeFinder = self::$container->get(PhpCodeParser::class);
+        /** @var PhpCodeParser $codeFinder */
+        $codeFinder = static::$container->get(PhpCodeParser::class);
+
         $statements = $codeFinder->parseStatements(Product3::class);
 
         $tags = $compiler->compile($statements)->getDocBlock()->getTags();

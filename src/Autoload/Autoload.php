@@ -2,55 +2,46 @@
 
 namespace Mtarld\SymbokBundle\Autoload;
 
-use Mtarld\SymbokBundle\Exception\RuntimeException;
 use Mtarld\SymbokBundle\Replacer\ReplacerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\ConfigCacheFactory;
 use Symfony\Component\Config\ConfigCacheInterface;
 use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\Debug\DebugClassLoader;
 
 class Autoload
 {
-    public static $classLoader;
-
+    /** @var ReplacerInterface */
     private $replacer;
+
+    /** @var LoggerInterface */
     private $logger;
+
+    /** @var AutoloadFinder */
+    private $autoloadFinder;
+
+    /** @var array<string> */
     private $namespaces;
+
+    /** @var string */
     private $cacheDir;
+
+    /** @var bool */
     private $isDebug;
 
     public function __construct(
         ReplacerInterface $replacer,
-        LoggerInterface $symbokLogger,
-        array $config,
+        LoggerInterface $logger,
+        AutoloadFinder $autoloadFinder,
+        array $namespaces,
         string $cacheDir,
         bool $isDebug
     ) {
         $this->replacer = $replacer;
-        $this->logger = $symbokLogger;
-        $this->namespaces = $config['namespaces'];
+        $this->logger = $logger;
+        $this->autoloadFinder = $autoloadFinder;
+        $this->namespaces = $namespaces;
         $this->cacheDir = $cacheDir;
         $this->isDebug = $isDebug;
-    }
-
-    public static function getClassLoader()
-    {
-        if (static::$classLoader instanceof \Composer\Autoload\ClassLoader) {
-            return static::$classLoader;
-        }
-
-        $loaders = array_filter(spl_autoload_functions(), function ($loader) {
-            return is_array($loader) && method_exists($loader[0], 'findFile');
-        });
-
-        if ($loader = array_shift($loaders)) {
-            static::$classLoader = $loader[0];
-
-            return static::$classLoader;
-        }
-
-        throw new RuntimeException('Unable to find '.DebugClassLoader::class);
     }
 
     public function register(): void
@@ -58,14 +49,18 @@ class Autoload
         spl_autoload_register([$this, 'loadClass'], true, true);
     }
 
+    /**
+     * @psalm-suppress UnresolvableInclude
+     */
     public function loadClass(string $class): void
     {
         if (!$this->isSymbokScope($class)) {
             return;
         }
 
-        $filename = self::getClassLoader()->findFile($class);
-        if (!file_exists($filename)) {
+        try {
+            $filename = $this->autoloadFinder->findFile($class);
+        } catch (\RuntimeException $e) {
             return;
         }
 
@@ -87,7 +82,7 @@ class Autoload
     private function isSymbokScope(string $class): bool
     {
         foreach ($this->namespaces as $namespace) {
-            if (substr($class, 0, strlen($namespace)) === $namespace) {
+            if (0 === strpos($class, $namespace)) {
                 return true;
             }
         }

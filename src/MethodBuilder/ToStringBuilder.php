@@ -6,6 +6,7 @@ use Mtarld\SymbokBundle\Annotation\ToString;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 use phpDocumentor\Reflection\Types\String_;
 use PhpParser\Builder\Method;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ConstFetch;
@@ -24,15 +25,18 @@ class ToStringBuilder
                        ->setReturnType((string) new String_())
         ;
 
-        // return (string) ('Class: ' . ($this->propA . (', ' . $this->propB)));
-        $properties = $class->getAnnotation(ToString::class)->properties;
+        /** @var ToString $toString */
+        $toString = $class->getAnnotation(ToString::class);
 
+        // return (string) ('Class: ' . ($this->propA . (', ' . $this->propB)));
+
+        $properties = $toString->properties;
         $statements = new PropertyFetch(
             new Variable('this'),
-            array_shift($properties)
+            (string) array_shift($properties)
         );
 
-        $statements = array_reduce($properties, function ($result, string $property) {
+        $statements = array_reduce($properties, static function (Expr $result, string $property): Concat {
             return new Concat(
                 $result,
                 new Concat(

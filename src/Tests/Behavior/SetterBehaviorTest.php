@@ -25,17 +25,13 @@ class SetterBehaviorTest extends TestCase
         $property = $this->createMock(SymbokProperty::class);
         $property
             ->method('getAnnotation')
-            ->will($this->returnCallback($callable))
+            ->willReturnCallback($callable)
         ;
 
         $propertyBehavior = $this->createMock(PropertyBehavior::class);
         $setterBehavior = new SetterBehavior(
             $propertyBehavior,
-            [
-                'defaults' => [
-                    'setter' => ['fluent' => false],
-                ],
-            ]
+            ['fluent' => false]
         );
 
         $this->assertSame($result, $setterBehavior->isFluent($property));
@@ -44,15 +40,18 @@ class SetterBehaviorTest extends TestCase
     public function isFluentDataProvider(): iterable
     {
         yield [
-            function ($class) {
-                return null;
-            },
+            static function (string $class): void {},
             false,
             'no annotation',
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @param class-string $class
+             *
+             * @return mixed
+             */
+            static function (string $class) {
                 return new $class();
             },
             false,
@@ -60,7 +59,7 @@ class SetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?Data {
                 if (Data::class === $class) {
                     $data = new Data();
                     $data->fluent = true;
@@ -75,7 +74,10 @@ class SetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @return Data|Setter|null
+             */
+            static function (string $class) {
                 if (Data::class === $class) {
                     $data = new Data();
                     $data->fluent = false;
@@ -98,6 +100,8 @@ class SetterBehaviorTest extends TestCase
     }
 
     /**
+     * @param class-string|null $relation
+     *
      * @dataProvider isNullableDataProvider
      * @testdox isNullable is $result when $testDox
      */
@@ -106,7 +110,7 @@ class SetterBehaviorTest extends TestCase
         $property = $this->createMock(SymbokProperty::class);
         $property
             ->method('getAnnotation')
-            ->will($this->returnCallback($callable))
+            ->willReturnCallback($callable)
         ;
         if (!empty($relation)) {
             $property
@@ -122,11 +126,7 @@ class SetterBehaviorTest extends TestCase
         ;
         $setterBehavior = new SetterBehavior(
             $propertyBehavior,
-            [
-                'defaults' => [
-                    'setter' => ['nullable' => true],
-                ],
-            ]
+            ['nullable' => true]
         );
 
         $this->assertSame($result, $setterBehavior->isNullable($property));
@@ -135,9 +135,7 @@ class SetterBehaviorTest extends TestCase
     public function isNullableDataProvider(): iterable
     {
         yield [
-            function ($class) {
-                return null;
-            },
+            static function (string $class): void {},
             null,
             null,
             true,
@@ -145,7 +143,12 @@ class SetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @param class-string $class
+             *
+             * @return mixed
+             */
+            static function (string $class) {
                 return new $class();
             },
             null,
@@ -155,7 +158,7 @@ class SetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?Data {
                 if (Data::class === $class) {
                     $data = new Data();
                     $data->nullable = false;
@@ -172,7 +175,7 @@ class SetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?Data {
                 if (Data::class === $class) {
                     $data = new Data();
                     $data->nullable = false;
@@ -189,7 +192,7 @@ class SetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?Data {
                 if (Data::class === $class) {
                     $data = new Data();
                     $data->nullable = true;
@@ -206,7 +209,10 @@ class SetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @return Data|Setter|null
+             */
+            static function (string $class) {
                 if (Data::class === $class) {
                     $data = new Data();
                     $data->nullable = true;
@@ -239,16 +245,12 @@ class SetterBehaviorTest extends TestCase
         $property = $this->createMock(SymbokProperty::class);
         $property
             ->method('getAnnotation')
-            ->will($this->returnCallback($callable))
+            ->willReturnCallback($callable)
         ;
 
         $setterBehavior = new SetterBehavior(
             $this->createMock(PropertyBehavior::class),
-            [
-                'defaults' => [
-                    'setter' => ['updateOtherSide' => true],
-                ],
-            ]
+            ['updateOtherSide' => true]
         );
 
         $this->assertSame($result, $setterBehavior->hasToUpdateOtherSide($property));
@@ -257,15 +259,18 @@ class SetterBehaviorTest extends TestCase
     public function hasToUpdateOtherSideDataProvider(): iterable
     {
         yield [
-            function ($class) {
-                return null;
-            },
+            static function (string $class): void {},
             true,
             'no annotation',
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @param class-string $class
+             *
+             * @return mixed
+             */
+            static function (string $class) {
                 return new $class();
             },
             true,
@@ -273,7 +278,7 @@ class SetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?Data {
                 if (Data::class === $class) {
                     $data = new Data();
                     $data->updateOtherSide = false;
@@ -288,7 +293,10 @@ class SetterBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @return Data|Setter|null
+             */
+            static function (string $class) {
                 if (Data::class === $class) {
                     $data = new Data();
                     $data->updateOtherSide = true;

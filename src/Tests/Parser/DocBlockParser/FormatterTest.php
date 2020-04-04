@@ -20,7 +20,7 @@ class FormatterTest extends TestCase
      * @dataProvider formatAnnotationsDataProvider
      * @testdox Annotation is kept when $testdox
      */
-    public function testFormatAnnotations(Tag $tag, ?Context $context, array $namespaces, string $testdox): void
+    public function testFormatAnnotations(Tag $tag, ?Context $context, string $testdox): void
     {
         $docBlock = new DocBlock(
             '',
@@ -29,49 +29,26 @@ class FormatterTest extends TestCase
             $context
         );
 
-        $formatted = (new Formatter())->formatAnnotations($docBlock, $namespaces);
+        $formatted = (new Formatter())->formatAnnotations($docBlock);
         $this->assertCount(1, $formatted->getTags());
     }
 
-    public function formatAnnotationsDataProvider()
+    public function formatAnnotationsDataProvider(): iterable
     {
         yield [
-            new Generic("\A\Annotation"),
-            null,
-            ["\A"],
-            'in namespace prefixed by \\',
-        ];
-
-        yield [
-            new Generic("\A\Annotation"),
-            null,
-            [],
+            new Generic("B\Annotation"),
+            new Context("\Somewhere"),
             'out of namespace',
         ];
 
         yield [
             new Generic("B\Annotation"),
-            null,
-            ["\B"],
-            'in namespace not prefixed',
-        ];
-
-        yield [
-            new Generic("B\Annotation"),
             new Context("\Somewhere"),
-            ["\B"],
-            'out of namespace using context',
-        ];
-
-        yield [
-            new Generic("B\Annotation"),
-            new Context("\Somewhere"),
-            ["\Somewhere\B"],
-            'in namespace using context',
+            'in namespace',
         ];
     }
 
-    public function testDocBlockIsConstitent()
+    public function testDocBlockIsConstitent(): void
     {
         $docBlock = new DocBlock(
             'Summary',
@@ -85,7 +62,7 @@ class FormatterTest extends TestCase
 
         $formatter = new Formatter();
 
-        $formatted = $formatter->formatAnnotations($docBlock, ["\A"]);
+        $formatted = $formatter->formatAnnotations($docBlock);
         $this->assertSame($docBlock->getSummary(), $formatted->getSummary());
         $this->assertSame($docBlock->getDescription(), $formatted->getDescription());
         $this->assertSame($docBlock->getContext(), $formatted->getContext());

@@ -6,9 +6,16 @@ use Mtarld\SymbokBundle\Util\MethodNameGenerator;
 
 abstract class DoctrineRelation
 {
+    /** @var string */
     protected $className;
+
+    /** @var string */
     protected $targetClassName;
+
+    /** @var string|null */
     protected $targetPropertyName;
+
+    /** @var bool */
     protected $isOwning;
 
     abstract public function getTargetSetterMethodName(): string;
@@ -18,7 +25,7 @@ abstract class DoctrineRelation
         return $this->targetClassName;
     }
 
-    public function setTargetClassName(string $targetClassName)
+    public function setTargetClassName(string $targetClassName): self
     {
         $this->targetClassName = $targetClassName;
 
@@ -30,7 +37,7 @@ abstract class DoctrineRelation
         return $this->className;
     }
 
-    public function setClassName(string $className)
+    public function setClassName(string $className): self
     {
         $this->className = $className;
 
@@ -42,7 +49,7 @@ abstract class DoctrineRelation
         return $this->targetPropertyName;
     }
 
-    public function setTargetPropertyName(?string $targetPropertyName)
+    public function setTargetPropertyName(?string $targetPropertyName): self
     {
         $this->targetPropertyName = $targetPropertyName;
 
@@ -54,7 +61,7 @@ abstract class DoctrineRelation
         return $this->isOwning;
     }
 
-    public function setIsOwning(bool $isOwning)
+    public function setIsOwning(bool $isOwning): self
     {
         $this->isOwning = $isOwning;
 
@@ -68,9 +75,9 @@ abstract class DoctrineRelation
 
     protected function getMethodTargetName(): string
     {
-        return !empty($this->getTargetPropertyName())
-                       ? $this->getTargetPropertyName()
-                       : $this->getClassName()
+        return !empty($targetPropertyName = $this->getTargetPropertyName())
+            ? $targetPropertyName
+            : $this->getClassName()
         ;
     }
 }

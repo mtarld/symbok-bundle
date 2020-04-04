@@ -9,6 +9,8 @@ use Mtarld\SymbokBundle\MethodBuilder\SetterBuilder;
 use Mtarld\SymbokBundle\Model\Relation\ManyToManyRelation;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\Types\Context;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPUnit\Framework\TestCase;
 
@@ -19,6 +21,8 @@ use PHPUnit\Framework\TestCase;
 class SetterPassTest extends TestCase
 {
     /**
+     * @param class-string|null $relation
+     *
      * @dataProvider supportDataProvider
      * @testdox support return $result when method found is $hasMethod and require is $require and relation is $relation
      */
@@ -72,7 +76,7 @@ class SetterPassTest extends TestCase
             ->willReturn(new ClassMethod('dummy'))
         ;
 
-        $class = (new SymbokClass())->setStatements([]);
+        $class = new SymbokClass('foo', [], new DocBlock('bar'), [], [], new Context('baz'));
 
         $property = $this->createMock(SymbokProperty::class);
         $property
@@ -89,6 +93,9 @@ class SetterPassTest extends TestCase
         $statements = $pass->process($property)->getStatements();
 
         $this->assertCount(1, $statements);
-        $this->assertSame('dummy', $statements[0]->name->name);
+
+        /** @var ClassMethod $method */
+        $method = $statements[0];
+        $this->assertSame('dummy', (string) $method->name);
     }
 }

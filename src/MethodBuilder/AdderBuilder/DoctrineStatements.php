@@ -6,6 +6,7 @@ use Doctrine\Common\Inflector\Inflector;
 use Mtarld\SymbokBundle\Behavior\SetterBehavior;
 use Mtarld\SymbokBundle\Model\Relation\DoctrineRelation;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
+use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\MethodCall;
@@ -17,6 +18,7 @@ use PhpParser\Node\Stmt\If_;
 
 class DoctrineStatements
 {
+    /** @var SetterBehavior */
     private $behavior;
 
     public function __construct(SetterBehavior $behavior)
@@ -24,6 +26,9 @@ class DoctrineStatements
         $this->behavior = $behavior;
     }
 
+    /**
+     * @return array<Node>
+     */
     public function getStatements(SymbokProperty $property): array
     {
         $propertyName = $property->getName();
@@ -31,11 +36,8 @@ class DoctrineStatements
 
         $statements = [$this->getOwnSideUpdateStmt($propertyName, $paramName)];
 
-        if ($this->behavior->hasToUpdateOtherSide($property)) {
-            $relation = $property->getRelation();
-            if ($relation->isOwning()) {
-                $statements[] = $this->getOtherSideUpdateStmt($relation, $paramName);
-            }
+        if ($this->behavior->hasToUpdateOtherSide($property) && ($relation = $property->getRelation()) instanceof DoctrineRelation && $relation->isOwning()) {
+            $statements[] = $this->getOtherSideUpdateStmt($relation, $paramName);
         }
 
         return [

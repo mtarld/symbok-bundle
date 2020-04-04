@@ -21,10 +21,10 @@ class ConstructorBuilder
     {
         $methodBuilder = (new Method('__construct'))->makePublic();
 
-        $collectionProperties = array_filter($class->getProperties(), function (SymbokProperty $property) {
+        $collectionProperties = array_filter($class->getProperties(), static function (SymbokProperty $property): bool {
             return $property->getRelation() instanceof DoctrineCollectionRelation;
         });
-        $statements = array_map(function (SymbokProperty $property) {
+        $statements = array_map(static function (SymbokProperty $property): Expression {
             return new Expression(
                 new Assign(
                     new PropertyFetch(

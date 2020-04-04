@@ -20,14 +20,13 @@ matrix:
           # Test the latest stable release
         - php: 7.2
         - php: 7.3
-          env: COVERAGE=true
+          env: QA=true
 
     allow_failures:
           # Dev-master is allowed to fail.
         - env: STABILITY="dev"
 
 before_install:
-    - if [[ $COVERAGE != true ]]; then phpenv config-rm xdebug.ini || true; fi
     - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; fi;
     - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;
 
@@ -36,7 +35,5 @@ install:
 
 script:
     - composer validate --strict --no-check-lock
-    - make test
-
-after_success:
-    - if [[ $COVERAGE == true ]]; then make test-code-coverage-clover && bash <(curl -s https://codecov.io/bash); fi
+    - if [[ $QA == true ]]; then make test-qa; fi
+    - make test-code

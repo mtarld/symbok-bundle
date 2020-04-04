@@ -8,7 +8,10 @@ use Mtarld\SymbokBundle\Model\SymbokProperty;
 use Mtarld\SymbokBundle\Util\MethodManipulator;
 use Mtarld\SymbokBundle\Util\MethodNameGenerator;
 use Mtarld\SymbokBundle\Util\TypeFormatter;
+use phpDocumentor\Reflection\Type;
+use phpDocumentor\Reflection\Types\Nullable;
 use PhpParser\Builder\Method;
+use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -20,15 +23,19 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 
 class SetterBuilder
 {
+    /** @var SetterBehavior */
     private $behavior;
+
+    /** @var MethodManipulator */
     private $manipulator;
+
+    /** @var TypeFormatter */
     private $typeFormatter;
 
     public function __construct(
@@ -55,10 +62,13 @@ class SetterBuilder
 
     private function addParams(Method $methodBuilder, SymbokProperty $property): void
     {
+        if (($type = $property->getType()) instanceof Type) {
+            $type = $this->behavior->isNullable($property) ? new Nullable($type) : $type;
+        }
         $param = new Param(
             new Variable($property->getName()),
             null,
-            $this->typeFormatter->asString($property->getType(), $this->behavior->isNullable($property))
+            $this->typeFormatter->asPhpString($type)
         );
 
         $methodBuilder->addParam($param);
@@ -66,12 +76,12 @@ class SetterBuilder
 
     private function addStatements(Method $methodBuilder, SymbokProperty $property): void
     {
-        $statements = [$this->getOwnSideStatement($methodBuilder, $property->getName())];
+        $statements = [$this->getOwnSideStatement($property->getName())];
 
         if ($this->behavior->hasToUpdateOtherSide($property)) {
             $relation = $property->getRelation();
             if ($relation instanceof OneToOneRelation && !$relation->isOwning()) {
-                $statements = array_merge($statements, $this->getOtherSideStatements($methodBuilder, $relation, $property->getName()));
+                $statements = array_merge($statements, $this->getOtherSideStatements($relation, $property->getName()));
             }
         }
 
@@ -86,7 +96,7 @@ class SetterBuilder
         ;
     }
 
-    private function getOwnSideStatement(Method $methodBuilder, string $propertyName): Stmt
+    private function getOwnSideStatement(string $propertyName): Node
     {
         // $this->prop = $prop;
         return new Expression(
@@ -97,7 +107,10 @@ class SetterBuilder
         );
     }
 
-    private function getOtherSideStatements(Method $builder, OneToOneRelation $relation, string $propertyName): array
+    /**
+     * @return array<Node>
+     */
+    private function getOtherSideStatements(OneToOneRelation $relation, string $propertyName): array
     {
         return [
             // $new = null === $name ? null : $this;

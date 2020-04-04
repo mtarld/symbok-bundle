@@ -21,12 +21,15 @@ class MethodManipulatorTest extends TestCase
         $builder = new Method('method');
         (new MethodManipulator())->makeFluent($builder);
 
-        $returnStmt = $builder->getNode()->getStmts()[0];
+        $returnStmt = $builder->getNode()->getStmts()[0] ?? null;
 
         $this->assertInstanceOf(Return_::class, $returnStmt);
         $this->assertEquals(new Variable('this'), $returnStmt->expr);
 
-        $this->assertSame((string) new Self_(), (string) $builder->getNode()->getReturnType());
+        /** @var Self_ $returnType */
+        $returnType = $builder->getNode()->getReturnType();
+
+        $this->assertSame((string) new Self_(), (string) $returnType);
     }
 
     public function testMakeVoidReturn(): void
@@ -34,11 +37,12 @@ class MethodManipulatorTest extends TestCase
         $builder = new Method('method');
         (new MethodManipulator())->makeVoidReturn($builder);
 
-        $returnType = $builder->getNode()->getReturnType();
         if (PHP_VERSION_ID >= 70100) {
+            /** @var Void_ $returnType */
+            $returnType = $builder->getNode()->getReturnType();
             $this->assertSame((string) new Void_(), (string) $returnType);
         } else {
-            $this->assertNull($returnType);
+            $this->assertNull($builder->getNode()->getReturnType());
         }
     }
 }

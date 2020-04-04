@@ -3,6 +3,7 @@
 namespace Mtarld\SymbokBundle\Finder;
 
 use Mtarld\SymbokBundle\Exception\CodeFindingException;
+use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\GroupUse;
@@ -13,6 +14,7 @@ use PhpParser\NodeFinder;
 
 class PhpCodeFinder
 {
+    /** @var NodeFinder */
     private $finder;
 
     public function __construct()
@@ -20,11 +22,14 @@ class PhpCodeFinder
         $this->finder = new NodeFinder();
     }
 
-    public function findNamespace(array $statements): Namespace_
+    /**
+     * @param array<Node> $nodes
+     */
+    public function findNamespace(array $nodes): Namespace_
     {
         /** @var Namespace_[] $namespaces */
-        $namespaces = $this->finder->findInstanceOf($statements, Namespace_::class);
-        if (sizeof($namespaces) > 1) {
+        $namespaces = $this->finder->findInstanceOf($nodes, Namespace_::class);
+        if (count($namespaces) > 1) {
             throw new CodeFindingException('More than one namespace found');
         }
         if (empty($namespaces)) {
@@ -34,20 +39,25 @@ class PhpCodeFinder
         return $namespaces[0];
     }
 
-    public function findAliases(array $statements): array
+    /**
+     * @param array<Node> $nodes
+     *
+     * @return array<string>
+     */
+    public function findAliases(array $nodes): array
     {
         $aliases = [];
 
-        $uses = $this->finder->findInstanceOf($statements, Use_::class);
-        array_walk($uses, function (Use_ $use) use (&$aliases) {
+        $uses = $this->finder->findInstanceOf($nodes, Use_::class);
+        array_walk($uses, static function (Use_ $use) use (&$aliases): void {
             foreach ($use->uses as $realUse) {
                 $alias = $realUse->alias ? (string) $realUse->alias : end($realUse->name->parts);
                 $aliases[$alias] = (string) $realUse->name;
             }
         });
 
-        $groupUses = $this->finder->findInstanceOf($statements, GroupUse::class);
-        array_walk($groupUses, function (GroupUse $use) use (&$aliases) {
+        $groupUses = $this->finder->findInstanceOf($nodes, GroupUse::class);
+        array_walk($groupUses, static function (GroupUse $use) use (&$aliases): void {
             foreach ($use->uses as $realUse) {
                 $alias = $realUse->alias ? (string) $realUse->alias : end($realUse->name->parts);
                 $aliases[$alias] = $use->prefix.'\\'.$realUse->name;
@@ -57,11 +67,14 @@ class PhpCodeFinder
         return $aliases;
     }
 
-    public function findClass(array $statements): Class_
+    /**
+     * @param array<Node> $nodes
+     */
+    public function findClass(array $nodes): Class_
     {
         /** @var Class_[] $classes */
-        $classes = $this->finder->findInstanceOf($statements, Class_::class);
-        if (sizeof($classes) > 1) {
+        $classes = $this->finder->findInstanceOf($nodes, Class_::class);
+        if (count($classes) > 1) {
             throw new CodeFindingException('More than one class found');
         }
         if (empty($classes)) {
@@ -71,19 +84,38 @@ class PhpCodeFinder
         return $classes[0];
     }
 
-    public function findProperties(array $statements): array
+    /**
+     * @param array<Node> $nodes
+     *
+     * @return array<Property>
+     */
+    public function findProperties(array $nodes): array
     {
-        return $this->finder->findInstanceOf($statements, Property::class);
+        /** @var array<Property> $properties */
+        $properties = $this->finder->findInstanceOf($nodes, Property::class);
+
+        return $properties;
     }
 
-    public function findMethods(array $statements): array
+    /**
+     * @param array<Node> $nodes
+     *
+     * @return array<ClassMethod>
+     */
+    public function findMethods(array $nodes): array
     {
-        return $this->finder->findInstanceOf($statements, ClassMethod::class);
+        /** @var array<ClassMethod> $classes */
+        $classes = $this->finder->findInstanceOf($nodes, ClassMethod::class);
+
+        return $classes;
     }
 
-    public function findMethod(string $methodName, array $statements): ?ClassMethod
+    /**
+     * @param array<Node> $nodes
+     */
+    public function findMethod(string $methodName, array $nodes): ?ClassMethod
     {
-        foreach ($this->findMethods($statements) as $method) {
+        foreach ($this->findMethods($nodes) as $method) {
             if ($method->name->name === $methodName) {
                 return $method;
             }
@@ -92,8 +124,35 @@ class PhpCodeFinder
         return null;
     }
 
-    public function hasMethod(string $methodName, array $statements): bool
+    /**
+     * @param array<Node> $nodes
+     */
+    public function hasMethod(string $methodName, array $nodes): bool
     {
-        return $this->findMethod($methodName, $statements) instanceof ClassMethod;
+        return $this->findMethod($methodName, $nodes) instanceof ClassMethod;
+    }
+
+    /**
+     * @param array<Node> $nodes
+     */
+    public function findClassName(array $nodes): string
+    {
+        if (null === $name = $this->findClass($nodes)->name) {
+            throw new CodeFindingException('Cannot find class name.');
+        }
+
+        return $name;
+    }
+
+    /**
+     * @param array<Node> $nodes
+     */
+    public function findNamespaceName(array $nodes): string
+    {
+        if (null === $name = $this->findNamespace($nodes)->name) {
+            throw new CodeFindingException('Cannot find namespace name.');
+        }
+
+        return $name;
     }
 }

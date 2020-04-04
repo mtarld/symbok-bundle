@@ -8,6 +8,6 @@ namespace Mtarld\SymbokBundle\Annotation;
  */
 final class ToString implements AnnotationInterface
 {
-    /** @var array */
+    /** @var array<string> */
     public $properties;
 }

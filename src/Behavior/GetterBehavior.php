@@ -10,15 +10,18 @@ use phpDocumentor\Reflection\Types\Boolean;
 
 class GetterBehavior
 {
+    /** @var PropertyBehavior */
     private $propertyBehavior;
+
+    /** @var array<array-key, mixed> */
     private $defaults;
 
     public function __construct(
         PropertyBehavior $propertyBehavior,
-        array $config
+        array $defaults
     ) {
         $this->propertyBehavior = $propertyBehavior;
-        $this->defaults = $config['defaults']['getter'];
+        $this->defaults = $defaults;
     }
 
     public function isNullable(SymbokProperty $property): bool

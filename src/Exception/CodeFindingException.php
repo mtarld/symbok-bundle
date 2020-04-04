@@ -2,6 +2,6 @@
 
 namespace Mtarld\SymbokBundle\Exception;
 
-class CodeFindingException extends RuntimeException
+class CodeFindingException extends \RuntimeException
 {
 }

@@ -31,7 +31,7 @@ class PropertyBehaviorTest extends TestCase
         $property = $this->createMock(SymbokProperty::class);
         $property
             ->method('getAnnotation')
-            ->will($this->returnCallback($callable))
+            ->willReturnCallback($callable)
         ;
         $property
             ->method('getRelation')
@@ -44,16 +44,14 @@ class PropertyBehaviorTest extends TestCase
     public function isNullableDataProvider(): iterable
     {
         yield [
-            function ($class) {
-                return null;
-            },
+            static function (string $class): void {},
             null,
             null,
             'no annotation and no relation',
         ];
 
         yield [
-            function ($class) {
+            static function (string $class): ?JoinColumn {
                 if (JoinColumn::class === $class) {
                     $annotation = new JoinColumn();
                     $annotation->nullable = true;
@@ -69,7 +67,10 @@ class PropertyBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @return JoinColumn|Column|null
+             */
+            static function (string $class) {
                 if (JoinColumn::class === $class) {
                     $annotation = new JoinColumn();
                     $annotation->nullable = false;
@@ -92,7 +93,10 @@ class PropertyBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
+            /**
+             * @return JoinColumn|Column|Nullable|null
+             */
+            static function (string $class) {
                 if (JoinColumn::class === $class) {
                     $annotation = new JoinColumn();
                     $annotation->nullable = false;
@@ -122,18 +126,14 @@ class PropertyBehaviorTest extends TestCase
         ];
 
         yield [
-            function ($class) {
-                return null;
-            },
+            static function (string $class): void {},
             new OneToOneRelation(),
             true,
             'no annotation and single relation',
         ];
 
         yield [
-            function ($class) {
-                return null;
-            },
+            static function (string $class): void {},
             new ManyToManyRelation(),
             false,
             'no annotation and collection relation',
@@ -149,7 +149,7 @@ class PropertyBehaviorTest extends TestCase
         $class = $this->createMock(SymbokClass::class);
         $class
             ->method('getAnnotation')
-            ->will($this->returnCallback($classAnnotation))
+            ->willReturnCallback($classAnnotation)
         ;
         $property = $this->createMock(SymbokProperty::class);
         $property
@@ -158,7 +158,7 @@ class PropertyBehaviorTest extends TestCase
         ;
         $property
             ->method('getAnnotation')
-            ->will($this->returnCallback($propertyAnnotation))
+            ->willReturnCallback($propertyAnnotation)
         ;
 
         $this->assertSame($result, (new PropertyBehavior())->{$method}($property));
@@ -168,21 +168,15 @@ class PropertyBehaviorTest extends TestCase
     {
         yield [
             'requireGetter',
-            function () {
-                return null;
-            },
-            function () {
-                return null;
-            },
+            static function (): void {},
+            static function (): void {},
             false,
             'no annotation',
         ];
         yield [
             'requireGetter',
-            function () {
-                return null;
-            },
-            function () {
+            static function (): void {},
+            static function (): Getter {
                 return new Getter();
             },
             true,
@@ -190,33 +184,25 @@ class PropertyBehaviorTest extends TestCase
         ];
         yield [
             'requireGetter',
-            function () {
+            static function (): Data {
                 return new Data();
             },
-            function () {
-                return null;
-            },
+            static function (): void {},
             true,
             'data annotation',
         ];
 
         yield [
             'requireSetter',
-            function () {
-                return null;
-            },
-            function () {
-                return null;
-            },
+            static function (): void {},
+            static function (): void {},
             false,
             'no annotation',
         ];
         yield [
             'requireSetter',
-            function () {
-                return null;
-            },
-            function () {
+            static function (): void {},
+            static function (): Setter {
                 return new Setter();
             },
             true,
@@ -224,33 +210,25 @@ class PropertyBehaviorTest extends TestCase
         ];
         yield [
             'requireSetter',
-            function () {
+            static function (): Data {
                 return new Data();
             },
-            function () {
-                return null;
-            },
+            static function (): void {},
             true,
             'data annotation',
         ];
 
         yield [
             'requireAdder',
-            function () {
-                return null;
-            },
-            function () {
-                return null;
-            },
+            static function (): void {},
+            static function (): void {},
             false,
             'no annotation',
         ];
         yield [
             'requireAdder',
-            function () {
-                return null;
-            },
-            function () {
+            static function (): void {},
+            static function (): Setter {
                 $annotation = new Setter();
                 $annotation->add = true;
 
@@ -261,10 +239,8 @@ class PropertyBehaviorTest extends TestCase
         ];
         yield [
             'requireAdder',
-            function () {
-                return null;
-            },
-            function () {
+            static function (): void {},
+            static function (): Setter {
                 $annotation = new Setter();
                 $annotation->add = false;
 
@@ -275,50 +251,40 @@ class PropertyBehaviorTest extends TestCase
         ];
         yield [
             'requireAdder',
-            function () {
+            static function (): Data {
                 $annotation = new Data();
                 $annotation->add = true;
 
                 return $annotation;
             },
-            function () {
-                return null;
-            },
+            static function (): void {},
             true,
             'data annotation with add allowed',
         ];
         yield [
             'requireAdder',
-            function () {
+            static function (): Data {
                 $annotation = new Data();
                 $annotation->add = false;
 
                 return $annotation;
             },
-            function () {
-                return null;
-            },
+            static function (): void {},
             false,
             'data annotation with add forbidden',
         ];
 
         yield [
             'requireRemover',
-            function () {
-                return null;
-            },
-            function () {
-                return null;
-            },
+            static function (): void {},
+            static function (): void {},
             false,
             'no annotation',
         ];
         yield [
             'requireRemover',
-            function () {
-                return null;
-            },
-            function () {
+            static function (): void {},
+            static function (): Setter {
                 $annotation = new Setter();
                 $annotation->remove = true;
 
@@ -329,10 +295,8 @@ class PropertyBehaviorTest extends TestCase
         ];
         yield [
             'requireRemover',
-            function () {
-                return null;
-            },
-            function () {
+            static function (): void {},
+            static function (): Setter {
                 $annotation = new Setter();
                 $annotation->remove = false;
 
@@ -343,29 +307,25 @@ class PropertyBehaviorTest extends TestCase
         ];
         yield [
             'requireRemover',
-            function () {
+            static function (): Data {
                 $annotation = new Data();
                 $annotation->remove = true;
 
                 return $annotation;
             },
-            function () {
-                return null;
-            },
+            static function (): void {},
             true,
             'data annotation with remove allowed',
         ];
         yield [
             'requireRemover',
-            function () {
+            static function (): Data {
                 $annotation = new Data();
                 $annotation->remove = false;
 
                 return $annotation;
             },
-            function () {
-                return null;
-            },
+            static function (): void {},
             false,
             'data annotation with remove forbidden',
         ];

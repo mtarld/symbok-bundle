@@ -8,6 +8,8 @@ use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
 use Mtarld\SymbokBundle\MethodBuilder\GetterBuilder;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\Types\Context;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPUnit\Framework\TestCase;
 
@@ -65,7 +67,7 @@ class GetterPassTest extends TestCase
             ->willReturn(new ClassMethod('dummy'))
         ;
 
-        $class = (new SymbokClass())->setStatements([]);
+        $class = new SymbokClass('foo', [], new DocBlock('bar'), [], [], new Context('baz'));
 
         $property = $this->createMock(SymbokProperty::class);
         $property
@@ -82,6 +84,9 @@ class GetterPassTest extends TestCase
         $statements = $pass->process($property)->getStatements();
 
         $this->assertCount(1, $statements);
-        $this->assertSame('dummy', $statements[0]->name->name);
+
+        /** @var ClassMethod $method */
+        $method = $statements[0];
+        $this->assertSame('dummy', (string) $method->name);
     }
 }

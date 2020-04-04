@@ -11,12 +11,12 @@ class DocBlockFactory
 {
     public function createFor(Node $subject, Context $context): DocBlock
     {
-        if (null === $subject->getDocComment()) {
+        if (null === $docComment = $subject->getDocComment()) {
             return new DocBlock();
         }
 
         return Factory::createInstance()->create(
-            (string) $subject->getDocComment()->getReformattedText(),
+            (string) $docComment->getReformattedText(),
             $context
         );
     }

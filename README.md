@@ -3,7 +3,6 @@
 ![Packagist](https://img.shields.io/packagist/v/mtarld/symbok-bundle.svg?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/mtarld/symbok-bundle.svg?style=flat-square)
 ![Travis (.org)](https://img.shields.io/travis/mtarld/symbok-bundle.svg?style=flat-square)
-![CodeCov](https://img.shields.io/codecov/c/github/mtarld/symbok-bundle?style=flat-square)
 
 Runtime code generator bundle for Symfony.
 

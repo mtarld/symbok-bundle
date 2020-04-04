@@ -1,9 +1,0 @@
-parameters:
-    inferPrivatePropertyTypeFromConstructor: true
-    reportUnmatchedIgnoredErrors: false
-    excludes_analyse:
-        - %currentWorkingDirectory%/src/Tests/
-    ignoreErrors:
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)#'
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder::root\(\)#'
-        - '#Access to undefined constant Doctrine\\DBAL\\Types\\Type::#'

@@ -10,9 +10,13 @@ use phpDocumentor\Reflection\DocBlock;
 
 class DocBlockParser
 {
+    /** @var Formatter */
     private $formatter;
+
+    /** @var DocFactory */
     private $docFactory;
 
+    /** @var bool */
     private $isContextReady = false;
 
     public function __construct(
@@ -23,6 +27,9 @@ class DocBlockParser
         $this->docFactory = $docFactory;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function parseAnnotations(DocBlock $docBlock): array
     {
         $this->prepareContext();
@@ -36,6 +43,9 @@ class DocBlockParser
         return $parser->parse($text);
     }
 
+    /**
+     * @psalm-suppress DeprecatedMethod
+     */
     private function prepareContext(): void
     {
         if (false === $this->isContextReady) {

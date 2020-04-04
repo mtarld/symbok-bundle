@@ -55,13 +55,13 @@ class AllArgsConstructorBuilderTest extends TestCase
         $typeFormatter = $this->createMock(TypeFormatter::class);
         $typeFormatter
             ->expects($this->at(0))
-            ->method('asString')
+            ->method('asPhpString')
             ->willReturn('?int')
         ;
 
         $typeFormatter
             ->expects($this->at(1))
-            ->method('asString')
+            ->method('asPhpString')
             ->willReturn('string')
         ;
 

@@ -1,35 +1,75 @@
 <?php
 
-namespace Mtarld\SymbokBundle\Tests\Parser;
+namespace {
+    $mockFileGetContents = null;
+}
 
-use Mtarld\SymbokBundle\Exception\RuntimeException;
-use Mtarld\SymbokBundle\Parser\PhpCodeParser;
-use Mtarld\SymbokBundle\Tests\Fixtures\files\Product1;
-use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Namespace_;
-use PHPUnit\Framework\TestCase;
-
-/**
- * @group unit
- * @group parser
- */
-class PhpCodeParserTest extends TestCase
-{
-    public function testParseStatements(): void
+namespace Mtarld\SymbokBundle\Parser {
+    /**
+     * @return false|string
+     */
+    function file_get_contents()
     {
-        $statements = (new PhpCodeParser())->parseStatements(Product1::class);
+        global $mockFileGetContents;
 
-        $this->assertIsArray($statements);
-        $this->assertInstanceOf(Namespace_::class, $statements[0]);
-        $this->assertIsArray($statements[0]->stmts);
-        foreach ($statements[0]->stmts as $statement) {
-            $this->assertInstanceOf(Stmt::class, $statement);
+        if (null === $mockFileGetContents) {
+            return \file_get_contents(...func_get_args());
         }
-    }
 
-    public function testWrongPath(): void
+        return ($mockFileGetContents)();
+    }
+}
+
+namespace Mtarld\SymbokBundle\Tests\Parser {
+    use Mtarld\SymbokBundle\Autoload\AutoloadFinder;
+    use Mtarld\SymbokBundle\Exception\IOException;
+    use Mtarld\SymbokBundle\Parser\PhpCodeParser;
+    use Mtarld\SymbokBundle\Tests\Fixtures\files\Product1;
+    use PhpParser\Node\Stmt\Namespace_;
+    use PHPUnit\Framework\TestCase;
+
+    /**
+     * @group unit
+     * @group parser
+     */
+    class PhpCodeParserTest extends TestCase
     {
-        $this->expectException(RuntimeException::class);
-        (new PhpCodeParser())->parseStatementsFromPath('foo');
+        protected function tearDown(): void
+        {
+            global $mockFileGetContents;
+            $mockFileGetContents = null;
+        }
+
+        public function testParseStatements(): void
+        {
+            $autoloaderFinder = new AutoloadFinder('Mtarld\\SymbokBundle\\Tests\\Fixtures\\Files');
+
+            $statements = (new PhpCodeParser($autoloaderFinder))->parseStatements(Product1::class);
+
+            $this->assertInstanceOf(Namespace_::class, $statements[0]);
+        }
+
+        public function testParseStatementsFromPathWrongPath(): void
+        {
+            $autoloaderFinder = new AutoloadFinder('Mtarld\SymbokBundle\Tests\Fixtures\Files');
+
+            $this->expectException(IOException::class);
+            $this->expectExceptionMessage("Cannot read file 'foo'. Exception: file_get_contents(foo): failed to open stream: No such file or directory");
+            (new PhpCodeParser($autoloaderFinder))->parseStatementsFromPath('foo');
+        }
+
+        public function testParseStatementsFromPathCannotRead(): void
+        {
+            $autoloaderFinder = new AutoloadFinder('Mtarld\SymbokBundle\Tests\Fixtures\Files');
+
+            global $mockFileGetContents;
+            $mockFileGetContents = static function (): bool {
+                return false;
+            };
+
+            $this->expectException(IOException::class);
+            $this->expectExceptionMessage("Cannot read file 'foo'");
+            (new PhpCodeParser($autoloaderFinder))->parseStatementsFromPath('foo');
+        }
     }
 }

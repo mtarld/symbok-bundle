@@ -150,7 +150,6 @@ class PhpCodeFinderTest extends TestCase
 
         $properties = $finder->findProperties($stmts);
         $this->assertCount(1, $properties);
-        $this->assertInstanceOf(Property::class, $properties[0]);
     }
 
     public function testFindMethods(): void
@@ -166,7 +165,6 @@ class PhpCodeFinderTest extends TestCase
 
         $methods = $finder->findMethods($stmts);
         $this->assertCount(1, $methods);
-        $this->assertInstanceOf(ClassMethod::class, $methods[0]);
     }
 
     public function testFindMethod(): void

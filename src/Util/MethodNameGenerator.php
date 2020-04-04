@@ -2,7 +2,7 @@
 
 namespace Mtarld\SymbokBundle\Util;
 
-use Mtarld\SymbokBundle\Exception\LogicException;
+use LogicException;
 
 class MethodNameGenerator
 {
@@ -22,7 +22,7 @@ class MethodNameGenerator
             self::METHOD_SET,
             self::METHOD_ADD,
             self::METHOD_REMOVE,
-        ])) {
+        ], true)) {
             throw new LogicException(sprintf('Unknown method type: "%s"', $type));
         }
 

@@ -21,6 +21,8 @@ use PHPUnit\Framework\TestCase;
 class AdderBuilderTest extends TestCase
 {
     /**
+     * @param class-string|null $relation
+     *
      * @dataProvider buildExpectedContentDataProvider
      * @testdox Build expected content with $propertyType property type, $fluent fluent, $otherSide updateOtherSide, $relation relation and $owning owning
      */
@@ -59,7 +61,7 @@ class AdderBuilderTest extends TestCase
 
         $typeFormatter = $this->createMock(TypeFormatter::class);
         $typeFormatter
-            ->method('nestedAsString')
+            ->method('nestedAsPhpString')
             ->willReturn($propertyType)
         ;
 

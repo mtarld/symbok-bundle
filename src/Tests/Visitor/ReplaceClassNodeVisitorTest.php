@@ -47,8 +47,13 @@ class ReplaceClassNodeVisitorTest extends TestCase
             new Variable('var'),
         ]);
 
+        /** @var Class_ $node */
         $node = $visitor->enterNode($nodeClass);
+
         $this->assertContains('stmt', $node->stmts);
-        $this->assertSame('foo', $node->getDocComment()->getText());
+
+        /** @var Doc $docComment */
+        $docComment = $node->getDocComment();
+        $this->assertSame('foo', $docComment->getText());
     }
 }

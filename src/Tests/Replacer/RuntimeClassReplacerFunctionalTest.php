@@ -21,7 +21,8 @@ class RuntimeClassReplacerFunctionalTest extends KernelTestCase
 
     public function testClassIsReplacedWithAutoload(): void
     {
-        $replacer = self::$container->get(RuntimeClassReplacer::class);
+        /** @var RuntimeClassReplacer $replacer */
+        $replacer = static::$container->get(RuntimeClassReplacer::class);
 
         $this->assertSame(
             '<?php

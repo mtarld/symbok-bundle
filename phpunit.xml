@@ -24,17 +24,4 @@
             <directory>./src/Tests/</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>./src</directory>
-            <exclude>
-                <directory>./src/Annotation</directory>
-                <directory>./src/DependencyInjection</directory>
-                <directory>./src/Exception</directory>
-                <directory>./src/Tests</directory>
-                <directory>./src/Resources</directory>
-            </exclude>
-        </whitelist>
-    </filter>
 </phpunit>

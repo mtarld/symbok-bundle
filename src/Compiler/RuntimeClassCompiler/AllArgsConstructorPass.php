@@ -9,8 +9,13 @@ use Mtarld\SymbokBundle\Model\SymbokClass;
 
 class AllArgsConstructorPass implements ClassPassInterface
 {
+    /** @var ClassBehavior */
     private $behavior;
+
+    /** @var PhpCodeFinder */
     private $finder;
+
+    /** @var AllArgsConstructorBuilder */
     private $builder;
 
     public function __construct(
@@ -25,10 +30,7 @@ class AllArgsConstructorPass implements ClassPassInterface
 
     public function support(SymbokClass $class): bool
     {
-        return !$this->finder->hasMethod(
-            '__construct',
-            $class->getStatements()
-        )
+        return !$this->finder->hasMethod('__construct', $class->getStatements())
             && $this->behavior->requireAllArgsConstructor($class)
         ;
     }

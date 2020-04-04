@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2020-04-04
+
+### Added
+
+- Symfony 5 compatibility
+- Symfony `Symfony\Component\ErrorHandler\DebugClassLoader` compatibility
+- Parsed every `phpDocumentor\Reflection\Type` and `PhpParser\Node` type nodes
+- Parsed every Doctrine DBAL's 2.6+ and 2.6- types
+
+### Changed
+
+- Improved commands output
+- Improved self composer dependencies
+- Changed `RuntimeException` and `LogicException` to more accurate ones
+- Improved error handling
+- Replaced PHPStan by Psalm
+
+### Removed
+
+- `composer.lock` file
+- Codecov coverage analysis
+
 ## [2.0.2] - 2019-02-04
 
 ### Changed

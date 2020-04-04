@@ -7,6 +7,8 @@ use Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\AllArgsConstructorPass;
 use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
 use Mtarld\SymbokBundle\MethodBuilder\AllArgsConstructorBuilder;
 use Mtarld\SymbokBundle\Model\SymbokClass;
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\Types\Context;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPUnit\Framework\TestCase;
 
@@ -62,7 +64,7 @@ class AllArgsConstructorPassTest extends TestCase
             ->willReturn(new ClassMethod('dummy'))
         ;
 
-        $class = (new SymbokClass())->setStatements([]);
+        $class = new SymbokClass('foo', [], new DocBlock('bar'), [], [], new Context('baz'));
 
         $pass = new AllArgsConstructorPass(
             $this->createMock(ClassBehavior::class),
@@ -73,6 +75,9 @@ class AllArgsConstructorPassTest extends TestCase
         $statements = $pass->process($class)->getStatements();
 
         $this->assertCount(1, $statements);
-        $this->assertSame('dummy', $statements[0]->name->name);
+
+        /** @var ClassMethod $method */
+        $method = $statements[0];
+        $this->assertSame('dummy', (string) $method->name);
     }
 }

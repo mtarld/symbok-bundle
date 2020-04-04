@@ -7,7 +7,11 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    /**
+     * @psalm-suppress UndefinedMethod
+     * @psalm-suppress RedundantCondition
+     */
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $builder = new TreeBuilder('symbok');
 
