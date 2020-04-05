@@ -80,7 +80,7 @@ class SavedClassCompilerTest extends TestCase
 
         $this->assertContains('?int', $methodTagArgumentTypes);
         $this->assertContains('string', $methodTagArgumentTypes);
-        $this->assertContains('', $methodTagArgumentTypes);
+        $this->assertContains('mixed', $methodTagArgumentTypes);
         $this->assertContains('?array', $methodTagArgumentTypes);
     }
 

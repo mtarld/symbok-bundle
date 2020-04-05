@@ -21,7 +21,7 @@
   "require": {
     "php": "~7.2.5|^7.3",
     "nikic/php-parser": "^4.2",
-    "phpdocumentor/reflection-docblock": "^4.3",
+    "phpdocumentor/reflection-docblock": "^4.3|^5.0",
     "doctrine/annotations": "^1.8",
     "doctrine/collections": "^1.5",
     "doctrine/inflector": "^1.0",
