@@ -48,7 +48,7 @@ class SymbokExtension extends Extension
         $defaults = $config['defaults'];
 
         $container->getDefinition(Autoload::class)->replaceArgument('$namespaces', $namespaces);
-        $container->getDefinition(AutoloadFinder::class)->replaceArgument('$namespace', $namespaces[0] ?? null);
+        $container->getDefinition(AutoloadFinder::class)->replaceArgument('$namespace', $namespaces[0] ?? '');
         $container->getDefinition(SavedUpdaterCommand::class)->replaceArgument('$namespaces', $namespaces);
         $container->getDefinition(PreviewCommand::class)->replaceArgument('$namespaces', $namespaces);
         $container->getDefinition(AllArgsConstructorBehavior::class)->replaceArgument('$defaults', $defaults['constructor'] ?? []);

@@ -138,7 +138,7 @@ use Mtarld\SymbokBundle\Annotation as Symbok;
 /**
  * @method mixed __construct()
  * @method ?\Doctrine\Common\Collections\Collection getPrices()
- * @method self removePrice(App\Entity\Price $price)
+ * @method self removePrice(\App\Entity\Price $price)
  * @method ?\App\Entity\Category getCategory()
  * @method void setCategory(?\App\Entity\Category $category)
  */

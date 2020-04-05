@@ -10,6 +10,7 @@ use Mtarld\SymbokBundle\Util\TypeFormatter;
 use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tags\Method;
+use phpDocumentor\Reflection\Type;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
@@ -103,14 +104,15 @@ class SavedClassCompiler implements CompilerInterface
 
     private function createMethodTag(ClassMethod $method): Method
     {
+        /** @var array<int, array{name: string, type: Type}> $arguments */
         $arguments = array_map(function (Param $param): array {
-            if (!$param->var instanceof Variable) {
-                throw new CodeFindingException('Cannot retrieve parameter variable');
+            if (!($var = $param->var) instanceof Variable || !is_string($name = $var->name)) {
+                throw new CodeFindingException('Cannot retrieve parameter variable name');
             }
 
             return [
-                'name' => $param->var->name,
-                'type' => $this->typeFormatter->asDocumentationString($param->type),
+                'name' => $name,
+                'type' => $this->typeFormatter->asDocumentationType($param->type),
             ];
         }, $method->getParams());
 
