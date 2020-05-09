@@ -14,11 +14,11 @@ use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tags\Author;
 use phpDocumentor\Reflection\DocBlock\Tags\Method;
 use phpDocumentor\Reflection\Types\Boolean;
+use phpDocumentor\Reflection\Types\Compound;
 use phpDocumentor\Reflection\Types\Context;
-use phpDocumentor\Reflection\Types\Integer;
 use phpDocumentor\Reflection\Types\Nullable;
-use phpDocumentor\Reflection\Types\String_;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -49,8 +49,8 @@ class SavedClassCompilerTest extends TestCase
 
         $classMethod = new ClassMethod('a', [
             'params' => [
-                new Param(new Variable('p1'), null, (string) new Nullable(new Integer())),
-                new Param(new Variable('p2'), null, (string) new String_()),
+                new Param(new Variable('p1'), null, new NullableType(new Identifier('int'))),
+                new Param(new Variable('p2'), null, new Identifier('string')),
                 new Param(new Variable('p3'), null, null),
                 new Param(new Variable('p4'), null, new NullableType('array')),
             ],
@@ -61,9 +61,7 @@ class SavedClassCompilerTest extends TestCase
 
         $this->assertSame($classMethod->name->name, $methodTag->getMethodName());
 
-        /** @var mixed $returnType */
-        $returnType = $classMethod->getReturnType();
-        $this->assertSame(get_class($returnType), get_class($methodTag->getReturnType()));
+        $this->assertSame(Compound::class, get_class($methodTag->getReturnType()));
 
         $methodTagArgumentNames = array_map(static function (array $argument): string {
             return $argument['name'];
@@ -78,10 +76,10 @@ class SavedClassCompilerTest extends TestCase
             return (string) $argument['type'];
         }, $methodTag->getArguments());
 
-        $this->assertContains('?int', $methodTagArgumentTypes);
+        $this->assertContains('int|null', $methodTagArgumentTypes);
         $this->assertContains('string', $methodTagArgumentTypes);
         $this->assertContains('mixed', $methodTagArgumentTypes);
-        $this->assertContains('?array', $methodTagArgumentTypes);
+        $this->assertContains('array|null', $methodTagArgumentTypes);
     }
 
     /**

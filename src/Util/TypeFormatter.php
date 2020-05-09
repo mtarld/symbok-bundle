@@ -142,7 +142,7 @@ class TypeFormatter
     private function typeAsDocumentationString(Type $type): string
     {
         if ($type instanceof Nullable) {
-            return '?'.$this->asDocumentationString($type->getActualType());
+            return $this->asDocumentationString($type->getActualType()).'|null';
         }
 
         if ($type instanceof Compound) {
@@ -160,7 +160,7 @@ class TypeFormatter
     private function nodeAsDocumentationString(Node $node): string
     {
         if ($node instanceof NullableType) {
-            return '?'.$this->asDocumentationString($node->type);
+            return $this->asDocumentationString($node->type).'|null';
         }
 
         if ($node instanceof UnionType) {

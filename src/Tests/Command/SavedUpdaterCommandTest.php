@@ -83,7 +83,7 @@ use Mtarld\SymbokBundle\Annotation\Setter;
  * @Symbok\ToString (properties={"id", "name"})
  * @Symbok\Data (fluent=true, nullable=true, constructorNullable=false)
  * @method self setId(?int $id)
- * @method ?string getName()
+ * @method string|null getName()
  * @method self setName(string $name)
  * @method mixed getImage()
  */
@@ -137,9 +137,9 @@ use Mtarld\SymbokBundle\Annotation as Symbok;
 
 /**
  * @method mixed __construct()
- * @method ?\Doctrine\Common\Collections\Collection getPrices()
+ * @method \Doctrine\Common\Collections\Collection|null getPrices()
  * @method self removePrice(\App\Entity\Price $price)
- * @method ?\App\Entity\Category getCategory()
+ * @method \App\Entity\Category|null getCategory()
  * @method void setCategory(?\App\Entity\Category $category)
  */
 class Product2
@@ -188,10 +188,10 @@ use Mtarld\SymbokBundle\Annotation\Getter;
  * @author Mathias Arlaud
  * @Symbok\ToString (properties={"id", "name"})
  * @Symbok\Data
- * @method int getNbCall()
+ * @method int|null getNbCall()
  * @method mixed __construct(?int $id)
  * @method string __toString()
- * @method ?int getId()
+ * @method int|null getId()
  * @method self setId(?int $id)
  */
 class Product3
