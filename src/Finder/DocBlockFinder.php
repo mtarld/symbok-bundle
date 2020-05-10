@@ -21,6 +21,10 @@ use phpDocumentor\Reflection\Types\Nullable;
 use phpDocumentor\Reflection\Types\Object_;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ * @final
+ */
 class DocBlockFinder
 {
     /** @var DocBlockParser */

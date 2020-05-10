@@ -27,6 +27,10 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 
+/**
+ * @internal
+ * @final
+ */
 class SetterBuilder
 {
     /** @var SetterBehavior */

@@ -6,6 +6,10 @@ use Mtarld\SymbokBundle\Annotation\AnnotationInterface;
 use Mtarld\SymbokBundle\Model\Relation\DoctrineRelation;
 use phpDocumentor\Reflection\Type;
 
+/**
+ * @internal
+ * @final
+ */
 class SymbokProperty extends SymbokElement
 {
     /** @var string */

@@ -7,6 +7,10 @@ use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tags\Generic;
 use phpDocumentor\Reflection\FqsenResolver;
 
+/**
+ * @internal
+ * @final
+ */
 class Formatter
 {
     public function formatAnnotations(DocBlock $docBlock): DocBlock

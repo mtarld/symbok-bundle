@@ -7,6 +7,10 @@ use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
 use Mtarld\SymbokBundle\MethodBuilder\AllArgsConstructorBuilder;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 
+/**
+ * @internal
+ * @final
+ */
 class AllArgsConstructorPass implements ClassPassInterface
 {
     /** @var ClassBehavior */

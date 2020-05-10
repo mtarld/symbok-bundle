@@ -5,6 +5,9 @@ namespace Mtarld\SymbokBundle\Compiler;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 use PhpParser\Node;
 
+/**
+ * @internal
+ */
 interface CompilerInterface
 {
     /**

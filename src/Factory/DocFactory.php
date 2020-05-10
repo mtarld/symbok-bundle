@@ -6,6 +6,10 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpParser\Comment\Doc;
 
+/**
+ * @internal
+ * @final
+ */
 class DocFactory
 {
     public function createFromDocBlock(DocBlock $docBlock): Doc

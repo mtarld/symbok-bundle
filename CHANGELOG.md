@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added `@final` and `@internal` class tags
 - Symfony 5 compatibility
 - Symfony `Symfony\Component\ErrorHandler\DebugClassLoader` compatibility
 - Parsed every `phpDocumentor\Reflection\Type` and `PhpParser\Node` type nodes

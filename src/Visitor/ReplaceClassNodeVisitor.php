@@ -9,6 +9,9 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
+ * @internal
+ * @final
+ *
  * @psalm-suppress PropertyNotSetInConstructor
  */
 class ReplaceClassNodeVisitor extends NodeVisitorAbstract

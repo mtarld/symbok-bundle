@@ -7,6 +7,10 @@ use RuntimeException;
 use Symfony\Component\Debug\DebugClassLoader;
 use Symfony\Component\ErrorHandler\DebugClassLoader as ErrorHandlerDebugClassLoader;
 
+/**
+ * @internal
+ * @final
+ */
 class AutoloadFinder
 {
     /** @var string */

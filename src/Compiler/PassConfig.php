@@ -6,6 +6,10 @@ use Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\ClassPassInterface;
 use Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\PropertyPassInterface;
 use Psr\Container\ContainerInterface;
 
+/**
+ * @internal
+ * @final
+ */
 class PassConfig
 {
     /** @var ContainerInterface */

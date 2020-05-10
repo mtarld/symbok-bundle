@@ -16,6 +16,10 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeFinder;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ * @final
+ */
 class PhpCodeFinder
 {
     /** @var LoggerInterface */

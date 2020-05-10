@@ -19,6 +19,10 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 
+/**
+ * @internal
+ * @final
+ */
 class AllArgsConstructorBuilder
 {
     /** @var AllArgsConstructorBehavior */

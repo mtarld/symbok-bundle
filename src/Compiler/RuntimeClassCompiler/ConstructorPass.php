@@ -9,6 +9,10 @@ use Mtarld\SymbokBundle\Model\Relation\DoctrineCollectionRelation;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
 
+/**
+ * @internal
+ * @final
+ */
 class ConstructorPass implements ClassPassInterface
 {
     /** @var ClassBehavior */

@@ -4,6 +4,10 @@ namespace Mtarld\SymbokBundle\Util;
 
 use LogicException;
 
+/**
+ * @internal
+ * @final
+ */
 class MethodNameGenerator
 {
     public const METHOD_GET = 'get';

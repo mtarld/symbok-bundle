@@ -7,6 +7,10 @@ use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\Types\Context;
 use PhpParser\Node\Stmt;
 
+/**
+ * @internal
+ * @final
+ */
 class SymbokClass extends SymbokElement
 {
     /** @var string */

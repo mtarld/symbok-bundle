@@ -16,6 +16,10 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 
+/**
+ * @internal
+ * @final
+ */
 class ToStringBuilder
 {
     public function build(SymbokClass $class): ClassMethod

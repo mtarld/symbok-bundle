@@ -2,7 +2,10 @@
 
 namespace Mtarld\SymbokBundle\Model\Relation;
 
-class ManyToOneRelation extends DoctrineSingleRelation
+/**
+ * @internal
+ */
+final class ManyToOneRelation extends DoctrineSingleRelation
 {
     public function isOwning(): bool
     {

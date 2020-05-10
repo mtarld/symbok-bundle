@@ -10,6 +10,10 @@ use Mtarld\SymbokBundle\Model\SymbokClass;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
 use Mtarld\SymbokBundle\Util\MethodNameGenerator;
 
+/**
+ * @internal
+ * @final
+ */
 class SetterPass implements PropertyPassInterface
 {
     /** @var PropertyBehavior */

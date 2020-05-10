@@ -15,6 +15,10 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 
+/**
+ * @internal
+ * @final
+ */
 class ConstructorBuilder
 {
     public function build(SymbokClass $class): ClassMethod

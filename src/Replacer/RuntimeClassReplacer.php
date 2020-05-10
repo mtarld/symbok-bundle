@@ -10,6 +10,10 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter\Standard;
 
+/**
+ * @internal
+ * @final
+ */
 class RuntimeClassReplacer implements ReplacerInterface
 {
     /** @var CompilerInterface */

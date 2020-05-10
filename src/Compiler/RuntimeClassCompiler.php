@@ -8,6 +8,10 @@ use Mtarld\SymbokBundle\Factory\ClassFactory;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ * @final
+ */
 class RuntimeClassCompiler implements CompilerInterface
 {
     /** @var PassConfig */

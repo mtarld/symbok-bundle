@@ -17,6 +17,10 @@ use Mtarld\SymbokBundle\Model\SymbokClass;
 use PhpParser\Node\Stmt\Property;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ * @final
+ */
 class DoctrineRelationFactory
 {
     /** @var DocBlockFactory */

@@ -7,6 +7,10 @@ use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
 use Mtarld\SymbokBundle\MethodBuilder\ToStringBuilder;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 
+/**
+ * @internal
+ * @final
+ */
 class ToStringPass implements ClassPassInterface
 {
     /** @var ClassBehavior */

@@ -12,6 +12,10 @@ use Mtarld\SymbokBundle\Model\Relation\DoctrineCollectionRelation;
 use Mtarld\SymbokBundle\Model\Relation\DoctrineSingleRelation;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
 
+/**
+ * @internal
+ * @final
+ */
 class PropertyBehavior
 {
     public function isNullable(SymbokProperty $property): ?bool
