@@ -199,9 +199,10 @@ class Product3
             $this->assertSame(
                 '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\files;
+namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
 
 use Mtarld\SymbokBundle\Annotation\Getter;
+use Mtarld\SymbokBundle\Annotation\Setter;
 /**
  */
 class Product4
@@ -214,13 +215,28 @@ class Product4
      * @Getter()
      */
     private Product1 $related;
+    /**
+     * @var string[]
+     * @Setter(remove=false)
+     */
+    private array $names;
     public function getId() : ?int
     {
         return $this->id;
     }
-    public function getRelated() : ?\Mtarld\SymbokBundle\Tests\Fixtures\files\Product1
+    public function getRelated() : ?\Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1
     {
         return $this->related;
+    }
+    public function setNames(?array $names) : self
+    {
+        $this->names = $names;
+        return $this;
+    }
+    public function addName(string $name) : self
+    {
+        $this->names[] = $name;
+        return $this;
     }
 }',
                 $replacer->replace(Product4::class)
