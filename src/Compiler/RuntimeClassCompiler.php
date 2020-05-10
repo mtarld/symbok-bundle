@@ -7,6 +7,7 @@ use Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\PropertyPassInterface;
 use Mtarld\SymbokBundle\Factory\ClassFactory;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 use Psr\Log\LoggerInterface;
+use Traversable;
 
 /**
  * @internal
@@ -14,8 +15,11 @@ use Psr\Log\LoggerInterface;
  */
 class RuntimeClassCompiler implements CompilerInterface
 {
-    /** @var PassConfig */
-    private $config;
+    /** @var Traversable<ClassPassInterface> */
+    private $classPasses;
+
+    /** @var Traversable<PropertyPassInterface> */
+    private $propertyPasses;
 
     /** @var ClassFactory */
     private $classFactory;
@@ -24,11 +28,13 @@ class RuntimeClassCompiler implements CompilerInterface
     private $logger;
 
     public function __construct(
-        PassConfig $config,
+        Traversable $classPasses,
+        Traversable $propertyPasses,
         ClassFactory $classFactory,
         LoggerInterface $logger
     ) {
-        $this->config = $config;
+        $this->classPasses = $classPasses;
+        $this->propertyPasses = $propertyPasses;
         $this->classFactory = $classFactory;
         $this->logger = $logger;
     }
@@ -39,7 +45,7 @@ class RuntimeClassCompiler implements CompilerInterface
 
         $this->logger->info('Compiling {class}', ['class' => (string) $class]);
 
-        $classPasses = array_filter($this->config->getClassPasses(), static function (ClassPassInterface $pass) use ($class): bool {
+        $classPasses = array_filter(iterator_to_array($this->classPasses), static function (ClassPassInterface $pass) use ($class): bool {
             return $pass->support($class);
         });
 
@@ -50,7 +56,7 @@ class RuntimeClassCompiler implements CompilerInterface
         }, $class);
 
         foreach ($class->getProperties() as $property) {
-            $propertyPasses = array_filter($this->config->getPropertyPasses(), static function (PropertyPassInterface $pass) use ($property): bool {
+            $propertyPasses = array_filter(iterator_to_array($this->propertyPasses), static function (PropertyPassInterface $pass) use ($property): bool {
                 return $pass->support($property);
             });
 

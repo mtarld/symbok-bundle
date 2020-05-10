@@ -28,8 +28,8 @@ class PreviewCommandTest extends KernelTestCase
         static::bootKernel();
         $this->commandTester = new CommandTester(new PreviewCommand(
             static::$container,
-            static::$container->get(PhpCodeParser::class),
-            static::$container->get(PhpCodeFinder::class),
+            static::$container->get('symbok.parser.php_code'),
+            static::$container->get('symbok.finder.php_code'),
             ['Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity']
         ));
     }
@@ -61,8 +61,8 @@ class PreviewCommandTest extends KernelTestCase
     {
         $command = new PreviewCommand(
             static::$container,
-            static::$container->get(PhpCodeParser::class),
-            static::$container->get(PhpCodeFinder::class),
+            static::$container->get('symbok.parser.php_code'),
+            static::$container->get('symbok.finder.php_code'),
             ['foo']
         );
 

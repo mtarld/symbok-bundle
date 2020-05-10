@@ -24,7 +24,7 @@ class SavedClassReplacerFunctionalTest extends KernelTestCase
     public function testSavedClassReplacementContent(): void
     {
         /** @var SavedClassReplacer $replacer */
-        $replacer = static::$container->get(SavedClassReplacer::class);
+        $replacer = static::$container->get('symbok.replacer.saved');
 
         $this->assertSame(
             '<?php

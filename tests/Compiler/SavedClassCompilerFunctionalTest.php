@@ -23,10 +23,10 @@ class SavedClassCompilerFunctionalTest extends KernelTestCase
     public function testSavedClassIsCompiling(): void
     {
         /** @var SavedClassCompiler $compiler */
-        $compiler = static::$container->get(SavedClassCompiler::class);
+        $compiler = static::$container->get('symbok.compiler.saved');
 
         /** @var PhpCodeParser $codeFinder */
-        $codeFinder = static::$container->get(PhpCodeParser::class);
+        $codeFinder = static::$container->get('symbok.parser.php_code');
 
         $statements = $codeFinder->parseStatements(Product3::class);
 

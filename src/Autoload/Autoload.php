@@ -30,7 +30,7 @@ class Autoload
     private $cacheDir;
 
     /** @var bool */
-    private $isDebug;
+    private $debug;
 
     public function __construct(
         ReplacerInterface $replacer,
@@ -38,14 +38,14 @@ class Autoload
         AutoloadFinder $autoloadFinder,
         array $namespaces,
         string $cacheDir,
-        bool $isDebug
+        bool $debug
     ) {
         $this->replacer = $replacer;
         $this->logger = $logger;
         $this->autoloadFinder = $autoloadFinder;
         $this->namespaces = $namespaces;
         $this->cacheDir = $cacheDir;
-        $this->isDebug = $isDebug;
+        $this->debug = $debug;
     }
 
     public function register(): void
@@ -70,7 +70,7 @@ class Autoload
 
         $this->logger->notice('{class} replacing attempt', ['class' => $class]);
 
-        $cacheFactory = new ConfigCacheFactory($this->isDebug);
+        $cacheFactory = new ConfigCacheFactory($this->debug);
         $cachedClass = $cacheFactory->cache(
             $this->cacheDir.$class.'.php',
             function (ConfigCacheInterface $cache) use ($class, $filename) {

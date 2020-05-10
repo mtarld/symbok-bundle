@@ -13,14 +13,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
-class PreviewCommand extends Command
+class PreviewCommand extends Command implements ServiceSubscriberInterface
 {
     public const COMPILATION_RUNTIME = 'runtime';
     public const COMPILATION_SAVED = 'saved';
 
     /** @var ContainerInterface */
-    private $container;
+    private $locator;
 
     /** @var PhpCodeParser */
     private $codeParser;
@@ -34,12 +35,12 @@ class PreviewCommand extends Command
     protected static $defaultName = 'symbok:preview';
 
     public function __construct(
-        ContainerInterface $container,
+        ContainerInterface $locator,
         PhpCodeParser $codeParser,
         PhpCodeFinder $codeFinder,
         array $namespaces
     ) {
-        $this->container = $container;
+        $this->locator = $locator;
         $this->codeParser = $codeParser;
         $this->codeFinder = $codeFinder;
         $this->namespaces = $namespaces;
@@ -82,9 +83,9 @@ class PreviewCommand extends Command
     {
         switch ($strategy) {
             case self::COMPILATION_RUNTIME:
-                return $this->container->get('symbok.replacer.runtime_class');
+                return $this->locator->get('symbok.replacer.runtime');
             case self::COMPILATION_SAVED:
-                return $this->container->get('symbok.replacer.saved_class');
+                return $this->locator->get('symbok.replacer.saved');
             default:
                 throw new InvalidArgumentException(sprintf("compilationStrategy must be either '%s' or '%s'", self::COMPILATION_RUNTIME, self::COMPILATION_SAVED));
         }
@@ -100,5 +101,13 @@ class PreviewCommand extends Command
         }
 
         return $namespace.'\\'.$this->codeFinder->findClassName($statements);
+    }
+
+    public static function getSubscribedServices(): array
+    {
+        return [
+            'symbok.replacer.runtime' => ReplacerInterface::class,
+            'symbok.replacer.saved' => ReplacerInterface::class,
+        ];
     }
 }

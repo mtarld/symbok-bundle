@@ -20,7 +20,7 @@ class SymbokBundle extends Bundle
     public function boot(): void
     {
         /** @var Autoload $autoload */
-        $autoload = $this->container->get(Autoload::class);
+        $autoload = $this->container->get('symbok.autoload');
         $autoload->register();
     }
 }

@@ -23,7 +23,7 @@ class RuntimeClassReplacerFunctionalTest extends KernelTestCase
     public function testClassIsReplacedWithAutoload(): void
     {
         /** @var RuntimeClassReplacer $replacer */
-        $replacer = static::$container->get(RuntimeClassReplacer::class);
+        $replacer = static::$container->get('symbok.replacer.runtime');
 
         $this->assertSame(
             '<?php

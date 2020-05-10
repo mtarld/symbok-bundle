@@ -3,61 +3,192 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
-
     <services>
-        <defaults public="false" autowire="true" autoconfigure="true" />
+        <defaults public="false" />
 
-        <prototype namespace="Mtarld\SymbokBundle\" resource="../../*" exclude="../../{Annotation,DependencyInjection,Exception,Helper,Model,Tests,Kernel.php}" />
-
-        <service id="Mtarld\SymbokBundle\Autoload\Autoload" public="true">
-            <argument type="service" key="$replacer" id="symbok.replacer.runtime_class" />
-            <argument key="$namespaces">[]</argument>
-            <argument key="$cacheDir">%kernel.cache_dir%</argument>
-            <argument key="$isDebug">%kernel.debug%</argument>
+        <service id="symbok.autoload" class="Mtarld\SymbokBundle\Autoload\Autoload" public="true">
+            <argument type="service" id="symbok.replacer.runtime" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="symbok.autoload.autoload_finder" />
+            <argument>%symbok.namespaces%</argument>
+            <argument>%kernel.cache_dir%</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
-        <service id="Mtarld\SymbokBundle\Autoload\AutoloadFinder">
-            <argument key="$namespace" />
+        <service id="symbok.autoload.autoload_finder" class="Mtarld\SymbokBundle\Autoload\AutoloadFinder">
+            <argument />
         </service>
 
-        <service id="Mtarld\SymbokBundle\Command\SavedUpdaterCommand">
-            <argument type="service" key="$replacer" id="symbok.replacer.saved_class" />
-            <argument key="$namespaces">[]</argument>
-            <argument key="$projectDir">%kernel.project_dir%</argument>
+        <service id="symbok.behavior.all_args_constructor" class="Mtarld\SymbokBundle\Behavior\AllArgsConstructorBehavior">
+            <argument type="service" id="symbok.behavior.property" />
+            <argument>%symbok.defaults.constructor%</argument>
         </service>
 
-        <service id="Mtarld\SymbokBundle\Command\PreviewCommand">
-            <argument key="$namespaces">[]</argument>
+        <service id="symbok.behavior.class" class="Mtarld\SymbokBundle\Behavior\ClassBehavior" />
+
+        <service id="symbok.behavior.getter" class="Mtarld\SymbokBundle\Behavior\GetterBehavior">
+            <argument type="service" id="symbok.behavior.property" />
+            <argument>%symbok.defaults.getter%</argument>
         </service>
 
-        <service id="symbok.replacer.runtime_class" class="Mtarld\SymbokBundle\Replacer\RuntimeClassReplacer" public="true">
-            <argument type="service" key="$compiler" id="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler" />
+        <service id="symbok.behavior.property" class="Mtarld\SymbokBundle\Behavior\PropertyBehavior" />
+
+        <service id="symbok.behavior.setter" class="Mtarld\SymbokBundle\Behavior\SetterBehavior">
+            <argument type="service" id="symbok.behavior.property" />
+            <argument>%symbok.defaults.setter%</argument>
         </service>
 
-        <service id="symbok.replacer.saved_class" class="Mtarld\SymbokBundle\Replacer\SavedClassReplacer" public="true">
-            <argument type="service" key="$compiler" id="Mtarld\SymbokBundle\Compiler\SavedClassCompiler" />
+        <service id="symbok.command.preview" class="Mtarld\SymbokBundle\Command\PreviewCommand">
+            <argument type="service" id="service_container" />
+            <argument type="service" id="symbok.parser.php_code" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument>%symbok.namespaces%</argument>
+            <tag name="container.service_subscriber" id="symbok.replacer.runtime"/>
+            <tag name="container.service_subscriber" id="symbok.replacer.saved"/>
+            <tag name="console.command" />
         </service>
 
-        <service id="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler">
-            <argument type="service" key="$config" id="symbok.pass_config.runtime_class" />
+        <service id="symbok.command.saved_updater" class="Mtarld\SymbokBundle\Command\SavedUpdaterCommand">
+            <argument type="service" id="symbok.parser.php_code" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.replacer.saved" />
+            <argument>%symbok.namespaces%</argument>
+            <argument>%kernel.project_dir%</argument>
+            <tag name="console.command" />
         </service>
 
-        <service id="symbok.pass_config.runtime_class" class="Mtarld\SymbokBundle\Compiler\PassConfig">
-            <argument key="$passes">%symbok.pass_config.runtime_class%</argument>
+        <service id="symbok.compiler.runtime" class="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler">
+            <argument type="tagged_iterator" tag="pass.runtime.class" />
+            <argument type="tagged_iterator" tag="pass.runtime.property" />
+            <argument type="service" id="symbok.factory.class" />
+            <argument type="service" id="logger" />
         </service>
 
-        <service id="Mtarld\SymbokBundle\Behavior\AllArgsConstructorBehavior">
-            <argument key="$defaults">[]</argument>
+        <service id="symbok.compiler.saved" class="Mtarld\SymbokBundle\Compiler\SavedClassCompiler">
+            <argument type="service" id="symbok.factory.class" />
+            <argument type="service" id="symbok.compiler.runtime" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.util.type_formatter" />
         </service>
 
-        <service id="Mtarld\SymbokBundle\Behavior\SetterBehavior">
-            <argument key="$defaults">[]</argument>
+        <service id="symbok.factory.class" class="Mtarld\SymbokBundle\Factory\ClassFactory">
+            <argument type="service" id="symbok.factory.property" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.finder.doc_block" />
+            <argument type="service" id="symbok.factory.doc_block" />
+            <argument type="service" id="logger" />
         </service>
 
-        <service id="Mtarld\SymbokBundle\Behavior\GetterBehavior">
-            <argument key="$defaults">[]</argument>
+        <service id="symbok.factory.doc_block" class="Mtarld\SymbokBundle\Factory\DocBlockFactory" />
+
+        <service id="symbok.factory.doc" class="Mtarld\SymbokBundle\Factory\DocFactory" />
+
+        <service id="symbok.factory.doctrine_relation" class="Mtarld\SymbokBundle\Factory\DoctrineRelationFactory">
+            <argument type="service" id="symbok.factory.doc_block" />
+            <argument type="service" id="symbok.finder.doc_block" />
+            <argument type="service" id="logger" />
         </service>
 
-        <prototype namespace="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\" resource="../../Compiler/RuntimeClassCompiler/*"  public="true" />
+        <service id="symbok.factory.property" class="Mtarld\SymbokBundle\Factory\PropertyFactory">
+            <argument type="service" id="symbok.factory.doc_block" />
+            <argument type="service" id="symbok.finder.doc_block" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.util.type_formatter" />
+            <argument type="service" id="symbok.factory.doctrine_relation" />
+            <argument type="service" id="logger" />
+        </service>
+
+        <service id="symbok.finder.doc_block.doctrine_types" class="Mtarld\SymbokBundle\Finder\DocBlock\DoctrineTypes" />
+
+        <service id="symbok.finder.doc_block" class="Mtarld\SymbokBundle\Finder\DocBlockFinder">
+            <argument type="service" id="symbok.parser.doc_block" />
+            <argument type="service" id="symbok.finder.doc_block.doctrine_types" />
+            <argument type="service" id="logger" />
+        </service>
+
+        <service id="symbok.finder.php_code" class="Mtarld\SymbokBundle\Finder\PhpCodeFinder">
+            <argument type="service" id="logger" />
+        </service>
+
+        <service id="symbok.method_builder.adder" class="Mtarld\SymbokBundle\MethodBuilder\AdderBuilder">
+            <argument type="service" id="symbok.behavior.setter" />
+            <argument type="service" id="symbok.util.method_manipulator" />
+            <argument type="service" id="symbok.util.type_formatter" />
+            <argument type="service" id="symbok.method_builder.adder.regular_statements" />
+            <argument type="service" id="symbok.method_builder.adder.doctrine_statements" />
+        </service>
+
+        <service id="symbok.method_builder.adder.regular_statements" class="Mtarld\SymbokBundle\MethodBuilder\AdderBuilder\RegularStatements" />
+
+        <service id="symbok.method_builder.adder.doctrine_statements" class="Mtarld\SymbokBundle\MethodBuilder\AdderBuilder\DoctrineStatements">
+            <argument type="service" id="symbok.behavior.setter" />
+        </service>
+
+        <service id="symbok.method_builder.all_args_constructor" class="Mtarld\SymbokBundle\MethodBuilder\AllArgsConstructorBuilder">
+            <argument type="service" id="symbok.behavior.all_args_constructor" />
+            <argument type="service" id="symbok.util.type_formatter" />
+        </service>
+
+        <service id="symbok.method_builder.constructor" class="Mtarld\SymbokBundle\MethodBuilder\ConstructorBuilder" />
+
+        <service id="symbok.method_builder.getter" class="Mtarld\SymbokBundle\MethodBuilder\GetterBuilder">
+            <argument type="service" id="symbok.behavior.getter" />
+            <argument type="service" id="symbok.util.type_formatter" />
+        </service>
+
+        <service id="symbok.method_builder.remover" class="Mtarld\SymbokBundle\MethodBuilder\RemoverBuilder">
+            <argument type="service" id="symbok.behavior.setter" />
+            <argument type="service" id="symbok.util.method_manipulator" />
+            <argument type="service" id="symbok.util.type_formatter" />
+            <argument type="service" id="symbok.method_builder.remover.regular_statements" />
+            <argument type="service" id="symbok.method_builder.remover.doctrine_statements" />
+        </service>
+
+        <service id="symbok.method_builder.remover.regular_statements" class="Mtarld\SymbokBundle\MethodBuilder\RemoverBuilder\RegularStatements" />
+
+        <service id="symbok.method_builder.remover.doctrine_statements" class="Mtarld\SymbokBundle\MethodBuilder\RemoverBuilder\DoctrineStatements">
+            <argument type="service" id="symbok.behavior.setter" />
+        </service>
+
+        <service id="symbok.method_builder.setter" class="Mtarld\SymbokBundle\MethodBuilder\SetterBuilder">
+            <argument type="service" id="symbok.behavior.setter" />
+            <argument type="service" id="symbok.util.method_manipulator" />
+            <argument type="service" id="symbok.util.type_formatter" />
+        </service>
+
+        <service id="symbok.method_builder.to_string" class="Mtarld\SymbokBundle\MethodBuilder\ToStringBuilder" />
+
+        <service id="symbok.parser.doc_block" class="Mtarld\SymbokBundle\Parser\DocBlockParser">
+            <argument type="service" id="symbok.parser.doc_block.formatter" />
+            <argument type="service" id="symbok.factory.doc" />
+        </service>
+
+        <service id="symbok.parser.doc_block.formatter" class="Mtarld\SymbokBundle\Parser\DocBlockParser\Formatter" />
+
+        <service id="symbok.parser.php_code" class="Mtarld\SymbokBundle\Parser\PhpCodeParser">
+            <argument type="service" id="symbok.autoload.autoload_finder" />
+        </service>
+
+        <service id="symbok.replacer.runtime" class="Mtarld\SymbokBundle\Replacer\RuntimeClassReplacer" public="true">
+            <argument type="service" id="symbok.compiler.runtime" />
+            <argument type="service" id="symbok.visitor.replace_class" />
+            <argument type="service" id="symbok.parser.php_code" />
+        </service>
+
+        <service id="symbok.replacer.saved" class="Mtarld\SymbokBundle\Replacer\SavedClassReplacer" public="true">
+            <argument type="service" id="symbok.compiler.saved" />
+            <argument type="service" id="symbok.factory.doc" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.parser.php_code" />
+            <argument type="service" id="symbok.autoload.autoload_finder" />
+        </service>
+
+        <service id="symbok.util.method_manipulator" class="Mtarld\SymbokBundle\Util\MethodManipulator" />
+
+        <service id="symbok.util.type_formatter" class="Mtarld\SymbokBundle\Util\TypeFormatter" />
+
+        <service id="symbok.visitor.replace_class" class="Mtarld\SymbokBundle\Visitor\ReplaceClassNodeVisitor">
+            <argument type="service" id="symbok.factory.doc" />
+        </service>
     </services>
 </container>

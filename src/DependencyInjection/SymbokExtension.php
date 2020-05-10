@@ -2,13 +2,6 @@
 
 namespace Mtarld\SymbokBundle\DependencyInjection;
 
-use Mtarld\SymbokBundle\Autoload\Autoload;
-use Mtarld\SymbokBundle\Autoload\AutoloadFinder;
-use Mtarld\SymbokBundle\Behavior\AllArgsConstructorBehavior;
-use Mtarld\SymbokBundle\Behavior\GetterBehavior;
-use Mtarld\SymbokBundle\Behavior\SetterBehavior;
-use Mtarld\SymbokBundle\Command\PreviewCommand;
-use Mtarld\SymbokBundle\Command\SavedUpdaterCommand;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -35,7 +28,7 @@ class SymbokExtension extends Extension
             new FileLocator(__DIR__.'/../Resources/config')
         );
         $loader->load('services.xml');
-        $loader->load('pass_config.xml');
+        $loader->load('compiler.xml');
 
         if (null === $configuration = $this->getConfiguration($configs, $container)) {
             return;
@@ -43,20 +36,14 @@ class SymbokExtension extends Extension
 
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter(
-            'symbok',
-            $config
-        );
-
         $namespaces = $config['namespaces'];
-        $defaults = $config['defaults'];
+        $container->setParameter('symbok.namespaces', $namespaces);
 
-        $container->getDefinition(Autoload::class)->replaceArgument('$namespaces', $namespaces);
-        $container->getDefinition(AutoloadFinder::class)->replaceArgument('$namespace', $namespaces[0] ?? '');
-        $container->getDefinition(SavedUpdaterCommand::class)->replaceArgument('$namespaces', $namespaces);
-        $container->getDefinition(PreviewCommand::class)->replaceArgument('$namespaces', $namespaces);
-        $container->getDefinition(AllArgsConstructorBehavior::class)->replaceArgument('$defaults', $defaults['constructor'] ?? []);
-        $container->getDefinition(GetterBehavior::class)->replaceArgument('$defaults', $defaults['getter'] ?? []);
-        $container->getDefinition(SetterBehavior::class)->replaceArgument('$defaults', $defaults['setter'] ?? []);
+        $defaults = $config['defaults'];
+        $container->setParameter('symbok.defaults.getter', $defaults['getter']);
+        $container->setParameter('symbok.defaults.setter', $defaults['setter']);
+        $container->setParameter('symbok.defaults.constructor', $defaults['constructor']);
+
+        $container->getDefinition('symbok.autoload.autoload_finder')->setArgument(0, $namespaces[0] ?? '');
     }
 }

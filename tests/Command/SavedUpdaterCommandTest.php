@@ -47,9 +47,9 @@ class SavedUpdaterCommandTest extends KernelTestCase
 
         static::bootKernel();
         $this->commandTester = new CommandTester(new SavedUpdaterCommand(
-            static::$container->get(PhpCodeParser::class),
-            static::$container->get(PhpCodeFinder::class),
-            static::$container->get(SavedClassReplacer::class),
+            static::$container->get('symbok.parser.php_code'),
+            static::$container->get('symbok.finder.php_code'),
+            static::$container->get('symbok.replacer.saved'),
             ['Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity'],
             vfsStream::url('dir')
         ));
