@@ -30,7 +30,7 @@ class PreviewCommandTest extends KernelTestCase
             static::$container,
             static::$container->get(PhpCodeParser::class),
             static::$container->get(PhpCodeFinder::class),
-            ['Mtarld\SymbokBundle\Tests\Fixtures\files']
+            ['Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity']
         ));
     }
 
@@ -39,7 +39,7 @@ class PreviewCommandTest extends KernelTestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->commandTester->execute([
-            'path' => __DIR__.'/../Fixtures/files/Product1.php',
+            'path' => __DIR__.'/../Fixtures/App/src/Entity/Product1.php',
             '--compilationStrategy' => 'foo',
         ]);
     }
@@ -68,25 +68,25 @@ class PreviewCommandTest extends KernelTestCase
 
         $this->expectException(InvalidArgumentException::class);
         (new CommandTester($command))->execute([
-            'path' => __DIR__.'/../Fixtures/files/Product1.php',
+            'path' => __DIR__.'/../Fixtures/App/src/Entity/Product1.php',
         ]);
     }
 
     public function testPreviewRuntime(): void
     {
         $this->commandTester->execute([
-            'path' => __DIR__.'/../Fixtures/files/Product1.php',
+            'path' => __DIR__.'/../Fixtures/App/src/Entity/Product1.php',
             '--compilationStrategy' => PreviewCommand::COMPILATION_RUNTIME,
         ]);
 
         $this->assertSame(
             '
-\'Mtarld\SymbokBundle\Tests\Fixtures\files\Product1\' \'runtime\' compilation preview
-=================================================================================
+\'Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1\' \'runtime\' compilation preview
+==========================================================================================
 
 <?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\files;
+namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -153,18 +153,18 @@ class Product1
     public function testPreviewSaved(): void
     {
         $this->commandTester->execute([
-            'path' => __DIR__.'/../Fixtures/files/Product1.php',
+            'path' => __DIR__.'/../Fixtures/App/src/Entity/Product1.php',
             '--compilationStrategy' => PreviewCommand::COMPILATION_SAVED,
         ]);
 
         $this->assertSame(
             '
-\'Mtarld\SymbokBundle\Tests\Fixtures\files\Product1\' \'saved\' compilation preview
-===============================================================================
+\'Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1\' \'saved\' compilation preview
+========================================================================================
 
 <?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\files;
+namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;

@@ -4,7 +4,7 @@ namespace Mtarld\SymbokBundle\Tests\Compiler;
 
 use Mtarld\SymbokBundle\Compiler\SavedClassCompiler;
 use Mtarld\SymbokBundle\Parser\PhpCodeParser;
-use Mtarld\SymbokBundle\Tests\Fixtures\files\Product3;
+use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product3;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tags\Method;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

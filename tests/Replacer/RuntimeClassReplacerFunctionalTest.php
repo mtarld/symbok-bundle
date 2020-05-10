@@ -3,10 +3,10 @@
 namespace Mtarld\SymbokBundle\Tests\Replacer;
 
 use Mtarld\SymbokBundle\Replacer\RuntimeClassReplacer;
-use Mtarld\SymbokBundle\Tests\Fixtures\files\Product1;
-use Mtarld\SymbokBundle\Tests\Fixtures\files\Product2;
-use Mtarld\SymbokBundle\Tests\Fixtures\files\Product3;
-use Mtarld\SymbokBundle\Tests\Fixtures\files\Product4;
+use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1;
+use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product2;
+use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product3;
+use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product4;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -28,7 +28,7 @@ class RuntimeClassReplacerFunctionalTest extends KernelTestCase
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\files;
+namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -94,7 +94,7 @@ class Product1
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\files;
+namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -154,7 +154,7 @@ class Product2
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\files;
+namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;

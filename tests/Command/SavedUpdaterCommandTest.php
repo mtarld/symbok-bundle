@@ -30,7 +30,7 @@ class SavedUpdaterCommandTest extends KernelTestCase
      */
     public function setUp(): void
     {
-        $fixturesDir = __DIR__.'/../Fixtures/files';
+        $fixturesDir = __DIR__.'/../Fixtures/App/src';
 
         /** @var array<SplFileInfo> $files */
         $files = (new Finder())->name('*.php')->in($fixturesDir);
@@ -50,7 +50,7 @@ class SavedUpdaterCommandTest extends KernelTestCase
             static::$container->get(PhpCodeParser::class),
             static::$container->get(PhpCodeFinder::class),
             static::$container->get(SavedClassReplacer::class),
-            ['Mtarld\SymbokBundle\Tests\Fixtures\files'],
+            ['Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity'],
             vfsStream::url('dir')
         ));
     }
@@ -70,7 +70,7 @@ class SavedUpdaterCommandTest extends KernelTestCase
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\files;
+namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -130,7 +130,7 @@ class Product1
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\files;
+namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -176,7 +176,7 @@ class Product2
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\files;
+namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;

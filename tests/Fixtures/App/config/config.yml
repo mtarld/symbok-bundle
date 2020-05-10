@@ -1,6 +1,10 @@
+framework:
+  secret: ThisIsSecret
+  test: true
+
 symbok:
   namespaces:
-    - Mtarld\SymbokBundle\Tests\Fixtures\files
+    - Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity
 
 services:
   _defaults:
