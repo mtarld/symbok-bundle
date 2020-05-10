@@ -2,7 +2,7 @@
 
 namespace Mtarld\SymbokBundle\Tests\Autoload;
 
-use Mtarld\SymbokBundle\Tests\Fixtures\files\Product1;
+use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**

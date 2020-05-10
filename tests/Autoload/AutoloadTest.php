@@ -5,9 +5,9 @@ namespace Mtarld\SymbokBundle\Tests\Autoload;
 use Mtarld\SymbokBundle\Autoload\Autoload;
 use Mtarld\SymbokBundle\Autoload\AutoloadFinder;
 use Mtarld\SymbokBundle\Replacer\ReplacerInterface;
-use Mtarld\SymbokBundle\Tests\Fixtures\AnotherNamespace\ProductFromAnotherNamespace;
-use Mtarld\SymbokBundle\Tests\Fixtures\files\Product1;
-use Mtarld\SymbokBundle\Tests\Fixtures\files\Product2;
+use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1;
+use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product2;
+use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Model\ProductFromAnotherNamespace;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -35,13 +35,13 @@ class AutoloadTest extends TestCase
         $oldCacheFilePath = sprintf('var/cache/%s.php', $class);
         $fileSystem->remove($oldCacheFilePath);
 
-        $autoloadFinder = new AutoloadFinder('Mtarld\\SymbokBundle\\Tests\\Fixtures\\Files');
+        $autoloadFinder = new AutoloadFinder('Mtarld\\SymbokBundle\\Tests\\Fixtures\\App\\src\\Entity');
 
         $autoload = new Autoload(
             $replacer,
             $logger,
             $autoloadFinder,
-            ['Mtarld\\SymbokBundle\\Tests\\Fixtures\\files'],
+            ['Mtarld\\SymbokBundle\\Tests\\Fixtures\\App\\src\\Entity'],
             'var/cache/',
             true
         );
@@ -54,6 +54,6 @@ class AutoloadTest extends TestCase
         yield [Product2::class, true];
         yield [ProductFromAnotherNamespace::class, false];
         yield ['AnotherClass', false];
-        yield ['Mtarld\SymbokBundle\Tests\Fixtures\files\VirtualClass', false];
+        yield ['Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\VirtualClass', false];
     }
 }

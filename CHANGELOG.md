@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Moved tests to `tests` folder
 - Changed doctrine inflector by symfony inflector
 - Fixed `PhpParser\Comment` deprecations
 - Improved logs

@@ -24,7 +24,7 @@ namespace Mtarld\SymbokBundle\Tests\Parser {
     use Mtarld\SymbokBundle\Autoload\AutoloadFinder;
     use Mtarld\SymbokBundle\Exception\IOException;
     use Mtarld\SymbokBundle\Parser\PhpCodeParser;
-    use Mtarld\SymbokBundle\Tests\Fixtures\files\Product1;
+    use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1;
     use PhpParser\Node\Stmt\Namespace_;
     use PHPUnit\Framework\TestCase;
 
@@ -42,7 +42,7 @@ namespace Mtarld\SymbokBundle\Tests\Parser {
 
         public function testParseStatements(): void
         {
-            $autoloaderFinder = new AutoloadFinder('Mtarld\\SymbokBundle\\Tests\\Fixtures\\Files');
+            $autoloaderFinder = new AutoloadFinder('Mtarld\\SymbokBundle\\Tests\\Fixtures\\App\\src\\Entity');
 
             $statements = (new PhpCodeParser($autoloaderFinder))->parseStatements(Product1::class);
 
