@@ -40,6 +40,16 @@
                 <referencedMethod name="Mtarld\SymbokBundle\Tests\Fixtures\files\Product1::setname"/>
             </errorLevel>
         </UndefinedMethod>
+        <RedundantCondition>
+            <errorLevel type="suppress">
+                <file name="src/Replacer/SavedClassReplacer.php"/>
+            </errorLevel>
+        </RedundantCondition>
+        <DeprecatedMethod>
+            <errorLevel type="suppress">
+                <referencedMethod name="PhpParser\Comment::getFilePos"/>
+            </errorLevel>
+        </DeprecatedMethod>
     </issueHandlers>
 
     <stubs>

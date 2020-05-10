@@ -71,7 +71,10 @@ class SavedClassReplacer implements ReplacerInterface
         $originalDoc = $originalClass->getDocComment();
         $updatedDoc = $this->getUpdatedDoc($statements);
 
-        $filePos = $originalDoc instanceof Doc ? $originalDoc->getFilePos() : $this->getOriginalClassFilePos($originalClass, $fp);
+        if ($originalDoc instanceof Doc) {
+            $filePos = method_exists($originalDoc, 'getStartFilePos') ? $originalDoc->getStartFilePos() : $originalDoc->getFilePos();
+        }
+        $filePos = $filePos ?? $this->getOriginalClassFilePos($originalClass, $fp);
 
         $content = $this->getUpdatedContent($originalDoc, $updatedDoc, $fp, $filePos);
 

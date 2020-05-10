@@ -2,12 +2,12 @@
 
 namespace Mtarld\SymbokBundle\MethodBuilder;
 
-use Doctrine\Common\Inflector\Inflector;
 use Mtarld\SymbokBundle\Behavior\SetterBehavior;
 use Mtarld\SymbokBundle\MethodBuilder\RemoverBuilder\DoctrineStatements;
 use Mtarld\SymbokBundle\MethodBuilder\RemoverBuilder\RegularStatements;
 use Mtarld\SymbokBundle\Model\Relation\DoctrineRelation;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
+use Mtarld\SymbokBundle\Util\Inflector;
 use Mtarld\SymbokBundle\Util\MethodManipulator;
 use Mtarld\SymbokBundle\Util\MethodNameGenerator;
 use Mtarld\SymbokBundle\Util\TypeFormatter;

@@ -56,7 +56,7 @@ class ClassFactory
             throw new CodeFindingException('Cannot retrieve class name');
         }
 
-        $this->logger->info('Parsing {class}', ['class' => $rawClass->name]);
+        $this->logger->info('Creating {class}', ['class' => (string) $rawClass->name]);
 
         $class = new SymbokClass(
             (string) $rawClass->name,
@@ -68,7 +68,7 @@ class ClassFactory
         );
         $class = $class->setProperties($this->createProperties($class));
 
-        $this->logger->info('{class} parsed', ['class' => (string) $class]);
+        $this->logger->info('{class} created', ['class' => (string) $class]);
 
         return $class;
     }

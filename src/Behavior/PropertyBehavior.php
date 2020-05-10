@@ -38,6 +38,7 @@ class PropertyBehavior
 
     public function requireAdder(SymbokProperty $property): bool
     {
+        /** @var Setter|Data $annotation */
         $annotation = $property->getAnnotation(Setter::class) ?? $property->getClass()->getAnnotation(Data::class);
 
         return $this->requireSetter($property) && true === $annotation->add;
@@ -45,6 +46,7 @@ class PropertyBehavior
 
     public function requireRemover(SymbokProperty $property): bool
     {
+        /** @var Setter|Data $annotation */
         $annotation = $property->getAnnotation(Setter::class) ?? $property->getClass()->getAnnotation(Data::class);
 
         return $this->requireSetter($property) && true === $annotation->remove;

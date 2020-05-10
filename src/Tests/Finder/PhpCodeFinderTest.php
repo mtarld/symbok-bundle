@@ -4,7 +4,9 @@ namespace Mtarld\SymbokBundle\Tests\Finder;
 
 use Mtarld\SymbokBundle\Exception\CodeFindingException;
 use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\GroupUse;
@@ -14,6 +16,7 @@ use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 /**
  * @group unit
@@ -23,7 +26,7 @@ class PhpCodeFinderTest extends TestCase
 {
     public function testFindNamespace(): void
     {
-        $finder = new PhpCodeFinder();
+        $finder = new PhpCodeFinder(new NullLogger());
         $stmts = [
             new Namespace_(),
         ];
@@ -33,7 +36,7 @@ class PhpCodeFinderTest extends TestCase
 
     public function testFindNamespaceExceptionWhenDouble(): void
     {
-        $finder = new PhpCodeFinder();
+        $finder = new PhpCodeFinder(new NullLogger());
         $stmts = [
             new Namespace_(),
             new Namespace_(),
@@ -47,7 +50,7 @@ class PhpCodeFinderTest extends TestCase
 
     public function testFindNamespaceExceptionWhenZero(): void
     {
-        $finder = new PhpCodeFinder();
+        $finder = new PhpCodeFinder(new NullLogger());
         $stmts = [
             new Class_('Foo'),
         ];
@@ -60,7 +63,7 @@ class PhpCodeFinderTest extends TestCase
 
     public function testFindClass(): void
     {
-        $finder = new PhpCodeFinder();
+        $finder = new PhpCodeFinder(new NullLogger());
         $stmts = [
             new Namespace_(new Name('Foo'), [
                 new Class_('Foo'),
@@ -72,7 +75,7 @@ class PhpCodeFinderTest extends TestCase
 
     public function testFindClassExceptionWhenDouble(): void
     {
-        $finder = new PhpCodeFinder();
+        $finder = new PhpCodeFinder(new NullLogger());
         $stmts = [
             new Namespace_(new Name('Foo'), [
                 new Class_('Foo'),
@@ -88,7 +91,7 @@ class PhpCodeFinderTest extends TestCase
 
     public function testFindClassExceptionWhenZero(): void
     {
-        $finder = new PhpCodeFinder();
+        $finder = new PhpCodeFinder(new NullLogger());
         $stmts = [
             new Namespace_(new Name('Foo'), [
             ]),
@@ -102,7 +105,7 @@ class PhpCodeFinderTest extends TestCase
 
     public function testFindAliases(): void
     {
-        $finder = new PhpCodeFinder();
+        $finder = new PhpCodeFinder(new NullLogger());
         $expectedUse = new Use_([new UseUse(new Name('Bar'), 'alias')]);
         $expectedUse2 = new Use_([new UseUse(new Name('Baz'))]);
         $stmts = [
@@ -139,7 +142,7 @@ class PhpCodeFinderTest extends TestCase
 
     public function testFindProperties(): void
     {
-        $finder = new PhpCodeFinder();
+        $finder = new PhpCodeFinder(new NullLogger());
         $class = new Class_('Bar');
         $class->stmts = [new Property(Class_::MODIFIER_PUBLIC, [new PropertyProperty('baz')])];
         $stmts = [
@@ -154,7 +157,7 @@ class PhpCodeFinderTest extends TestCase
 
     public function testFindMethods(): void
     {
-        $finder = new PhpCodeFinder();
+        $finder = new PhpCodeFinder(new NullLogger());
         $class = new Class_('Bar');
         $class->stmts = [new ClassMethod('baz')];
         $stmts = [
@@ -169,7 +172,7 @@ class PhpCodeFinderTest extends TestCase
 
     public function testFindMethod(): void
     {
-        $finder = new PhpCodeFinder();
+        $finder = new PhpCodeFinder(new NullLogger());
         $class = new Class_('Bar');
         $class->stmts = [new ClassMethod('baz')];
         $stmts = [
@@ -195,7 +198,7 @@ class PhpCodeFinderTest extends TestCase
 
     public function testHasMethod(): void
     {
-        $finder = new PhpCodeFinder();
+        $finder = new PhpCodeFinder(new NullLogger());
         $class = new Class_('Bar');
         $class->stmts = [new ClassMethod('baz')];
         $stmts = [
@@ -206,5 +209,35 @@ class PhpCodeFinderTest extends TestCase
 
         $method = $finder->hasMethod('bar', $stmts);
         $this->assertFalse($method);
+    }
+
+    public function testFindPropertyType(): void
+    {
+        $finder = new PhpCodeFinder(new NullLogger());
+
+        $property = new Property(
+            Class_::MODIFIER_PRIVATE,
+            [new PropertyProperty('foo')],
+            [],
+            new NullableType(new Identifier('string'))
+        );
+
+        $this->assertEquals(new Identifier('string'), $finder->findPropertyType($property));
+
+        $property = new Property(
+            Class_::MODIFIER_PRIVATE,
+            [new PropertyProperty('foo')],
+            [],
+            new NullableType(new Name(['App', 'Foo']))
+        );
+
+        $this->assertEquals(new Name(['App', 'Foo']), $finder->findPropertyType($property));
+
+        $property = new Property(
+            Class_::MODIFIER_PRIVATE,
+            [new PropertyProperty('foo')]
+        );
+
+        $this->assertNull($finder->findPropertyType($property));
     }
 }

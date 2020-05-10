@@ -2,8 +2,8 @@
 
 namespace Mtarld\SymbokBundle\MethodBuilder\RemoverBuilder;
 
-use Doctrine\Common\Inflector\Inflector;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
+use Mtarld\SymbokBundle\Util\Inflector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayDimFetch;

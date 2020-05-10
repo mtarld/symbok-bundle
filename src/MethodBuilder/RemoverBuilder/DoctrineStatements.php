@@ -2,11 +2,11 @@
 
 namespace Mtarld\SymbokBundle\MethodBuilder\RemoverBuilder;
 
-use Doctrine\Common\Inflector\Inflector;
 use Mtarld\SymbokBundle\Behavior\SetterBehavior;
 use Mtarld\SymbokBundle\Model\Relation\DoctrineRelation;
 use Mtarld\SymbokBundle\Model\Relation\ManyToManyRelation;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
+use Mtarld\SymbokBundle\Util\Inflector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -40,7 +40,7 @@ class DoctrineStatements
         $ifStatements = [$this->getOwnSideUpdateStmt($propertyName, $paramName)];
 
         if ($this->behavior->hasToUpdateOtherSide($property)) {
-            /** @var DoctrineRelation */
+            /** @var DoctrineRelation $relation */
             $relation = $property->getRelation();
             if ($relation->isOwning()) {
                 $ifStatements[] = $this->getOtherSideUpdateStmt($relation, $paramName);
