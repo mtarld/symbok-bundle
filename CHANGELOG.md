@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Fixed nested array type of PHP7.4 typed properties
 - Improved services definition
 - Moved tests to `tests` folder
 - Changed doctrine inflector by symfony inflector

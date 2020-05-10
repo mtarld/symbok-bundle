@@ -7,6 +7,9 @@ use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
 use Mtarld\SymbokBundle\Util\TypeFormatter;
+use phpDocumentor\Reflection\Type;
+use phpDocumentor\Reflection\Types\Array_;
+use phpDocumentor\Reflection\Types\Context;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
 use Psr\Log\LoggerInterface;
@@ -57,10 +60,12 @@ class PropertyFactory
 
         $docBlock = $this->docBlockFactory->createFor($rawProperty, $class->getContext());
 
-        $type = (($codeType = $this->codeFinder->findPropertyType($rawProperty)) instanceof Node)
-            ? $this->typeFormatter->asDocumentationType($codeType, $class->getContext())
-            : $this->docBlockFinder->findType($docBlock)
-        ;
+        $type = $this->getTypedPropertyType($rawProperty, $class->getContext());
+
+        // Fallback on docBlock if property isn't typed or it's an array (to be more precise)
+        if (!$type instanceof Type || $type instanceof Array_) {
+            $type = $this->docBlockFinder->findType($docBlock);
+        }
 
         $property = new SymbokProperty(
             $rawProperty->props[0]->name->name,
@@ -73,5 +78,14 @@ class PropertyFactory
         $this->logger->info('Property {name} created', ['name' => $property->getName()]);
 
         return $property;
+    }
+
+    private function getTypedPropertyType(Property $property, Context $context): ?Type
+    {
+        if (!($type = $this->codeFinder->findPropertyType($property)) instanceof Node) {
+            return null;
+        }
+
+        return  $this->typeFormatter->asDocumentationType($type, $context);
     }
 }
