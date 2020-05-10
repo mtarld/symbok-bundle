@@ -6,6 +6,7 @@ use Mtarld\SymbokBundle\Replacer\RuntimeClassReplacer;
 use Mtarld\SymbokBundle\Tests\Fixtures\files\Product1;
 use Mtarld\SymbokBundle\Tests\Fixtures\files\Product2;
 use Mtarld\SymbokBundle\Tests\Fixtures\files\Product3;
+use Mtarld\SymbokBundle\Tests\Fixtures\files\Product4;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -193,5 +194,37 @@ class Product3
 }',
             $replacer->replace(Product3::class)
         );
+
+        if (PHP_VERSION_ID >= 70400) {
+            $this->assertSame(
+                '<?php
+
+namespace Mtarld\SymbokBundle\Tests\Fixtures\files;
+
+use Mtarld\SymbokBundle\Annotation\Getter;
+/**
+ */
+class Product4
+{
+    /**
+     * @Getter()
+     */
+    private ?int $id;
+    /**
+     * @Getter()
+     */
+    private Product1 $related;
+    public function getId() : ?int
+    {
+        return $this->id;
+    }
+    public function getRelated() : ?\Mtarld\SymbokBundle\Tests\Fixtures\files\Product1
+    {
+        return $this->related;
+    }
+}',
+                $replacer->replace(Product4::class)
+            );
+        }
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Mtarld\SymbokBundle\MethodBuilder\AdderBuilder;
 
-use Doctrine\Common\Inflector\Inflector;
 use Mtarld\SymbokBundle\Behavior\SetterBehavior;
 use Mtarld\SymbokBundle\Model\Relation\DoctrineRelation;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
+use Mtarld\SymbokBundle\Util\Inflector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BooleanNot;

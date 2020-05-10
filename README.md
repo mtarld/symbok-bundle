@@ -102,10 +102,9 @@ use Mtarld\SymbokBundle\Annotation\Getter;
 class Product
 {
     /**
-     * @var int
      * @Getter
      */
-    private $id;
+    private int $id;
 }
 ```
 
@@ -120,10 +119,9 @@ use Mtarld\SymbokBundle\Annotation\Getter;
 class Product
 {
     /**
-     * @var int
      * @Getter
      */
-    private $id;
+    private int $id;
     
     public function getId(): ?int
     {

@@ -12,14 +12,19 @@ use Mtarld\SymbokBundle\Model\SymbokProperty;
 use Mtarld\SymbokBundle\Util\MethodManipulator;
 use Mtarld\SymbokBundle\Util\TypeFormatter;
 use PhpParser\PrettyPrinter\Standard;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * @group unit
  * @group builder
  */
-class RemoverBuilderTest extends TestCase
+class RemoverBuilderTest extends KernelTestCase
 {
+    public function setUp(): void
+    {
+        static::bootKernel();
+    }
+
     /**
      * @param class-string|null $relation
      *

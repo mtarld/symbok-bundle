@@ -51,7 +51,7 @@ class RuntimeClassCompiler implements CompilerInterface
             });
 
             $class = array_reduce($propertyPasses, function (SymbokClass $class, PropertyPassInterface $pass) use ($property): SymbokClass {
-                $this->logger->info('Run {pass} compiler pass on {class}', ['pass' => get_class($pass), 'class' => (string) $class]);
+                $this->logger->info('Run {pass} compiler pass on {property} of {class}', ['pass' => get_class($pass), 'property' => $property->getName(), 'class' => (string) $class]);
 
                 return $pass->process($property);
             }, $class);

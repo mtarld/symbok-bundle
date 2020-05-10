@@ -53,7 +53,8 @@ Used to know if setters will have to return self class instance.
 ## Property type
 Used to know which type the property is.
 
-1. Property `@var` tag in docblock
-2. [Doctrine relation annotation](doctrine.md#doctrine-entity-relations)
-3. [Doctrine column annotation](doctrine.md#doctrine-column-annotation)
-4. `mixed`
+1. PHP7.4 typed property type
+2. Property `@var` tag in docblock
+3. [Doctrine relation annotation](doctrine.md#doctrine-entity-relations)
+4. [Doctrine column annotation](doctrine.md#doctrine-column-annotation)
+5. `mixed`

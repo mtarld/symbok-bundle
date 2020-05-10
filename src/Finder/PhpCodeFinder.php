@@ -4,6 +4,9 @@ namespace Mtarld\SymbokBundle\Finder;
 
 use Mtarld\SymbokBundle\Exception\CodeFindingException;
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\GroupUse;
@@ -11,14 +14,19 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeFinder;
+use Psr\Log\LoggerInterface;
 
 class PhpCodeFinder
 {
+    /** @var LoggerInterface */
+    private $logger;
+
     /** @var NodeFinder */
     private $finder;
 
-    public function __construct()
+    public function __construct(LoggerInterface $logger)
     {
+        $this->logger = $logger;
         $this->finder = new NodeFinder();
     }
 
@@ -154,5 +162,28 @@ class PhpCodeFinder
         }
 
         return $name;
+    }
+
+    /**
+     * @return Identifier|Name|null
+     */
+    public function findPropertyType(Property $property): ?Node
+    {
+        $type = $property->type;
+        $type = $type instanceof NullableType ? $type->type : $type;
+
+        if ($type instanceof Identifier) {
+            $this->logger->debug('Found {type} type from typed property', ['type' => (string) $type]);
+
+            return $type;
+        }
+
+        if ($type instanceof Name) {
+            $this->logger->debug('Found {type} type from typed property', ['type' => (string) $type]);
+
+            return $type;
+        }
+
+        return null;
     }
 }

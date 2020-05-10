@@ -2,8 +2,8 @@
 
 namespace Mtarld\SymbokBundle\MethodBuilder\AdderBuilder;
 
-use Doctrine\Common\Inflector\Inflector;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
+use Mtarld\SymbokBundle\Util\Inflector;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;

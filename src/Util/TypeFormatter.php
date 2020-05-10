@@ -8,6 +8,7 @@ use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\ClassString;
 use phpDocumentor\Reflection\Types\Collection;
 use phpDocumentor\Reflection\Types\Compound;
+use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\Iterable_;
 use phpDocumentor\Reflection\Types\Mixed_;
 use phpDocumentor\Reflection\Types\Null_;
@@ -82,16 +83,26 @@ class TypeFormatter
     /**
      * @param mixed|null $item
      */
-    public function asDocumentationType($item): Type
+    public function asDocumentationType($item, ?Context $context = null): Type
     {
         $typeString = $this->asDocumentationString($item);
 
-        return !empty($typeString) ? $this->stringAsType($typeString) : new Mixed_();
+        return !empty($typeString) ? $this->stringAsType($typeString, $context) : new Mixed_();
     }
 
-    public function stringAsType(string $type): Type
+    /**
+     * @param mixed|null $item
+     */
+    public function asPhpType($item, ?Context $context = null): ?Type
     {
-        return $this->typeResolver->resolve($type);
+        $typeString = $this->asPhpString($item);
+
+        return !empty($typeString) ? $this->stringAsType($typeString, $context) : null;
+    }
+
+    public function stringAsType(string $type, ?Context $context = null): Type
+    {
+        return $this->typeResolver->resolve($type, $context);
     }
 
     /**
