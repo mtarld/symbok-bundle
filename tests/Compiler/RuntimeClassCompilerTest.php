@@ -2,6 +2,7 @@
 
 namespace Mtarld\SymbokBundle\Tests\Compiler;
 
+use ArrayIterator;
 use Mtarld\SymbokBundle\Compiler\PassConfig;
 use Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler;
 use Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\ClassPassInterface;
@@ -46,16 +47,14 @@ class RuntimeClassCompilerTest extends TestCase
             ->method('process')
         ;
 
-        $passConfig = $this->createMock(PassConfig::class);
-        $passConfig
-            ->expects($this->exactly(1))
-            ->method('getClassPasses')
-            ->willReturn([$classPassOne, $classPassTwo])
-        ;
-
         $logger = $this->createMock(LoggerInterface::class);
 
-        (new RuntimeClassCompiler($passConfig, $classFactory, $logger))->compile([]);
+        (new RuntimeClassCompiler(
+            new ArrayIterator([$classPassOne, $classPassTwo]),
+            new ArrayIterator([]),
+            $classFactory,
+            $logger
+        ))->compile([]);
     }
 
     public function testExecuteSupportedPropertyPasses(): void
@@ -101,15 +100,13 @@ class RuntimeClassCompilerTest extends TestCase
             ->method('process')
         ;
 
-        $passConfig = $this->createMock(PassConfig::class);
-        $passConfig
-            ->expects($this->exactly(2))
-            ->method('getPropertyPasses')
-            ->willReturn([$propertyPassOne, $propertyPassTwo])
-        ;
-
         $logger = $this->createMock(LoggerInterface::class);
 
-        (new RuntimeClassCompiler($passConfig, $classFactory, $logger))->compile([]);
+        (new RuntimeClassCompiler(
+            new ArrayIterator([]),
+            new ArrayIterator([$propertyPassOne, $propertyPassTwo]),
+            $classFactory,
+            $logger
+        ))->compile([]);
     }
 }

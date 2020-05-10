@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Improved services definition
 - Moved tests to `tests` folder
 - Changed doctrine inflector by symfony inflector
 - Fixed `PhpParser\Comment` deprecations
@@ -22,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed nullable method documentation return type
 
 ### Removed
+
+- Removed PassConfig (replaced by tagged iterator)
 
 ## [2.1.1] - 2020-04-04
 

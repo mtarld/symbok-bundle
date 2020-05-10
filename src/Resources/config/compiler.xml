@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="symbok.compiler.pass.runtime.all_args_constructor" class="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\AllArgsConstructorPass">
+            <argument type="service" id="symbok.behavior.class" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.method_builder.all_args_constructor" />
+            <tag name="pass.runtime.class" priority="30" />
+        </service>
+
+        <service id="symbok.compiler.pass.runtime.constructor" class="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\ConstructorPass">
+            <argument type="service" id="symbok.behavior.class" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.method_builder.constructor" />
+            <tag name="pass.runtime.class" priority="20" />
+        </service>
+
+        <service id="symbok.compiler.pass.runtime.to_string" class="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\ToStringPass">
+            <argument type="service" id="symbok.behavior.class" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.method_builder.to_string" />
+            <tag name="pass.runtime.class" priority="10" />
+        </service>
+
+        <service id="symbok.compiler.pass.runtime.getter" class="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\GetterPass">
+            <argument type="service" id="symbok.behavior.property" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.method_builder.getter" />
+            <tag name="pass.runtime.property" priority="40" />
+        </service>
+
+        <service id="symbok.compiler.pass.runtime.setter" class="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\SetterPass">
+            <argument type="service" id="symbok.behavior.property" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.method_builder.setter" />
+            <tag name="pass.runtime.property" priority="30" />
+        </service>
+
+        <service id="symbok.compiler.pass.runtime.adder" class="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\AdderPass">
+            <argument type="service" id="symbok.behavior.property" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.method_builder.adder" />
+            <tag name="pass.runtime.property" priority="20" />
+        </service>
+
+        <service id="symbok.compiler.pass.runtime.remover" class="Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler\RemoverPass">
+            <argument type="service" id="symbok.behavior.property" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.method_builder.remover" />
+            <tag name="pass.runtime.property" priority="10" />
+        </service>
+    </services>
+</container>

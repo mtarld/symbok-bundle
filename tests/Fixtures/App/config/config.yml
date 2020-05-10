@@ -9,26 +9,9 @@ symbok:
 services:
   _defaults:
     autowire: true
-    public: true
-
-  cache.symbok:
-    alias: Symfony\Contracts\Cache\CacheInterface
 
   Symfony\Contracts\Cache\CacheInterface:
     class: Symfony\Component\Cache\Adapter\NullAdapter
-
-  Mtarld\SymbokBundle\Replacer\RuntimeClassReplacer:
-    arguments:
-      $compiler: '@Mtarld\SymbokBundle\Compiler\RuntimeClassCompiler'
-
-  Mtarld\SymbokBundle\Replacer\SavedClassReplacer:
-    arguments:
-      $compiler: '@Mtarld\SymbokBundle\Compiler\SavedClassCompiler'
-
-  Mtarld\SymbokBundle\Compiler\SavedClassCompiler: ~
-
-  Mtarld\SymbokBundle\Parser\PhpCodeParser: ~
-  Mtarld\SymbokBundle\Finder\PhpCodeFinder: ~
 
   Psr\Log\LoggerInterface:
     class: Psr\Log\NullLogger
