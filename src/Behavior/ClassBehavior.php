@@ -7,6 +7,10 @@ use Mtarld\SymbokBundle\Annotation\Data;
 use Mtarld\SymbokBundle\Annotation\ToString;
 use Mtarld\SymbokBundle\Model\SymbokClass;
 
+/**
+ * @internal
+ * @final
+ */
 class ClassBehavior
 {
     public function requireAllArgsConstructor(SymbokClass $class): bool

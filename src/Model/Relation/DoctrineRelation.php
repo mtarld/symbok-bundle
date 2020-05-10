@@ -4,6 +4,9 @@ namespace Mtarld\SymbokBundle\Model\Relation;
 
 use Mtarld\SymbokBundle\Util\MethodNameGenerator;
 
+/**
+ * @internal
+ */
 abstract class DoctrineRelation
 {
     /** @var string */

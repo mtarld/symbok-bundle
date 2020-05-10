@@ -15,6 +15,10 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 
+/**
+ * @internal
+ * @final
+ */
 class GetterBuilder
 {
     /** @var GetterBehavior */

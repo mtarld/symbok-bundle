@@ -4,6 +4,9 @@ namespace Mtarld\SymbokBundle\Model\Relation;
 
 use Mtarld\SymbokBundle\Util\MethodNameGenerator;
 
+/**
+ * @internal
+ */
 abstract class DoctrineCollectionRelation extends DoctrineRelation
 {
     public function getTargetSetterMethodName(): string

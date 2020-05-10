@@ -16,6 +16,10 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 
+/**
+ * @internal
+ * @final
+ */
 class DoctrineStatements
 {
     /** @var SetterBehavior */

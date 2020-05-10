@@ -8,6 +8,10 @@ use Mtarld\SymbokBundle\Exception\IOException;
 use PhpParser\Node;
 use PhpParser\ParserFactory;
 
+/**
+ * @internal
+ * @final
+ */
 class PhpCodeParser
 {
     /** @var AutoloadFinder */

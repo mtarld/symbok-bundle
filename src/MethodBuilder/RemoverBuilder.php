@@ -16,6 +16,10 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 
+/**
+ * @internal
+ * @final
+ */
 class RemoverBuilder
 {
     /** @var SetterBehavior */

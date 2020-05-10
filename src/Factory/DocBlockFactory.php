@@ -7,6 +7,10 @@ use phpDocumentor\Reflection\DocBlockFactory as Factory;
 use phpDocumentor\Reflection\Types\Context;
 use PhpParser\Node;
 
+/**
+ * @internal
+ * @final
+ */
 class DocBlockFactory
 {
     public function createFor(Node $subject, Context $context): DocBlock

@@ -8,6 +8,10 @@ use PhpParser\Builder\Method;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Return_;
 
+/**
+ * @internal
+ * @final
+ */
 class MethodManipulator
 {
     public function makeFluent(Method $builder): void

@@ -12,6 +12,10 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ * @final
+ */
 class ClassFactory
 {
     /** @var PropertyFactory */

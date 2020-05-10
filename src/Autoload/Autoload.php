@@ -8,6 +8,10 @@ use Symfony\Component\Config\ConfigCacheFactory;
 use Symfony\Component\Config\ConfigCacheInterface;
 use Symfony\Component\Config\Resource\FileResource;
 
+/**
+ * @internal
+ * @final
+ */
 class Autoload
 {
     /** @var ReplacerInterface */

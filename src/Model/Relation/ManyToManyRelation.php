@@ -2,6 +2,9 @@
 
 namespace Mtarld\SymbokBundle\Model\Relation;
 
-class ManyToManyRelation extends DoctrineCollectionRelation
+/**
+ * @internal
+ */
+final class ManyToManyRelation extends DoctrineCollectionRelation
 {
 }

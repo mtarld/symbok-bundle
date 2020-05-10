@@ -11,6 +11,10 @@ use Mtarld\SymbokBundle\Model\SymbokProperty;
 use Mtarld\SymbokBundle\Util\MethodNameGenerator;
 use phpDocumentor\Reflection\Types\Array_;
 
+/**
+ * @internal
+ * @final
+ */
 class AdderPass implements PropertyPassInterface
 {
     /** @var PropertyBehavior */

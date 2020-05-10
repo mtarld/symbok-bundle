@@ -13,6 +13,10 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use RuntimeException;
 
+/**
+ * @internal
+ * @final
+ */
 class SavedClassReplacer implements ReplacerInterface
 {
     /** @var SavedClassCompiler */

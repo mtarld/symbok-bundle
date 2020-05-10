@@ -2,6 +2,9 @@
 
 namespace Mtarld\SymbokBundle\Model;
 
+/**
+ * @internal
+ */
 abstract class SymbokElement
 {
     /** @var array<mixed> */

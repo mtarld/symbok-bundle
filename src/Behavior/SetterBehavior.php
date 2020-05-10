@@ -7,6 +7,10 @@ use Mtarld\SymbokBundle\Annotation\Setter;
 use Mtarld\SymbokBundle\Model\Relation\ManyToOneRelation;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
 
+/**
+ * @internal
+ * @final
+ */
 class SetterBehavior
 {
     /** @var PropertyBehavior */

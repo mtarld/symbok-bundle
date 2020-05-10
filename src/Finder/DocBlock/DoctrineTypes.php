@@ -16,6 +16,10 @@ use phpDocumentor\Reflection\Types\Integer;
 use phpDocumentor\Reflection\Types\Object_;
 use phpDocumentor\Reflection\Types\String_;
 
+/**
+ * @internal
+ * @final
+ */
 class DoctrineTypes
 {
     /**

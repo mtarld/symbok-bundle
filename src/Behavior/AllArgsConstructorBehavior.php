@@ -6,6 +6,10 @@ use Mtarld\SymbokBundle\Annotation\AllArgsConstructor;
 use Mtarld\SymbokBundle\Annotation\Data;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
 
+/**
+ * @internal
+ * @final
+ */
 class AllArgsConstructorBehavior
 {
     /** @var PropertyBehavior */

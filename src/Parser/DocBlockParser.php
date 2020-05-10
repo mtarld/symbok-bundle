@@ -8,6 +8,10 @@ use Mtarld\SymbokBundle\Factory\DocFactory;
 use Mtarld\SymbokBundle\Parser\DocBlockParser\Formatter;
 use phpDocumentor\Reflection\DocBlock;
 
+/**
+ * @internal
+ * @final
+ */
 class DocBlockParser
 {
     /** @var Formatter */

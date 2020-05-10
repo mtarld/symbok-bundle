@@ -21,6 +21,10 @@ use PhpParser\Node;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType;
 
+/**
+ * @internal
+ * @final
+ */
 class TypeFormatter
 {
     /** @var TypeResolver */

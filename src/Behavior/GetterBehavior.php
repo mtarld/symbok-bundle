@@ -8,6 +8,10 @@ use Mtarld\SymbokBundle\Annotation\Getter;
 use Mtarld\SymbokBundle\Model\SymbokProperty;
 use phpDocumentor\Reflection\Types\Boolean;
 
+/**
+ * @internal
+ * @final
+ */
 class GetterBehavior
 {
     /** @var PropertyBehavior */
