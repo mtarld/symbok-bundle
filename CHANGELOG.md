@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.1.0] - 2020-04-04
+## [2.1.x] - 2020-04-04
 
 ### Added
 
@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Fixed nullable method documentation return type
 - Improved commands output
 - Improved self composer dependencies
 - Changed `RuntimeException` and `LogicException` to more accurate ones

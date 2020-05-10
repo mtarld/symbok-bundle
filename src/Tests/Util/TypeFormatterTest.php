@@ -123,8 +123,8 @@ class TypeFormatterTest extends TestCase
         yield [new Integer(), 'int'];
         yield [new Mixed_(), 'mixed'];
         yield [new Null_(), 'null'];
-        yield [new Nullable(new Integer()), '?int'];
-        yield [new Nullable(new Array_(new Integer())), '?int[]'];
+        yield [new Nullable(new Integer()), 'int|null'];
+        yield [new Nullable(new Array_(new Integer())), 'int[]|null'];
         yield [new Object_(new Fqsen('\App\Foo')), '\App\Foo'];
         yield [new Object_(), 'object'];
         yield [new Parent_(), 'parent'];
@@ -137,8 +137,7 @@ class TypeFormatterTest extends TestCase
         yield [new Void_(), 'void'];
         yield [new Identifier('foo'), 'foo'];
         yield [new Name(['App', 'Foo']), 'App\Foo'];
-        yield [new NullableType((string) new String_()), '?string'];
-        yield [new UnionType([new Identifier((string) new Integer()), new Identifier((string) new Nullable(new String_()))]), 'int|?string'];
+        yield [new NullableType((string) new String_()), 'string|null'];
         yield ['foo', ''];
         yield [new Line(), ''];
 
@@ -196,7 +195,7 @@ class TypeFormatterTest extends TestCase
         yield [null, new Mixed_()];
         yield [new Mixed_(), new Mixed_()];
         yield [new UnionType([new Identifier((string) new Integer()), new Identifier((string) new Nullable(new String_()))]), new Compound([new Integer(), new Nullable(new String_())])];
-        yield [new Nullable(new Integer()), new Nullable(new Integer())];
-        yield [new Nullable(new Array_(new Integer())), new Nullable(new Array_(new Integer()))];
+        yield [new Nullable(new Integer()), new Compound([new Integer(), new Null_()])];
+        yield [new Nullable(new Array_(new Integer())), new Compound([new Array_(new Integer()), new Null_()])];
     }
 }

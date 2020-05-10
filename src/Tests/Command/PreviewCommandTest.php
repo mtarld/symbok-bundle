@@ -177,7 +177,7 @@ use Mtarld\SymbokBundle\Annotation\Setter;
  * @Symbok\ToString (properties={"id", "name"})
  * @Symbok\Data (fluent=true, nullable=true, constructorNullable=false)
  * @method self setId(?int $id)
- * @method ?string getName()
+ * @method string|null getName()
  * @method self setName(string $name)
  * @method mixed getImage()
  */

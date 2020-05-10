@@ -13,7 +13,7 @@ use Mtarld\SymbokBundle\Annotation\Getter;
  * @Symbok\ToString(properties={"id", "name"})
  * @Symbok\Data
  *
- * @method int getNbCall
+ * @method int|null getNbCall
  */
 class Product3
 {
