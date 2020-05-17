@@ -21,10 +21,11 @@ namespace Mtarld\SymbokBundle\Parser {
 }
 
 namespace Mtarld\SymbokBundle\Tests\Parser {
+
+    use App\Entity\Product1;
     use Mtarld\SymbokBundle\Autoload\AutoloadFinder;
     use Mtarld\SymbokBundle\Exception\IOException;
     use Mtarld\SymbokBundle\Parser\PhpCodeParser;
-    use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1;
     use PhpParser\Node\Stmt\Namespace_;
     use PHPUnit\Framework\TestCase;
 

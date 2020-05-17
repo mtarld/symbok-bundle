@@ -1,7 +1,8 @@
 <?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App;
+namespace App;
 
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Mtarld\SymbokBundle\SymbokBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -18,6 +19,7 @@ class AppKernel extends Kernel
     {
         return [
             new FrameworkBundle(),
+            new DoctrineBundle(),
             new SymbokBundle(),
         ];
     }
@@ -28,8 +30,11 @@ class AppKernel extends Kernel
 
     protected function configureContainer(ContainerBuilder $c, LoaderInterface $loader): void
     {
-        $c->setParameter('kernel.project_dir', __DIR__);
+        $c->setParameter('kernel.project_dir', __DIR__.'/..');
 
-        $loader->load(__DIR__.'/config/config.yml');
+        $loader->load(__DIR__.'/../config/services.yaml');
+        $loader->load(__DIR__.'/../config/packages/doctrine.yaml');
+        $loader->load(__DIR__.'/../config/packages/framework.yaml');
+        $loader->load(__DIR__.'/../config/packages/symbok.yaml');
     }
 }

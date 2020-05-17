@@ -2,7 +2,8 @@
 
 namespace Mtarld\SymbokBundle;
 
-use Mtarld\SymbokBundle\Autoload\Autoload;
+use Mtarld\SymbokBundle\Autoload\Autoloader;
+use Mtarld\SymbokBundle\Autoload\DoctrineMetadataPathReplacer;
 use Mtarld\SymbokBundle\DependencyInjection\SymbokExtension;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -19,8 +20,12 @@ class SymbokBundle extends Bundle
 
     public function boot(): void
     {
-        /** @var Autoload $autoload */
-        $autoload = $this->container->get('symbok.autoload');
-        $autoload->register();
+        /** @var Autoloader $autoloader */
+        $autoloader = $this->container->get('symbok.autoloader');
+        $autoloader->register();
+
+        /** @var DoctrineMetadataPathReplacer $doctrineMetadataPathReplacer */
+        $doctrineMetadataPathReplacer = $this->container->get('symbok.autoload.doctrine_metadata_path_replacer');
+        $doctrineMetadataPathReplacer->replaceWithSymbokPath();
     }
 }

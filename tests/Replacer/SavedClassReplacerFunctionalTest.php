@@ -2,10 +2,10 @@
 
 namespace Mtarld\SymbokBundle\Tests\Replacer;
 
+use App\Entity\Product2;
+use App\Entity\Product3;
 use Mtarld\SymbokBundle\Replacer\SavedClassReplacer;
-use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product2;
-use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product3;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Mtarld\SymbokBundle\Tests\KernelTestCase;
 
 /**
  * @group functional
@@ -13,11 +13,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class SavedClassReplacerFunctionalTest extends KernelTestCase
 {
-    public function setUp(): void
-    {
-        static::bootKernel();
-    }
-
     /**
      * @testdox Saved class is replaced with good content
      */
@@ -29,7 +24,7 @@ class SavedClassReplacerFunctionalTest extends KernelTestCase
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -39,8 +34,9 @@ use Mtarld\SymbokBundle\Annotation\Getter;
  * Description.
  *
  * @author Mathias Arlaud
- * @Symbok\ToString (properties={"id", "name"})
+ * @Symbok\ToString (properties={"id"})
  * @Symbok\Data
+ * @ORM\Entity
  * @method int|null getNbCall()
  * @method mixed __construct(?int $id)
  * @method string __toString()
@@ -62,7 +58,7 @@ class Product3
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;

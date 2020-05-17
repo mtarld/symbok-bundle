@@ -7,7 +7,7 @@ use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
 use Mtarld\SymbokBundle\Parser\PhpCodeParser;
 use Mtarld\SymbokBundle\Replacer\SavedClassReplacer;
 use org\bovigo\vfs\vfsStream;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Mtarld\SymbokBundle\Tests\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -30,6 +30,8 @@ class SavedUpdaterCommandTest extends KernelTestCase
      */
     public function setUp(): void
     {
+        parent::setUp();
+
         $fixturesDir = __DIR__.'/../Fixtures/App/src';
 
         /** @var array<SplFileInfo> $files */
@@ -50,7 +52,7 @@ class SavedUpdaterCommandTest extends KernelTestCase
             static::$container->get('symbok.parser.php_code'),
             static::$container->get('symbok.finder.php_code'),
             static::$container->get('symbok.replacer.saved'),
-            ['Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity'],
+            ['App\Entity'],
             vfsStream::url('dir')
         ));
     }
@@ -70,7 +72,7 @@ class SavedUpdaterCommandTest extends KernelTestCase
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -130,7 +132,7 @@ class Product1
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -176,7 +178,7 @@ class Product2
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -186,8 +188,9 @@ use Mtarld\SymbokBundle\Annotation\Getter;
  * Description.
  *
  * @author Mathias Arlaud
- * @Symbok\ToString (properties={"id", "name"})
+ * @Symbok\ToString (properties={"id"})
  * @Symbok\Data
+ * @ORM\Entity
  * @method int|null getNbCall()
  * @method mixed __construct(?int $id)
  * @method string __toString()

@@ -3,9 +3,12 @@
 namespace Mtarld\SymbokBundle\Autoload;
 
 use Composer\Autoload\ClassLoader;
+use Mtarld\SymbokBundle\Exception\AutoloadException;
 use RuntimeException;
 use Symfony\Component\Debug\DebugClassLoader;
 use Symfony\Component\ErrorHandler\DebugClassLoader as ErrorHandlerDebugClassLoader;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * @internal
@@ -24,7 +27,7 @@ class AutoloadFinder
         $this->namespace = rtrim($namespace, '\\').'\\';
     }
 
-    public function findFile(string $class): string
+    public function findClassPath(string $class): string
     {
         $path = $this->getClassLoader()->findFile($class);
         if (!is_string($path)) {
@@ -32,6 +35,27 @@ class AutoloadFinder
         }
 
         return $path;
+    }
+
+    public function findNamespacePath(string $namespace): string
+    {
+        foreach ($this->getClassLoader()->getPrefixesPsr4() as $prefix => $path) {
+            if ((0 === strpos($namespace, $prefix))
+                && is_string($path = realpath(sprintf('%s/%s', $path[0], str_replace('\\', '/', str_replace($prefix, '', $namespace)))))
+            ) {
+                return $path;
+            }
+        }
+
+        throw new AutoloadException(sprintf("Cannot find PSR4 autoload prefix for namespace '%s'", $namespace));
+    }
+
+    /**
+     * @return iterable<SplFileInfo>
+     */
+    public function findClassPathsInNamespace(string $namespace): iterable
+    {
+        return (new Finder())->name('*.php')->in($this->findNamespacePath($namespace));
     }
 
     private function getClassLoader(): ClassLoader

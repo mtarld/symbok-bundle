@@ -16,7 +16,7 @@
         <ini name="error_reporting" value="-1"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0" />
         <env name="APP_DEBUG" value="0"/>
-        <env name="KERNEL_CLASS" value="Mtarld\SymbokBundle\Tests\Fixtures\App\AppKernel"/>
+        <env name="KERNEL_CLASS" value="App\AppKernel"/>
     </php>
 
     <testsuites>

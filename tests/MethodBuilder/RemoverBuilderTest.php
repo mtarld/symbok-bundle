@@ -12,7 +12,7 @@ use Mtarld\SymbokBundle\Model\SymbokProperty;
 use Mtarld\SymbokBundle\Util\MethodManipulator;
 use Mtarld\SymbokBundle\Util\TypeFormatter;
 use PhpParser\PrettyPrinter\Standard;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Mtarld\SymbokBundle\Tests\KernelTestCase;
 
 /**
  * @group unit
@@ -20,11 +20,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class RemoverBuilderTest extends KernelTestCase
 {
-    public function setUp(): void
-    {
-        static::bootKernel();
-    }
-
     /**
      * @param class-string|null $relation
      *

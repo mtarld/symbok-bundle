@@ -7,7 +7,7 @@ use Mtarld\SymbokBundle\Command\PreviewCommand;
 use Mtarld\SymbokBundle\Exception\IOException;
 use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
 use Mtarld\SymbokBundle\Parser\PhpCodeParser;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Mtarld\SymbokBundle\Tests\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -25,12 +25,13 @@ class PreviewCommandTest extends KernelTestCase
      */
     public function setUp(): void
     {
-        static::bootKernel();
+        parent::setUp();
+
         $this->commandTester = new CommandTester(new PreviewCommand(
             static::$container,
             static::$container->get('symbok.parser.php_code'),
             static::$container->get('symbok.finder.php_code'),
-            ['Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity']
+            ['App\Entity']
         ));
     }
 
@@ -81,12 +82,12 @@ class PreviewCommandTest extends KernelTestCase
 
         $this->assertSame(
             '
-\'Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1\' \'runtime\' compilation preview
-==========================================================================================
+\'App\Entity\Product1\' \'runtime\' compilation preview
+===================================================
 
 <?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -159,12 +160,12 @@ class Product1
 
         $this->assertSame(
             '
-\'Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1\' \'saved\' compilation preview
-========================================================================================
+\'App\Entity\Product1\' \'saved\' compilation preview
+=================================================
 
 <?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;

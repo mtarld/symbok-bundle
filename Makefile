@@ -6,15 +6,10 @@ clean-code: ## Run PHP CS Fixer
 
 test: test-code test-qa ## Run code and QA tests
 
-test-code: test-unit test-functional ## Run code tests
-
 test-qa: test-phpcs test-psalm test-phpmd test-phpa test-phpcpd ## Run QA tests
 
-test-unit: ## Run unit tests
-	./vendor/bin/phpunit --group unit
-
-test-functional: ## Run functional tests
-	./vendor/bin/phpunit --group functional
+test-code: ## Run PHPUnit tests
+	./vendor/bin/phpunit
 
 test-phpcs: ## Run codestyle tests
 	./vendor/bin/php-cs-fixer --diff --dry-run --using-cache=no -v fix src
@@ -31,4 +26,4 @@ test-phpa: ## Run assumption tests
 test-phpcpd: ## Run copy/paste tests
 	./vendor/bin/phpcpd --exclude Tests --exclude MethodBuilder src/
 
-.PHONY: clean-code test test-code test-qa test-phpunit-unit test-phpunit-functional test-phpcs test-psalm test-phpmd test-phpa test-phpcpd
+.PHONY: clean-code test test-code test-qa test-phpcs test-psalm test-phpmd test-phpa test-phpcpd

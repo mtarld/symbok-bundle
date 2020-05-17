@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;

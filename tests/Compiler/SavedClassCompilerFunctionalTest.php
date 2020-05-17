@@ -2,12 +2,12 @@
 
 namespace Mtarld\SymbokBundle\Tests\Compiler;
 
+use App\Entity\Product3;
 use Mtarld\SymbokBundle\Compiler\SavedClassCompiler;
 use Mtarld\SymbokBundle\Parser\PhpCodeParser;
-use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product3;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tags\Method;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Mtarld\SymbokBundle\Tests\KernelTestCase;
 
 /**
  * @group functional
@@ -15,11 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class SavedClassCompilerFunctionalTest extends KernelTestCase
 {
-    public function setUp(): void
-    {
-        static::bootKernel();
-    }
-
     public function testSavedClassIsCompiling(): void
     {
         /** @var SavedClassCompiler $compiler */

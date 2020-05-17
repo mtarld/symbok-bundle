@@ -7,5 +7,5 @@ namespace Mtarld\SymbokBundle\Replacer;
  */
 interface ReplacerInterface
 {
-    public function replace(string $class): string;
+    public function replace(string $classFqcn): string;
 }

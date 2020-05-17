@@ -35,19 +35,19 @@ class RuntimeClassReplacer implements ReplacerInterface
         $this->codeParser = $codeParser;
     }
 
-    public function replace(string $class): string
+    public function replace(string $classFqcn): string
     {
         return $this->serializeStatements(
-            $this->getUpdatedStatements($class)
+            $this->getUpdatedStatements($classFqcn)
         );
     }
 
     /**
      * @return array<Node>
      */
-    private function getUpdatedStatements(string $className): array
+    private function getUpdatedStatements(string $classFqcn): array
     {
-        $statements = $this->codeParser->parseStatements($className);
+        $statements = $this->codeParser->parseStatements($classFqcn);
         $class = $this->compiler->compile($statements);
 
         return $this->replaceClass($statements, $class);

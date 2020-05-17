@@ -25,9 +25,9 @@ class PhpCodeParser
     /**
      * @return array<Node>
      */
-    public function parseStatements(string $className): array
+    public function parseStatements(string $classFqcn): array
     {
-        return $this->parseStatementsFromPath($this->autoloadFinder->findFile($className));
+        return $this->parseStatementsFromPath($this->autoloadFinder->findClassPath($classFqcn));
     }
 
     /**

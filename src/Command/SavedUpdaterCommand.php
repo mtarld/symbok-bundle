@@ -91,16 +91,11 @@ class SavedUpdaterCommand extends Command
 
     private function updateFile(SplFileInfo $file): void
     {
-        $path = $file->getPathName();
-        $statements = $this->codeParser->parseStatementsFromPath($path);
-
-        $namespace = (string) $this->codeFinder->findNamespaceName($statements);
-        if (!in_array($namespace, $this->namespaces, true)) {
-            throw new RuntimeException(sprintf('Not in specified namespaces: %s', implode(', ', $this->namespaces)));
+        $statements = $this->codeParser->parseStatementsFromPath($file->getPathname());
+        if (!in_array($this->codeFinder->findNamespaceName($statements), $this->namespaces, true)) {
+            return;
         }
 
-        $class = $namespace.'\\'.$this->codeFinder->findClassName($statements);
-
-        file_put_contents($path, $this->replacer->replace($class));
+        file_put_contents($file->getPathname(), $this->replacer->replace($this->codeFinder->findFqcn($statements)));
     }
 }

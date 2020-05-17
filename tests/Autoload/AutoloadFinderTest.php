@@ -15,7 +15,7 @@ namespace Mtarld\SymbokBundle\Autoload {
         if (null === $mockSplAutoloadFunctions) {
             return \spl_autoload_functions();
         }
-
+//
         return ($mockSplAutoloadFunctions)();
     }
 }
@@ -190,7 +190,7 @@ namespace Mtarld\SymbokBundle\Tests\Autoload {
                 return [[$debugClassLoader]];
             };
 
-            $this->assertSame('bar', (new AutoloadFinder('foo'))->findFile(''));
+            $this->assertSame('bar', (new AutoloadFinder('foo'))->findClassPath(''));
 
             $classLoader = $this->createMock(ClassLoader::class);
             $classLoader
@@ -208,7 +208,7 @@ namespace Mtarld\SymbokBundle\Tests\Autoload {
 
             $this->expectException(RuntimeException::class);
             $this->expectExceptionMessage("Cannot find file related to class 'foo'");
-            (new AutoloadFinder('foo'))->findFile('foo');
+            (new AutoloadFinder('foo'))->findClassPath('foo');
         }
     }
 }
