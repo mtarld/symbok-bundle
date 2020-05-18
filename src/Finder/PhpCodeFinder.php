@@ -19,6 +19,7 @@ use Psr\Log\LoggerInterface;
 /**
  * @internal
  * @final
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class PhpCodeFinder
 {
@@ -166,6 +167,11 @@ class PhpCodeFinder
         }
 
         return $name;
+    }
+
+    public function findFqcn(array $nodes): string
+    {
+        return $this->findNamespaceName($nodes).'\\'.$this->findClassName($nodes);
     }
 
     /**

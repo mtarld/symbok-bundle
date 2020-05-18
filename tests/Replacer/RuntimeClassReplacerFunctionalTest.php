@@ -2,12 +2,12 @@
 
 namespace Mtarld\SymbokBundle\Tests\Replacer;
 
+use App\Entity\Product1;
+use App\Entity\Product2;
+use App\Entity\Product3;
+use App\Model\Product4;
 use Mtarld\SymbokBundle\Replacer\RuntimeClassReplacer;
-use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1;
-use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product2;
-use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product3;
-use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product4;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Mtarld\SymbokBundle\Tests\KernelTestCase;
 
 /**
  * @group functional
@@ -15,11 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class RuntimeClassReplacerFunctionalTest extends KernelTestCase
 {
-    public function setUp(): void
-    {
-        static::bootKernel();
-    }
-
     public function testClassIsReplacedWithAutoload(): void
     {
         /** @var RuntimeClassReplacer $replacer */
@@ -28,7 +23,7 @@ class RuntimeClassReplacerFunctionalTest extends KernelTestCase
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -94,7 +89,7 @@ class Product1
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -154,7 +149,7 @@ class Product2
         $this->assertSame(
             '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mtarld\SymbokBundle\Annotation as Symbok;
@@ -163,8 +158,9 @@ use Mtarld\SymbokBundle\Annotation\Getter;
  * Description.
  *
  * @author Mathias Arlaud
- * @Symbok\ToString (properties={"id", "name"})
+ * @Symbok\ToString (properties={"id"})
  * @Symbok\Data
+ * @ORM\Entity
  * @method int|null getNbCall()
  */
 class Product3
@@ -180,7 +176,7 @@ class Product3
     }
     public function __toString() : string
     {
-        return (string) (\'Product3: \' . ($this->id . (\', \' . $this->name)));
+        return (string) (\'Product3: \' . $this->id);
     }
     public function getId() : ?int
     {
@@ -199,8 +195,9 @@ class Product3
             $this->assertSame(
                 '<?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Model;
 
+use App\Entity\Product1;
 use Mtarld\SymbokBundle\Annotation\Getter;
 use Mtarld\SymbokBundle\Annotation\Setter;
 /**
@@ -224,7 +221,7 @@ class Product4
     {
         return $this->id;
     }
-    public function getRelated() : ?\Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1
+    public function getRelated() : ?\App\Entity\Product1
     {
         return $this->related;
     }

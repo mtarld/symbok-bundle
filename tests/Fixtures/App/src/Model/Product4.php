@@ -1,7 +1,8 @@
 <?php
 
-namespace Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity;
+namespace App\Model;
 
+use App\Entity\Product1;
 use Mtarld\SymbokBundle\Annotation\Getter;
 use Mtarld\SymbokBundle\Annotation\Setter;
 

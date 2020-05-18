@@ -6,17 +6,24 @@
     <services>
         <defaults public="false" />
 
-        <service id="symbok.autoload" class="Mtarld\SymbokBundle\Autoload\Autoload" public="true">
+        <service id="symbok.autoloader" class="Mtarld\SymbokBundle\Autoload\Autoloader" public="true">
             <argument type="service" id="symbok.replacer.runtime" />
             <argument type="service" id="logger" />
             <argument type="service" id="symbok.autoload.autoload_finder" />
+            <argument type="service" id="symbok.cache.runtime_class_cache" />
             <argument>%symbok.namespaces%</argument>
-            <argument>%kernel.cache_dir%</argument>
-            <argument>%kernel.debug%</argument>
         </service>
 
         <service id="symbok.autoload.autoload_finder" class="Mtarld\SymbokBundle\Autoload\AutoloadFinder">
             <argument />
+        </service>
+
+        <service id="symbok.autoload.doctrine_metadata_path_replacer" class="Mtarld\SymbokBundle\Autoload\DoctrineMetadataPathReplacer" public="true">
+            <argument type="service" id="doctrine.orm.default_annotation_metadata_driver" on-invalid="null"/>
+            <argument type="service" id="symbok.autoload.autoload_finder" />
+            <argument>%symbok.namespaces%</argument>
+            <argument>%kernel.cache_dir%/symbok</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <service id="symbok.behavior.all_args_constructor" class="Mtarld\SymbokBundle\Behavior\AllArgsConstructorBehavior">
@@ -36,6 +43,21 @@
         <service id="symbok.behavior.setter" class="Mtarld\SymbokBundle\Behavior\SetterBehavior">
             <argument type="service" id="symbok.behavior.property" />
             <argument>%symbok.defaults.setter%</argument>
+        </service>
+
+        <service id="symbok.cache.warmer" class="Mtarld\SymbokBundle\Cache\CacheWarmer">
+            <argument type="service" id="symbok.autoload.autoload_finder" />
+            <argument type="service" id="symbok.replacer.runtime" />
+            <argument type="service" id="symbok.parser.php_code" />
+            <argument type="service" id="symbok.finder.php_code" />
+            <argument type="service" id="symbok.cache.runtime_class_cache" />
+            <argument>%symbok.namespaces%</argument>
+            <tag name="kernel.cache_warmer" />
+        </service>
+
+        <service id="symbok.cache.runtime_class_cache" class="Mtarld\SymbokBundle\Cache\RuntimeClassCache">
+            <argument>%kernel.cache_dir%/symbok</argument>
+            <argument>%kernel.debug%</argument>
         </service>
 
         <service id="symbok.command.preview" class="Mtarld\SymbokBundle\Command\PreviewCommand">

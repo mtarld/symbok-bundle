@@ -2,20 +2,16 @@
 
 namespace Mtarld\SymbokBundle\Tests\Autoload;
 
-use Mtarld\SymbokBundle\Tests\Fixtures\App\src\Entity\Product1;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use App\Entity\Product1;
+use Mtarld\SymbokBundle\Tests\KernelTestCase;
 
 /**
  * @group functional
  * @group replacer
+ * @group autoload
  */
 class AutoloadFunctionalTest extends KernelTestCase
 {
-    public function setUp(): void
-    {
-        static::bootKernel();
-    }
-
     public function testClassIsReplacedWithAutoload(): void
     {
         $product = new Product1();

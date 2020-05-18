@@ -1,0 +1,3 @@
+symbok:
+  namespaces:
+    - App\Entity

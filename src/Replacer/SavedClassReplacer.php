@@ -48,9 +48,9 @@ class SavedClassReplacer implements ReplacerInterface
         $this->autoloaderFinder = $autoloaderFinder;
     }
 
-    public function replace(string $className): string
+    public function replace(string $classFqcnName): string
     {
-        $path = $this->autoloaderFinder->findFile($className);
+        $path = $this->autoloaderFinder->findClassPath($classFqcnName);
 
         if (false === $fp = fopen($path, 'rwb+')) {
             throw new IOException(sprintf("Cannot open file '%s'", $path));

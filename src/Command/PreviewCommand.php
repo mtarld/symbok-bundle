@@ -69,12 +69,17 @@ class PreviewCommand extends Command implements ServiceSubscriberInterface
         /** @var string $path */
         $path = $input->getArgument('path');
 
-        $replacer = $this->getReplacer($strategy);
-        $className = $this->getClassName($path);
+        $statements = $this->codeParser->parseStatementsFromPath($path);
+        if (!in_array($this->codeFinder->findNamespaceName($statements), $this->namespaces, true)) {
+            throw new InvalidArgumentException(sprintf('File %s is not in specified namespaces: %s', $path, implode(', ', $this->namespaces)));
+        }
+
+        $classFqcn = $this->codeFinder->findFqcn($statements);
 
         $io = new SymfonyStyle($input, $output);
-        $io->title(sprintf("'%s' '%s' compilation preview", $className, $strategy));
-        $io->write($replacer->replace($className));
+        $io->title(sprintf("'%s' '%s' compilation preview", $classFqcn, $strategy));
+
+        $io->write($this->getReplacer($strategy)->replace($classFqcn));
 
         return 0;
     }
@@ -89,18 +94,6 @@ class PreviewCommand extends Command implements ServiceSubscriberInterface
             default:
                 throw new InvalidArgumentException(sprintf("compilationStrategy must be either '%s' or '%s'", self::COMPILATION_RUNTIME, self::COMPILATION_SAVED));
         }
-    }
-
-    private function getClassName(string $path): string
-    {
-        $statements = $this->codeParser->parseStatementsFromPath($path);
-        $namespace = $this->codeFinder->findNamespaceName($statements);
-
-        if (!in_array($namespace, $this->namespaces, true)) {
-            throw new InvalidArgumentException(sprintf('Class is not in specified namespaces: %s', implode(', ', $this->namespaces)));
-        }
-
-        return $namespace.'\\'.$this->codeFinder->findClassName($statements);
     }
 
     public static function getSubscribedServices(): array

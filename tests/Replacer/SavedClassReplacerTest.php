@@ -81,7 +81,7 @@ namespace Mtarld\SymbokBundle\Tests\Replacer {
         {
             $autoloadFinder = $this->createMock(AutoloadFinder::class);
             $autoloadFinder
-                ->method('findFile')
+                ->method('findClassPath')
                 ->willReturn('foo')
             ;
 

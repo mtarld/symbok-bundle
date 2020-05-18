@@ -44,8 +44,9 @@ class TypeFormatterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->formatter = new TypeFormatter();
         parent::setUp();
+
+        $this->formatter = new TypeFormatter();
     }
 
     /**
