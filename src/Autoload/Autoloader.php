@@ -5,17 +5,19 @@ namespace Mtarld\SymbokBundle\Autoload;
 use function Composer\Autoload\includeFile;
 use Mtarld\SymbokBundle\Cache\RuntimeClassCache;
 use Mtarld\SymbokBundle\Replacer\ReplacerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 /**
  * @internal
  * @final
  */
-class Autoloader
+class Autoloader implements ServiceSubscriberInterface
 {
-    /** @var ReplacerInterface */
-    private $replacer;
+    /** @var ContainerInterface */
+    private $locator;
 
     /** @var LoggerInterface */
     private $logger;
@@ -30,13 +32,13 @@ class Autoloader
     private $classCache;
 
     public function __construct(
-        ReplacerInterface $replacer,
+        ContainerInterface $locator,
         LoggerInterface $logger,
         AutoloadFinder $autoloadFinder,
         RuntimeClassCache $classCache,
         array $namespaces
     ) {
-        $this->replacer = $replacer;
+        $this->locator = $locator;
         $this->logger = $logger;
         $this->autoloadFinder = $autoloadFinder;
         $this->classCache = $classCache;
@@ -62,7 +64,7 @@ class Autoloader
 
         $this->logger->notice('{class} replacing attempt', ['class' => $classFqcn]);
 
-        $cachedClass = $this->classCache->cache($classFqcn, $classPath, $this->replacer);
+        $cachedClass = $this->classCache->cache($classFqcn, $classPath, $this->locator->get('symbok.replacer.runtime'));
         includeFile($cachedClass->getPath());
 
         $this->logger->notice('{class} replaced', ['class' => $classFqcn]);
@@ -77,5 +79,12 @@ class Autoloader
         }
 
         return false;
+    }
+
+    public static function getSubscribedServices(): array
+    {
+        return [
+            'symbok.replacer.runtime' => ReplacerInterface::class,
+        ];
     }
 }
