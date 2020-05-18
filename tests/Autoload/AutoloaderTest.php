@@ -10,6 +10,7 @@ use Mtarld\SymbokBundle\Autoload\AutoloadFinder;
 use Mtarld\SymbokBundle\Cache\RuntimeClassCache;
 use Mtarld\SymbokBundle\Replacer\ReplacerInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -31,6 +32,11 @@ class AutoloaderTest extends TestCase
             ->expects($this->exactly((int) $substitute))
             ->method('replace')
         ;
+        $container = $this->createMock(ContainerInterface::class);
+        $container
+            ->method('get')
+            ->willReturn($replacer)
+        ;
 
         $fileSystem = new Filesystem();
         $oldCacheFilePath = sprintf('%s/%s.php', 'var/cache/test/symbok', str_replace('\\', '/', $classFqcn));
@@ -39,7 +45,7 @@ class AutoloaderTest extends TestCase
         $autoloadFinder = new AutoloadFinder('Mtarld\\SymbokBundle\\Tests\\Fixtures\\App\\src\\Entity');
 
         $autoload = new Autoloader(
-            $replacer,
+            $container,
             $logger,
             $autoloadFinder,
             new RuntimeClassCache('var/cache/test/symbok/', true),

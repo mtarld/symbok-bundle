@@ -7,11 +7,12 @@
         <defaults public="false" />
 
         <service id="symbok.autoloader" class="Mtarld\SymbokBundle\Autoload\Autoloader" public="true">
-            <argument type="service" id="symbok.replacer.runtime" />
+            <argument type="service" id="service_container" />
             <argument type="service" id="logger" />
             <argument type="service" id="symbok.autoload.autoload_finder" />
             <argument type="service" id="symbok.cache.runtime_class_cache" />
             <argument>%symbok.namespaces%</argument>
+            <tag name="container.service_subscriber" id="symbok.replacer.runtime" />
         </service>
 
         <service id="symbok.autoload.autoload_finder" class="Mtarld\SymbokBundle\Autoload\AutoloadFinder">
