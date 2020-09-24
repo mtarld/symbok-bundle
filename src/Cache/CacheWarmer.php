@@ -70,7 +70,12 @@ class CacheWarmer implements CacheWarmerInterface
     private function warmUpNamespace(string $namespace): void
     {
         foreach ($this->autoloadFinder->findClassPathsInNamespace($namespace) as $file) {
-            $fqcn = $this->codeFinder->findFqcn($this->codeParser->parseStatementsFromPath($file->getPathname()));
+            $statements = $this->codeParser->parseStatementsFromPath($file->getPathname());
+            if (!$this->codeFinder->isClass($statements)) {
+                continue;
+            }
+
+            $fqcn = $this->codeFinder->findFqcn($statements);
             $this->cache->store($fqcn, $file->getPathname(), $this->replacer);
         }
     }

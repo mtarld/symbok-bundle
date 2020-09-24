@@ -96,6 +96,10 @@ class SavedUpdaterCommand extends Command
             return;
         }
 
+        if (!$this->codeFinder->isClass($statements)) {
+            return;
+        }
+
         file_put_contents($file->getPathname(), $this->replacer->replace($this->codeFinder->findFqcn($statements)));
     }
 }

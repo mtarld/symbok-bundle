@@ -74,6 +74,10 @@ class PreviewCommand extends Command implements ServiceSubscriberInterface
             throw new InvalidArgumentException(sprintf('File %s is not in specified namespaces: %s', $path, implode(', ', $this->namespaces)));
         }
 
+        if (!$this->codeFinder->isClass($statements)) {
+            throw new InvalidArgumentException(sprintf('File %s is not a class', $path));
+        }
+
         $classFqcn = $this->codeFinder->findFqcn($statements);
 
         $io = new SymfonyStyle($input, $output);

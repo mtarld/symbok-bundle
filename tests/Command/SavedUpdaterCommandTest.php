@@ -70,6 +70,11 @@ class SavedUpdaterCommandTest extends KernelTestCase
         );
 
         $this->assertSame(
+            $this->savedFiles['ProductInterface.php'],
+            file_get_contents($virtualDirectoryPath.'ProductInterface.php')
+        );
+
+        $this->assertSame(
             '<?php
 
 namespace App\Entity;
