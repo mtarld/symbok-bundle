@@ -111,8 +111,8 @@ use Mtarld\SymbokBundle\Annotation\Setter;
 /**
  * Description.
  *
- * @Symbok\ToString (properties={"id", "name"})
- * @Symbok\Data (fluent=true, nullable=true, constructorNullable=false)
+ * @Symbok\ToString(properties={"id", "name"})
+ * @Symbok\Data(fluent=true, nullable=true, constructorNullable=false)
  */
 class Product1
 {
@@ -190,8 +190,8 @@ use Mtarld\SymbokBundle\Annotation\Setter;
 /**
  * Description.
  *
- * @Symbok\ToString (properties={"id", "name"})
- * @Symbok\Data (fluent=true, nullable=true, constructorNullable=false)
+ * @Symbok\ToString(properties={"id", "name"})
+ * @Symbok\Data(fluent=true, nullable=true, constructorNullable=false)
  * @method self setId(?int $id)
  * @method string|null getName()
  * @method self setName(string $name)

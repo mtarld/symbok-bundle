@@ -34,7 +34,7 @@ use Mtarld\SymbokBundle\Annotation\Getter;
  * Description.
  *
  * @author Mathias Arlaud
- * @Symbok\ToString (properties={"id"})
+ * @Symbok\ToString(properties={"id"})
  * @Symbok\Data
  * @ORM\Entity
  * @method int|null getNbCall()

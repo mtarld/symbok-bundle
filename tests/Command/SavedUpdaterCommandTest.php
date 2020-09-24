@@ -87,8 +87,8 @@ use Mtarld\SymbokBundle\Annotation\Setter;
 /**
  * Description.
  *
- * @Symbok\ToString (properties={"id", "name"})
- * @Symbok\Data (fluent=true, nullable=true, constructorNullable=false)
+ * @Symbok\ToString(properties={"id", "name"})
+ * @Symbok\Data(fluent=true, nullable=true, constructorNullable=false)
  * @method self setId(?int $id)
  * @method string|null getName()
  * @method self setName(string $name)
@@ -193,7 +193,7 @@ use Mtarld\SymbokBundle\Annotation\Getter;
  * Description.
  *
  * @author Mathias Arlaud
- * @Symbok\ToString (properties={"id"})
+ * @Symbok\ToString(properties={"id"})
  * @Symbok\Data
  * @ORM\Entity
  * @method int|null getNbCall()

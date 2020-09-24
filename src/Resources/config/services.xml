@@ -106,7 +106,9 @@
 
         <service id="symbok.factory.doc_block" class="Mtarld\SymbokBundle\Factory\DocBlockFactory" />
 
-        <service id="symbok.factory.doc" class="Mtarld\SymbokBundle\Factory\DocFactory" />
+        <service id="symbok.factory.doc" class="Mtarld\SymbokBundle\Factory\DocFactory">
+            <argument type="service" id="symbok.serializer.doc_block" />
+        </service>
 
         <service id="symbok.factory.doctrine_relation" class="Mtarld\SymbokBundle\Factory\DoctrineRelationFactory">
             <argument type="service" id="symbok.factory.doc_block" />
@@ -207,6 +209,8 @@
             <argument type="service" id="symbok.parser.php_code" />
             <argument type="service" id="symbok.autoload.autoload_finder" />
         </service>
+
+        <service id="symbok.serializer.doc_block" class="Mtarld\SymbokBundle\Serializer\DocBlockSerializer" />
 
         <service id="symbok.util.method_manipulator" class="Mtarld\SymbokBundle\Util\MethodManipulator" />
 

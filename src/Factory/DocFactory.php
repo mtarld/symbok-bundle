@@ -2,8 +2,8 @@
 
 namespace Mtarld\SymbokBundle\Factory;
 
+use Mtarld\SymbokBundle\Serializer\DocBlockSerializer;
 use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlock\Serializer;
 use PhpParser\Comment\Doc;
 
 /**
@@ -12,10 +12,16 @@ use PhpParser\Comment\Doc;
  */
 class DocFactory
 {
+    /** @var DocBlockSerializer */
+    private $docBlockSerializer;
+
+    public function __construct(DocBlockSerializer $docBlockSerializer)
+    {
+        $this->docBlockSerializer = $docBlockSerializer;
+    }
+
     public function createFromDocBlock(DocBlock $docBlock): Doc
     {
-        $comment = (new Serializer())->getDocComment($docBlock);
-
-        return new Doc($comment);
+        return new Doc($this->docBlockSerializer->getDocComment($docBlock));
     }
 }
