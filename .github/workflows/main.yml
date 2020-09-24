@@ -1,9 +1,5 @@
 name: CI
-on:
-  push:
-    branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
+on: [pull_request]
 
 jobs:
   build:
@@ -51,5 +47,3 @@ jobs:
 
     - name: Run PHPUnit - ${{ matrix.php-versions }}
       run: vendor/bin/phpunit
-      with:
-        php-version: ${{ matrix.php-versions }}
