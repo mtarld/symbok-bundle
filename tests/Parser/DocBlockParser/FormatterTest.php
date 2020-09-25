@@ -48,7 +48,7 @@ class FormatterTest extends TestCase
         ];
     }
 
-    public function testDocBlockIsConstitent(): void
+    public function testDocBlockIsConsistent(): void
     {
         $docBlock = new DocBlock(
             'Summary',
@@ -66,5 +66,30 @@ class FormatterTest extends TestCase
         $this->assertSame($docBlock->getSummary(), $formatted->getSummary());
         $this->assertSame($docBlock->getDescription(), $formatted->getDescription());
         $this->assertSame($docBlock->getContext(), $formatted->getContext());
+    }
+
+    public function testNestedDescriptionTagsAreResolved(): void
+    {
+        $docBlock = new DocBlock(
+            'Summary',
+            new Description('Description'),
+            [
+                new Generic("\A\Annotation"),
+                new Generic("B\Annotation", new Description('Description2', [
+                    new Generic('C\Annotation', new Description('Description3', [
+                        new Generic('\D\Annotation'),
+                    ])),
+                ])),
+            ],
+            new Context("\Somewhere")
+        );
+
+        $formatter = new Formatter();
+
+        $formatted = $formatter->formatAnnotations($docBlock);
+        $this->assertSame('A\Annotation', $formatted->getTags()[0]->getName());
+        $this->assertSame('Somewhere\B\Annotation', $formatted->getTags()[1]->getName());
+        $this->assertSame('Somewhere\C\Annotation', $formatted->getTags()[1]->getDescription()->getTags()[0]->getName());
+        $this->assertSame('D\Annotation', $formatted->getTags()[1]->getDescription()->getTags()[0]->getDescription()->getTags()[0]->getName());
     }
 }

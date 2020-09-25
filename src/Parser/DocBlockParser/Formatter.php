@@ -3,9 +3,11 @@
 namespace Mtarld\SymbokBundle\Parser\DocBlockParser;
 
 use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Description;
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tags\Generic;
 use phpDocumentor\Reflection\FqsenResolver;
+use phpDocumentor\Reflection\Types\Context;
 
 /**
  * @internal
@@ -28,16 +30,33 @@ class Formatter
      */
     private function getResolvedTags(DocBlock $docBlock): array
     {
-        return array_map(static function (Tag $tag) use ($docBlock): Tag {
-            if (!$tag instanceof Generic) {
-                return $tag;
+        return array_map(function (Tag $tag) use ($docBlock): Tag {
+            return $this->getResolvedTag($tag, $docBlock->getContext());
+        }, $docBlock->getTags());
+    }
+
+    private function getResolvedTag(Tag $tag, ?Context $context = null): Tag
+    {
+        if (!$tag instanceof Generic) {
+            return $tag;
+        }
+
+        if (($description = $tag->getDescription()) instanceof Description) {
+            $resolvedDescriptionTags = [];
+            foreach ($description->getTags() as $descriptionTag) {
+                $resolvedDescriptionTags[] = $this->getResolvedTag($descriptionTag, $context);
             }
 
-            $resolvedTag = (new FqsenResolver())->resolve($tag->getName(), $docBlock->getContext());
+            $description = new Description($description->getBodyTemplate(), $resolvedDescriptionTags);
+        }
 
-            // ltrim \ in order to be sure that Doctrine DocParser will check ignoredAnnotations
-            // @see lib/Doctrine/Common/Annotations/DocParser.php:698
-            return new Generic(ltrim((string) $resolvedTag, '\\'), $tag->getDescription());
-        }, $docBlock->getTags());
+        return new Generic($this->resolveTag($tag, $context), $description);
+    }
+
+    private function resolveTag(Tag $tag, ?Context $context = null): string
+    {
+        // ltrim \ in order to be sure that Doctrine DocParser will check ignoredAnnotations
+        // @see lib/Doctrine/Common/Annotations/DocParser.php:698
+        return ltrim((string) (new FqsenResolver())->resolve($tag->getName(), $context), '\\');
     }
 }
