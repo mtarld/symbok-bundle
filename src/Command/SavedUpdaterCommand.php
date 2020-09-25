@@ -73,8 +73,8 @@ class SavedUpdaterCommand extends Command
             try {
                 $this->updateFile($classFile);
                 $io->writeln(sprintf('\'%s\' processed.', $classFile->getRelativePathname()), OutputInterface::VERBOSITY_VERBOSE);
-            } catch (RuntimeException $e) {
-                $io->writeln(sprintf('Skipping \'%s\': %s', $classFile->getRelativePathname(), $e->getMessage()), OutputInterface::VERBOSITY_VERBOSE);
+            } catch (RuntimeException $exception) {
+                $io->writeln(sprintf('Skipping \'%s\': %s', $classFile->getRelativePathname(), $exception->getMessage()), OutputInterface::VERBOSITY_VERBOSE);
             } finally {
                 if (!$io->isVerbose()) {
                     $io->progressAdvance();

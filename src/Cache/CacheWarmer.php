@@ -58,11 +58,13 @@ class CacheWarmer implements CacheWarmerInterface
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function warmUp($cacheDir): void
+    public function warmUp($cacheDir)
     {
         foreach ($this->namespaces as $namespace) {
             $this->warmUpNamespace($namespace);
         }
+
+        return [];
     }
 
     private function warmUpNamespace(string $namespace): void
