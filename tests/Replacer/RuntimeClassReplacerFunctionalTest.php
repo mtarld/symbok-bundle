@@ -32,8 +32,8 @@ use Mtarld\SymbokBundle\Annotation\Setter;
 /**
  * Description.
  *
- * @Symbok\ToString (properties={"id", "name"})
- * @Symbok\Data (fluent=true, nullable=true, constructorNullable=false)
+ * @Symbok\ToString(properties={"id", "name"})
+ * @Symbok\Data(fluent=true, nullable=true, constructorNullable=false)
  */
 class Product1
 {
@@ -158,7 +158,7 @@ use Mtarld\SymbokBundle\Annotation\Getter;
  * Description.
  *
  * @author Mathias Arlaud
- * @Symbok\ToString (properties={"id"})
+ * @Symbok\ToString(properties={"id"})
  * @Symbok\Data
  * @ORM\Entity
  * @method int|null getNbCall()

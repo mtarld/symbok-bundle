@@ -2,10 +2,10 @@
 
 namespace Mtarld\SymbokBundle\Autoload;
 
-use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
-use Mtarld\SymbokBundle\Parser\PhpCodeParser;
 use function Composer\Autoload\includeFile;
 use Mtarld\SymbokBundle\Cache\RuntimeClassCache;
+use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
+use Mtarld\SymbokBundle\Parser\PhpCodeParser;
 use Mtarld\SymbokBundle\Replacer\ReplacerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
