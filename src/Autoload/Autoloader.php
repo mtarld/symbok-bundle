@@ -2,6 +2,8 @@
 
 namespace Mtarld\SymbokBundle\Autoload;
 
+use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
+use Mtarld\SymbokBundle\Parser\PhpCodeParser;
 use function Composer\Autoload\includeFile;
 use Mtarld\SymbokBundle\Cache\RuntimeClassCache;
 use Mtarld\SymbokBundle\Replacer\ReplacerInterface;
@@ -25,6 +27,12 @@ class Autoloader implements ServiceSubscriberInterface
     /** @var AutoloadFinder */
     private $autoloadFinder;
 
+    /** @var PhpCodeParser */
+    private $codeParser;
+
+    /** @var PhpCodeFinder */
+    private $codeFinder;
+
     /** @var array<string> */
     private $namespaces;
 
@@ -36,12 +44,16 @@ class Autoloader implements ServiceSubscriberInterface
         LoggerInterface $logger,
         AutoloadFinder $autoloadFinder,
         RuntimeClassCache $classCache,
+        PhpCodeParser $codeParser,
+        PhpCodeFinder $codeFinder,
         array $namespaces
     ) {
         $this->locator = $locator;
         $this->logger = $logger;
         $this->autoloadFinder = $autoloadFinder;
         $this->classCache = $classCache;
+        $this->codeParser = $codeParser;
+        $this->codeFinder = $codeFinder;
         $this->namespaces = $namespaces;
     }
 
@@ -59,6 +71,11 @@ class Autoloader implements ServiceSubscriberInterface
         try {
             $classPath = $this->autoloadFinder->findClassPath($classFqcn);
         } catch (RuntimeException $e) {
+            return;
+        }
+
+        $statements = $this->codeParser->parseStatementsFromPath($classPath);
+        if (!$this->codeFinder->isClass($statements)) {
             return;
         }
 

@@ -169,6 +169,11 @@ class PhpCodeFinder
         return $name;
     }
 
+    public function isClass(array $nodes): bool
+    {
+        return count($this->finder->findInstanceOf($nodes, Class_::class)) > 0;
+    }
+
     public function findFqcn(array $nodes): string
     {
         return $this->findNamespaceName($nodes).'\\'.$this->findClassName($nodes);

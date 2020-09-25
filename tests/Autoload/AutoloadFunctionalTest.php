@@ -3,6 +3,7 @@
 namespace Mtarld\SymbokBundle\Tests\Autoload;
 
 use App\Entity\Product1;
+use App\Entity\ProductInterface;
 use Mtarld\SymbokBundle\Tests\KernelTestCase;
 
 /**
@@ -18,5 +19,10 @@ class AutoloadFunctionalTest extends KernelTestCase
         $product->setName('name');
 
         $this->assertSame('name', $product->getName());
+    }
+
+    public function testInterfaceIsNotReplacedWithAutoload(): void
+    {
+        $this->assertFalse(method_exists(ProductInterface::class, '__toString'));
     }
 }

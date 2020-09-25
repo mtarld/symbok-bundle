@@ -73,6 +73,21 @@ class PreviewCommandTest extends KernelTestCase
         ]);
     }
 
+    public function testNotAClass(): void
+    {
+        $command = new PreviewCommand(
+            static::$container,
+            static::$container->get('symbok.parser.php_code'),
+            static::$container->get('symbok.finder.php_code'),
+            ['App\Entity']
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+        (new CommandTester($command))->execute([
+            'path' => __DIR__.'/../Fixtures/App/src/Entity/ProductInterface.php',
+        ]);
+    }
+
     public function testPreviewRuntime(): void
     {
         $this->commandTester->execute([

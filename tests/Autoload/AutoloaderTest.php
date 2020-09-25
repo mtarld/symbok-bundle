@@ -8,6 +8,8 @@ use App\Model\ProductFromAnotherNamespace;
 use Mtarld\SymbokBundle\Autoload\Autoloader;
 use Mtarld\SymbokBundle\Autoload\AutoloadFinder;
 use Mtarld\SymbokBundle\Cache\RuntimeClassCache;
+use Mtarld\SymbokBundle\Finder\PhpCodeFinder;
+use Mtarld\SymbokBundle\Parser\PhpCodeParser;
 use Mtarld\SymbokBundle\Replacer\ReplacerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -37,6 +39,11 @@ class AutoloaderTest extends TestCase
             ->method('get')
             ->willReturn($replacer)
         ;
+        $codeFinder = $this->createMock(PhpCodeFinder::class);
+        $codeFinder
+            ->method('isClass')
+            ->willReturn(true)
+        ;
 
         $fileSystem = new Filesystem();
         $oldCacheFilePath = sprintf('%s/%s.php', 'var/cache/test/symbok', str_replace('\\', '/', $classFqcn));
@@ -49,6 +56,8 @@ class AutoloaderTest extends TestCase
             $logger,
             $autoloadFinder,
             new RuntimeClassCache('var/cache/test/symbok/', true),
+            $this->createMock(PhpCodeParser::class),
+            $codeFinder,
             ['App\\Entity']
         );
         $autoload->loadClass($classFqcn);
