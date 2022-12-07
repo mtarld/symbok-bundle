@@ -1,3 +1,11 @@
+# :warning: Status: Archived
+
+With PHP 8.1 and the emergence of public readonly properties, this bundle
+repository has been archived and is no longer maintained.
+
+If you really need to  generate getters and setters generation, you can have a
+look at [lombok-php](https://github.com/MarcinOrlowski/lombok-php).
+
 # Symbok Annotation Bundle
 
 ![Packagist](https://img.shields.io/packagist/v/mtarld/symbok-bundle.svg)
